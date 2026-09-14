@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Suara extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'title',
+        'category',
+        'location',
+        'reference_link',
+        'description',
+        'image',
+        'contribution_type',
+        'target_voice',
+        'supporter_count',
+        'opponent_count',
+        'expected_impact',
+        'status',
+        'is_fundraising',
+        'fund_target',
+        'current_stage',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function missions()
+    {
+        return $this->hasMany(FieldMission::class);
+    }
+
+    public function financeTransactions()
+    {
+        return $this->hasMany(FinanceTransaction::class);
+    }
+
+    public function votes()
+    {
+        return $this->hasMany(SuaraVote::class);
+    }
+}
