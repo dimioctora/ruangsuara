@@ -123,6 +123,13 @@
             background-size: 200% auto;
             animation: shimmer 4s linear infinite;
         }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body class="bg-[#F8FAFC] font-sans text-slate-900 selection:bg-accent/10 selection:text-accent overflow-x-hidden" 
@@ -151,30 +158,38 @@
     </svg>
 
     <!-- Header / Navbar (Fixed on Top) -->
-    <header class="fixed top-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm transition-all duration-300">
-        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
-            <!-- Logo (Left) -->
-            <a href="/" class="flex items-center group flex-shrink-0">
-                <img src="{{ asset('images/suara-logo-transparent.png') }}" alt="Suara Logo" class="h-8 w-auto group-hover:scale-110 transition-transform drop-shadow-xl">
-            </a>
+    <header class="fixed top-0 left-0 right-0 z-[100] bg-white/85 backdrop-blur-xl border-b border-slate-200/60 shadow-sm transition-all duration-300">
+        <nav class="container mx-auto px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between">
+            <!-- Left: Mobile Burger Button + Logo -->
+            <div class="flex items-center gap-3 sm:gap-4">
+                <button type="button" 
+                        @click="mobileMenuOpen = true" 
+                        class="lg:hidden p-2.5 rounded-2xl bg-slate-100/90 hover:bg-slate-200/80 text-slate-700 hover:text-accent active:scale-95 transition-all flex items-center justify-center border border-slate-200/70 shadow-sm group" 
+                        aria-label="Buka Menu Navigasi">
+                    <i data-lucide="menu" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                </button>
+                <a href="/" class="flex items-center group flex-shrink-0">
+                    <img src="{{ asset('images/suara-logo-transparent.png') }}" alt="Suara Logo" class="h-8 sm:h-9 w-auto group-hover:scale-105 transition-transform drop-shadow-md">
+                </a>
+            </div>
 
-            <!-- Menu Halaman (Tengah) -->
+            <!-- Menu Halaman (Tengah - Desktop) -->
             <div class="hidden md:flex items-center gap-10 text-sm font-black text-slate-500 uppercase tracking-widest">
                 <a href="/suara" class="hover:text-accent transition-all">Suara</a>
-                <a href="#" class="hover:text-accent transition-all">Cara Kerja</a>
-                <a href="#" class="hover:text-accent transition-all">Tentang</a>
+                <a href="/cara-kerja" class="hover:text-accent transition-all">Cara Kerja</a>
+                <a href="/tentang" class="hover:text-accent transition-all">Tentang</a>
                 <a href="#" class="hover:text-accent transition-all">Kontak</a>
             </div>
 
             <!-- User Module (Kanan) -->
             <div class="flex items-center gap-4">
-                <div class="relative flex items-center gap-3 pl-4 border-l border-slate-100 group" x-data="{ userOpen: false }" @mouseenter="userOpen = true" @mouseleave="userOpen = false">
+                <div class="relative flex items-center gap-3 pl-3 sm:pl-4 border-l border-slate-100 group" x-data="{ userOpen: false }" @mouseenter="userOpen = true" @mouseleave="userOpen = false">
                     <div class="flex items-center gap-3 focus:outline-none group cursor-pointer py-2">
                         <div class="text-right hidden sm:block">
                             <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Selamat Datang,</p>
                             <p class="text-sm font-bold text-slate-900">{{ $user->name ?? 'Dimi Octora' }}</p>
                         </div>
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-accent to-success p-0.5 shadow-lg shadow-accent/20 group-hover:scale-110 transition-transform overflow-hidden relative">
+                        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-accent to-success p-0.5 shadow-lg shadow-accent/20 group-hover:scale-110 transition-transform overflow-hidden relative">
                              <div class="relative w-full h-full rounded-[14px] bg-white flex items-center justify-center overflow-hidden">
                                 @if($user->avatar_url)
                                     <img id="navbarAvatarImg" src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="w-full h-full object-cover global-user-avatar">
@@ -190,7 +205,7 @@
                         </div>
                     </div>
 
-                    <!-- Dropdown Menu (Smaller & Hover Triggered) -->
+                    <!-- Dropdown Menu (Desktop Hover Triggered) -->
                     <div class="absolute right-0 top-full pt-2 w-52 z-[110]"
                          x-show="userOpen" 
                          x-transition:enter="transition ease-out duration-200"
@@ -224,7 +239,145 @@
         </nav>
     </header>
 
-    <div class="container mx-auto px-6 py-8 md:py-12">
+    <!-- Mobile Burger Navigation Drawer (Overlay & Slide Panel) -->
+    <div x-show="mobileMenuOpen" 
+         x-cloak
+         class="fixed inset-0 z-[150] lg:hidden"
+         style="display: none;">
+        <!-- Backdrop -->
+        <div x-show="mobileMenuOpen"
+             x-transition:enter="transition-opacity ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="mobileMenuOpen = false" 
+             class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm"></div>
+
+        <!-- Drawer Content Panel -->
+        <div x-show="mobileMenuOpen"
+             x-transition:enter="transition ease-out duration-300 transform"
+             x-transition:enter-start="-translate-x-full"
+             x-transition:enter-end="translate-x-0"
+             x-transition:leave="transition ease-in duration-200 transform"
+             x-transition:leave-start="translate-x-0"
+             x-transition:leave-end="-translate-x-full"
+             class="fixed inset-y-0 left-0 max-w-xs sm:max-w-sm w-full bg-white shadow-2xl flex flex-col justify-between overflow-y-auto z-[160] border-r border-slate-100">
+            
+            <div class="p-6 space-y-6">
+                <!-- Header Drawer -->
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <a href="/" class="flex items-center">
+                        <img src="{{ asset('images/suara-logo-transparent.png') }}" alt="Suara Logo" class="h-8 w-auto">
+                    </a>
+                    <button type="button" @click="mobileMenuOpen = false" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- User Mini Profile Card in Drawer -->
+                <div class="bg-[#0F172A] rounded-3xl p-5 text-white space-y-4 shadow-xl shadow-slate-900/10 relative overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-28 h-28 bg-accent/20 rounded-full blur-2xl"></div>
+                    <div class="relative z-10 flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-accent to-success p-0.5 shadow-md flex-shrink-0">
+                            <div class="w-full h-full rounded-[14px] bg-white flex items-center justify-center overflow-hidden">
+                                @if($user->avatar_url)
+                                    <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="w-full h-full object-cover global-user-avatar">
+                                @else
+                                    <svg class="w-full h-full" viewBox="0 0 100 100" fill="none">
+                                        <circle cx="50" cy="35" r="20" fill="url(#avatarGrad1)" />
+                                        <path d="M20,85 Q50,60 80,85 L80,100 L20,100 Z" fill="url(#navAvatarGrad2)" />
+                                    </svg>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h4 class="font-outfit font-black text-sm text-white truncate">{{ $user->name ?? 'Dimi Octora' }}</h4>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-[9px] font-black uppercase tracking-wider text-accent bg-accent/20 px-2 py-0.5 rounded-md">Level {{ $levelInfo['current']['index'] }}</span>
+                                <span class="text-[9px] font-bold text-slate-400">{{ $user->trust_score }}% Score</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- XP Progress Mini -->
+                    <div class="relative z-10 space-y-1.5 pt-2 border-t border-slate-800">
+                        <div class="flex justify-between text-[9px] font-black uppercase text-slate-400">
+                            <span>XP Progress</span>
+                            <span class="text-accent">{{ number_format($user->xp) }} XP</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-accent rounded-full shadow-[0_0_8px_rgba(37,99,235,0.6)]" style="width: {{ $percent }}%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation: Layanan Utama -->
+                <div class="space-y-2">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-2">Layanan Utama</p>
+                    <div class="space-y-1.5">
+                        <button type="button" onclick="setDashboardView('dashboard'); document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-dashboard" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all text-left group">
+                            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                            <span>Dashboard</span>
+                        </button>
+                        <button type="button" onclick="setDashboardView('monitoring'); document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-monitoring" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 hover:bg-slate-50 hover:text-accent text-sm font-bold transition-all text-left group">
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                            <span>Monitoring</span>
+                        </button>
+                        <button type="button" onclick="setDashboardView('suara'); document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-suara" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 hover:bg-slate-50 hover:text-accent text-sm font-bold transition-all text-left group">
+                            <i data-lucide="compass" class="w-5 h-5"></i>
+                            <span>Suara Saya</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Navigation: Reputasi & Akun -->
+                <div class="space-y-2">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-2">Reputasi & Akun</p>
+                    <div class="space-y-1.5">
+                        <button type="button" onclick="setDashboardView('reputasi'); document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-reputasi" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 hover:bg-slate-50 hover:text-accent text-sm font-bold transition-all text-left group">
+                            <i data-lucide="medal" class="w-5 h-5 text-amber-500"></i>
+                            <span>Sistem Reputasi</span>
+                        </button>
+                        <button type="button" onclick="setDashboardView('pengaturan'); document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-pengaturan" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 hover:bg-slate-50 hover:text-accent text-sm font-bold transition-all text-left group">
+                            <i data-lucide="settings" class="w-5 h-5"></i>
+                            <span>Pengaturan Profil</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Navigation: Public Pages Link -->
+                <div class="space-y-2 pt-2 border-t border-slate-100">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-2">Halaman Publik</p>
+                    <div class="space-y-1">
+                        <a href="/suara" class="flex items-center gap-3.5 px-4 py-2.5 rounded-xl text-slate-600 hover:text-accent text-xs font-bold transition-colors">
+                            <i data-lucide="globe" class="w-4 h-4 text-slate-400"></i>
+                            <span>Jelajahi Aspirasi</span>
+                        </a>
+                        <a href="/cara-kerja" class="flex items-center gap-3.5 px-4 py-2.5 rounded-xl text-slate-600 hover:text-accent text-xs font-bold transition-colors">
+                            <i data-lucide="help-circle" class="w-4 h-4 text-slate-400"></i>
+                            <span>Cara Kerja</span>
+                        </a>
+                        <a href="/tentang" class="flex items-center gap-3.5 px-4 py-2.5 rounded-xl text-slate-600 hover:text-accent text-xs font-bold transition-colors">
+                            <i data-lucide="info" class="w-4 h-4 text-slate-400"></i>
+                            <span>Tentang Suara</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drawer Footer (Logout) -->
+            <div class="p-6 border-t border-slate-100 bg-slate-50/50">
+                <a href="/logout" class="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-2xl text-red-600 hover:bg-red-50 bg-white border border-red-100 font-black text-sm shadow-sm transition-all">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span>Keluar dari Akun</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 sm:px-6 pt-24 pb-12 md:pt-28 md:pb-16">
     @php
         $currentXp = $user->xp;
         $minXp = $levelInfo['current']['min_xp'];
@@ -267,8 +420,8 @@
         @endif
 
         <div class="flex flex-col lg:flex-row gap-10">
-            <!-- Sidebar -->
-            <aside class="lg:w-72 flex-shrink-0 space-y-6 animate-fade-in" style="animation-delay: 0.1s">
+            <!-- Sidebar (Desktop Only) -->
+            <aside class="hidden lg:block lg:w-72 flex-shrink-0 space-y-6 animate-fade-in" style="animation-delay: 0.1s">
                 <div class="sticky top-32 space-y-6">
                     <!-- 1. Reputation Summary Card (Premium Dark) -->
                     <div class="bg-[#0F172A] rounded-[40px] p-8 shadow-2xl shadow-slate-900/20 relative overflow-hidden group">
@@ -340,7 +493,7 @@
                         </div>
 
                         <div class="mt-12 pt-8 border-t border-slate-50">
-                            <a href="/" class="flex items-center gap-4 px-6 py-5 rounded-3xl text-red-400 hover:bg-red-50 font-bold transition-all text-sm group">
+                            <a href="/logout" class="flex items-center gap-4 px-6 py-5 rounded-3xl text-red-400 hover:bg-red-50 font-bold transition-all text-sm group">
                                 <i data-lucide="log-out" class="w-5 h-5"></i>
                                 Keluar
                             </a>
@@ -352,7 +505,60 @@
             </aside>
 
             <!-- Main Content Container -->
-            <main class="flex-grow space-y-10 min-w-0">
+            <main class="flex-grow space-y-8 md:space-y-10 min-w-0">
+                
+                <!-- Mobile Carousel Navigation Bar (Horizontal Interactive Pills for Mobile View) -->
+                <div class="lg:hidden animate-fade-in" style="animation-delay: 0.05s">
+                    <div class="bg-white/95 backdrop-blur-xl rounded-[28px] p-2 card-shadow border border-slate-200/80 shadow-md">
+                        <div id="mobileMenuCarousel" class="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1 px-1 snap-x snap-mandatory">
+                            
+                            <!-- Dashboard -->
+                            <button type="button" 
+                                    onclick="setDashboardView('dashboard')" 
+                                    id="carousel-dashboard" 
+                                    class="flex-shrink-0 snap-start flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs font-black transition-all duration-200 active:scale-95 whitespace-nowrap bg-accent text-white shadow-lg shadow-accent/25 border border-accent">
+                                <i data-lucide="layout-dashboard" class="w-4 h-4 flex-shrink-0"></i>
+                                <span>Dashboard</span>
+                            </button>
+
+                            <!-- Monitoring -->
+                            <button type="button" 
+                                    onclick="setDashboardView('monitoring')" 
+                                    id="carousel-monitoring" 
+                                    class="flex-shrink-0 snap-start flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs font-black transition-all duration-200 active:scale-95 whitespace-nowrap bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50">
+                                <i data-lucide="eye" class="w-4 h-4 flex-shrink-0"></i>
+                                <span>Monitoring</span>
+                            </button>
+
+                            <!-- Suara Saya -->
+                            <button type="button" 
+                                    onclick="setDashboardView('suara')" 
+                                    id="carousel-suara" 
+                                    class="flex-shrink-0 snap-start flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs font-black transition-all duration-200 active:scale-95 whitespace-nowrap bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50">
+                                <i data-lucide="compass" class="w-4 h-4 flex-shrink-0"></i>
+                                <span>Suara Saya</span>
+                            </button>
+
+                            <!-- Sistem Reputasi -->
+                            <button type="button" 
+                                    onclick="setDashboardView('reputasi')" 
+                                    id="carousel-reputasi" 
+                                    class="flex-shrink-0 snap-start flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs font-black transition-all duration-200 active:scale-95 whitespace-nowrap bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50">
+                                <i data-lucide="medal" class="w-4 h-4 flex-shrink-0 text-amber-500"></i>
+                                <span>Reputasi</span>
+                            </button>
+
+                            <!-- Pengaturan Profil -->
+                            <button type="button" 
+                                    onclick="setDashboardView('pengaturan')" 
+                                    id="carousel-pengaturan" 
+                                    class="flex-shrink-0 snap-start flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs font-black transition-all duration-200 active:scale-95 whitespace-nowrap bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50">
+                                <i data-lucide="settings" class="w-4 h-4 flex-shrink-0"></i>
+                                <span>Pengaturan</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- View: Dashboard (Profile & Summary) -->
                 <div id="view-dashboard" class="space-y-10">
@@ -1184,10 +1390,7 @@
                 </section>
 
             </main>
-
-    <!-- Bottom Mobile Nav Indicator -->
-    <div class="fixed bottom-0 left-0 right-0 h-1 bg-slate-100 md:hidden z-[110]">
-        <div class="h-full bg-accent w-1/4 translate-x-3/4"></div>
+        </div>
     </div>
 
     <!-- Script to trigger animations and initialize icons -->
@@ -1196,6 +1399,7 @@
             Alpine.data('dashboard', () => ({
                 notifications: [],
                 userOpen: false,
+                mobileMenuOpen: false,
                 showLevelUp: false,
                 showBadgeUnlock: false,
                 currentBadge: { name: '', icon: '' },
@@ -1267,22 +1471,50 @@
         };
 
         function setDashboardView(view) {
-            // Sidebar buttons
+            // Sidebar, Carousel, Drawer buttons
             const buttons = ['dashboard', 'monitoring', 'suara', 'reputasi', 'pengaturan'];
             buttons.forEach(b => {
-                const btn = document.getElementById('side-' + b);
-                const viewEl = document.getElementById('view-' + b);
-                
-                if (btn) {
+                // 1. Desktop Sidebar
+                const sideBtn = document.getElementById('side-' + b);
+                if (sideBtn) {
                     if (b === view) {
-                        btn.classList.add('bg-accent', 'text-white', 'shadow-xl', 'shadow-accent/20');
-                        btn.classList.remove('text-slate-600', 'hover:bg-slate-50', 'hover:text-accent');
+                        sideBtn.classList.add('bg-accent', 'text-white', 'shadow-xl', 'shadow-accent/20');
+                        sideBtn.classList.remove('text-slate-600', 'hover:bg-slate-50', 'hover:text-accent');
                     } else {
-                        btn.classList.remove('bg-accent', 'text-white', 'shadow-xl', 'shadow-accent/20');
-                        btn.classList.add('text-slate-600', 'hover:bg-slate-50', 'hover:text-accent');
+                        sideBtn.classList.remove('bg-accent', 'text-white', 'shadow-xl', 'shadow-accent/20');
+                        sideBtn.classList.add('text-slate-600', 'hover:bg-slate-50', 'hover:text-accent');
                     }
                 }
 
+                // 2. Mobile Carousel Tab Buttons
+                const carouselBtn = document.getElementById('carousel-' + b);
+                if (carouselBtn) {
+                    if (b === view) {
+                        carouselBtn.classList.add('bg-accent', 'text-white', 'shadow-lg', 'shadow-accent/25', 'border-accent');
+                        carouselBtn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200/80', 'hover:bg-slate-50');
+                        try {
+                            carouselBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                        } catch(e) {}
+                    } else {
+                        carouselBtn.classList.remove('bg-accent', 'text-white', 'shadow-lg', 'shadow-accent/25', 'border-accent');
+                        carouselBtn.classList.add('bg-white', 'text-slate-600', 'border-slate-200/80', 'hover:bg-slate-50');
+                    }
+                }
+
+                // 3. Mobile Drawer Buttons
+                const drawerBtn = document.getElementById('drawer-' + b);
+                if (drawerBtn) {
+                    if (b === view) {
+                        drawerBtn.classList.add('bg-accent', 'text-white', 'shadow-md', 'shadow-accent/20');
+                        drawerBtn.classList.remove('text-slate-600', 'hover:bg-slate-50', 'hover:text-accent');
+                    } else {
+                        drawerBtn.classList.remove('bg-accent', 'text-white', 'shadow-md', 'shadow-accent/20');
+                        drawerBtn.classList.add('text-slate-600', 'hover:bg-slate-50', 'hover:text-accent');
+                    }
+                }
+
+                // 4. View Sections
+                const viewEl = document.getElementById('view-' + b);
                 if (viewEl) {
                     if (b === view) {
                         viewEl.classList.remove('hidden');
