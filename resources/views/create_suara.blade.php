@@ -224,7 +224,7 @@
                 @endif
 
                 <!-- Main Card Dashboard -->
-                <form id="createSuaraForm" action="/create-suara" method="POST" enctype="multipart/form-data" onsubmit="return validateAndSubmit(event)" class="bg-white rounded-[40px] border border-slate-100 card-shadow overflow-hidden relative">
+                <form id="createSuaraForm" action="/create-suara" method="POST" enctype="multipart/form-data" novalidate onsubmit="return validateAndSubmit(event)" class="bg-white rounded-[40px] border border-slate-100 card-shadow overflow-hidden relative">
                     @csrf
                     <input type="hidden" name="action_type" id="hidden-action-type" value="publish">
                     <input type="hidden" name="draft_id" id="hidden-draft-id" value="{{ old('draft_id', $draft->id ?? '') }}">
@@ -317,7 +317,7 @@
                                 </label>
                                 <div class="relative group">
                                     <i data-lucide="link" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-accent transition-colors"></i>
-                                    <input type="url" id="input-link" name="reference_link" value="{{ old('reference_link', $draft->reference_link ?? '') }}" placeholder="Link berita atau dokumen pendukung" class="w-full pl-14 pr-8 py-5 bg-white border border-slate-100 rounded-[24px] outline-none transition-all font-semibold placeholder:text-slate-300 focus:border-accent">
+                                    <input type="text" id="input-link" name="reference_link" value="{{ old('reference_link', $draft->reference_link ?? '') }}" placeholder="Link berita atau dokumen pendukung (opsional)" class="w-full pl-14 pr-8 py-5 bg-white border border-slate-100 rounded-[24px] outline-none transition-all font-semibold placeholder:text-slate-300 focus:border-accent">
                                 </div>
                                 <p class="text-[10px] text-slate-400 font-medium  ml-1 leading-relaxed">Penyertaan referensi resmi meningkatkan kepercayaan publik dan mempercepat moderasi.</p>
                             </div>
@@ -548,7 +548,7 @@
                                     Simpan Draft
                                 </button>
                                 <button type="button" onclick="document.getElementById('card-preview')?.scrollIntoView({behavior: 'smooth'})" class="hidden sm:block px-6 py-4 bg-white border border-slate-100 text-slate-400 text-xs font-black uppercase tracking-wider rounded-[24px] hover:bg-slate-50 transition-all">Preview</button>
-                                <button type="submit" id="btn-submit-suara" class="px-8 py-4 bg-accent hover:bg-accent/90 text-white font-black rounded-[24px] shadow-2xl shadow-accent/30 hover:scale-[1.02] active:scale-95 transition-all text-sm flex items-center gap-3">
+                                <button type="button" onclick="validateAndSubmit(event)" id="btn-submit-suara" class="px-8 py-4 bg-accent hover:bg-accent/90 text-white font-black rounded-[24px] shadow-2xl shadow-accent/30 hover:scale-[1.02] active:scale-95 transition-all text-sm flex items-center gap-3 cursor-pointer">
                                     <span>Publish Suara</span>
                                     <i data-lucide="send" class="w-4 h-4"></i>
                                 </button>
@@ -747,7 +747,10 @@
         }
 
         function validateAndSubmit(e) {
-            if (e) e.preventDefault();
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             
             const title = (document.getElementById('input-title')?.value || '').trim();
             const category = document.getElementById('input-category')?.value || '';
@@ -782,13 +785,15 @@
                 return false;
             }
             
-            // Disable button to prevent double-submit & show loader
+            const actionEl = document.getElementById('hidden-action-type');
+            if (actionEl) actionEl.value = 'publish';
+            
             const submitBtn = document.getElementById('btn-submit-suara');
             if (submitBtn) {
                 submitBtn.disabled = true;
                 submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
                 submitBtn.innerHTML = `
-                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg class="animate-spin h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
@@ -796,7 +801,10 @@
                 `;
             }
             
-            document.getElementById('createSuaraForm').submit();
+            const form = document.getElementById('createSuaraForm');
+            if (form) {
+                HTMLFormElement.prototype.submit.call(form);
+            }
             return true;
         }
 
@@ -942,7 +950,8 @@
                 return;
             }
 
-            document.getElementById('hidden-action-type').value = 'draft';
+            const actionEl = document.getElementById('hidden-action-type');
+            if (actionEl) actionEl.value = 'draft';
 
             // Show feedback
             const toast = document.getElementById('toast-success');
@@ -954,9 +963,12 @@
                 showToast();
             }
 
-            setTimeout(() => {
-                document.getElementById('createSuaraForm').submit();
-            }, 300);
+            const form = document.getElementById('createSuaraForm');
+            if (form) {
+                setTimeout(() => {
+                    HTMLFormElement.prototype.submit.call(form);
+                }, 200);
+            }
         }
 
         // Initialize state on page load
