@@ -134,6 +134,13 @@
 </head>
 <body class="bg-[#F8FAFC] font-sans text-slate-900 selection:bg-accent/10 selection:text-accent overflow-x-hidden" 
       x-data="dashboard">
+    @php
+        $currentXp = $user->xp;
+        $minXp = $levelInfo['current']['min_xp'];
+        $nextXp = $levelInfo['next']['min_xp'] ?? ($user->xp + 1000);
+        $percent = ($nextXp - $minXp) > 0 ? (($currentXp - $minXp) / ($nextXp - $minXp)) * 100 : 100;
+        $remainingXp = max(0, $nextXp - $currentXp);
+    @endphp
     <!-- Global SVG Assets -->
     <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -378,13 +385,6 @@
     </div>
 
     <div class="container mx-auto px-4 sm:px-6 pt-24 pb-12 md:pt-28 md:pb-16">
-    @php
-        $currentXp = $user->xp;
-        $minXp = $levelInfo['current']['min_xp'];
-        $nextXp = $levelInfo['next']['min_xp'] ?? ($user->xp + 1000);
-        $percent = ($nextXp - $minXp) > 0 ? (($currentXp - $minXp) / ($nextXp - $minXp)) * 100 : 100;
-        $remainingXp = max(0, $nextXp - $currentXp);
-    @endphp
         @if(session('error'))
             <div id="error-alert" class="mb-8 p-6 bg-orange-50 border border-orange-100 rounded-[32px] flex items-center justify-between animate-fade-in max-w-7xl mx-auto shadow-sm">
                 <div class="flex items-center gap-4 text-warning">
