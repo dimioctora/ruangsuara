@@ -21,6 +21,17 @@ class ReputationService
         ['name' => 'Lord', 'min_xp' => 25000, 'icon' => 'crown', 'shape' => 'diamond-aura', 'color' => '#F59E0B'],
     ];
 
+    public static function rewardAction(User $user, string $actionSlug, string $fallbackType, int $defaultXp, string $description = null)
+    {
+        $xp = $defaultXp;
+        $config = \App\Models\ReputationConfig::where('action_slug', $actionSlug)->first();
+        if ($config && isset($config->xp_reward)) {
+            $xp = (int) $config->xp_reward;
+        }
+
+        self::addXp($user, $xp, $fallbackType, $description);
+    }
+
     public static function addXp(User $user, int $amount, string $type, string $description = null)
     {
         $user->xp += $amount;
@@ -70,6 +81,10 @@ class ReputationService
                 break;
             case 'ISSUE_APPROVED':
                 $change = 2;
+                break;
+            case 'RECEIVE_SUPPORT':
+            case 'SUPPORT_ISSUE':
+                $change = 1;
                 break;
         }
         $user->trust_score += $change;

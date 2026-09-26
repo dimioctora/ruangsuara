@@ -78,6 +78,26 @@ class SuaraController extends Controller
 
             $suara->increment('supporter_count');
             \Illuminate\Support\Facades\DB::commit();
+
+            // 1. Reward XP to Voter (Voter yang memberikan dukungan)
+            \App\Services\ReputationService::rewardAction(
+                $user, 
+                'support_suara', 
+                'SUPPORT_ISSUE', 
+                15, 
+                'Memberikan dukungan suara pada isu: ' . $suara->title
+            );
+
+            // 2. Reward XP to Issue Creator (Pembuat isu mendapatkan poin dari voters)
+            if ($suara->user && $suara->user_id !== $user->id) {
+                \App\Services\ReputationService::rewardAction(
+                    $suara->user, 
+                    'receive_support', 
+                    'RECEIVE_SUPPORT', 
+                    15, 
+                    'Mendapatkan dukungan dari ' . $user->name . ' pada isu: ' . $suara->title
+                );
+            }
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
             if ($request->ajax()) {
@@ -124,6 +144,24 @@ class SuaraController extends Controller
 
             $suara->increment('opponent_count');
             \Illuminate\Support\Facades\DB::commit();
+
+            // 1. Reward XP to Voter (Partisipasi kritis sanggahan)
+            \App\Services\ReputationService::addXp(
+                $user, 
+                10, 
+                'OPPOSE_ISSUE', 
+                'Memberikan suara sanggahan pada isu: ' . $suara->title
+            );
+
+            // 2. Reward XP to Issue Creator (Engagement feedback)
+            if ($suara->user && $suara->user_id !== $user->id) {
+                \App\Services\ReputationService::addXp(
+                    $suara->user, 
+                    5, 
+                    'RECEIVE_FEEDBACK', 
+                    'Mendapatkan tanggapan sanggahan dari ' . $user->name . ' pada isu: ' . $suara->title
+                );
+            }
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
             if ($request->ajax()) {
