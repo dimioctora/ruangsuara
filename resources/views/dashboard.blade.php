@@ -983,14 +983,13 @@
                                         <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 pt-1">
                                             <button type="button" onclick="triggerAvatarUpload()" class="px-4 py-2 bg-accent/10 text-accent hover:bg-accent hover:text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2">
                                                 <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-                                                Upload & Crop Foto
+                                                Upload Foto
                                             </button>
                                             <button type="button" id="btnDeleteAvatar" onclick="deleteUserAvatar()" class="px-4 py-2 bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 {{ $user->avatar ? '' : 'hidden' }}">
                                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                                                 Hapus
                                             </button>
                                         </div>
-                                        <p class="text-[11px] text-slate-400 font-medium">Mendukung format JPG, PNG, atau WebP. Dilengkapi fitur crop rasio 1:1 dan kompresi cerdas otomatis.</p>
                                     </div>
                                 </div>
 
