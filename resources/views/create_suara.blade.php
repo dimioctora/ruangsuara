@@ -207,7 +207,7 @@
                 </div>
 
                 <!-- Main Card Dashboard -->
-                <form action="/create-suara" method="POST" enctype="multipart/form-data" class="bg-white rounded-[40px] border border-slate-100 card-shadow overflow-hidden relative">
+                <form id="createSuaraForm" action="/create-suara" method="POST" enctype="multipart/form-data" onsubmit="return validateAndSubmit(event)" class="bg-white rounded-[40px] border border-slate-100 card-shadow overflow-hidden relative">
                     @csrf
                     <input type="hidden" name="contribution_type" id="hidden-contribution-type" value="voice">
                     
@@ -452,7 +452,7 @@
                         </div>
 
                         <div class="pt-12 flex items-center justify-between border-t border-slate-100 mt-10">
-                            <button onclick="goToStep(2)" class="px-8 py-5 text-slate-400 font-bold hover:text-slate-600 transition-all flex items-center gap-2">
+                            <button type="button" onclick="goToStep(2)" class="px-8 py-5 text-slate-400 font-bold hover:text-slate-600 transition-all flex items-center gap-2">
                                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                                 Kembali
                             </button>
@@ -485,7 +485,7 @@
                                      <p class="text-xs text-slate-400 font-medium max-w-sm mx-auto ">Isi alamat email mereka untuk memberi akses kolaborator pada kontrol panel Suara ini kelak.</p>
                                  </div>
                                  <div class="w-full max-w-md relative z-10">
-                                     <input type="email" placeholder="email-rekan@gmail.com" class="w-full px-8 py-5 bg-white border border-slate-100 rounded-[24px] outline-none shadow-sm focus:border-accent transition-all font-bold text-center">
+                                     <input type="text" name="collaborator_email" placeholder="email-rekan@gmail.com (opsional)" class="w-full px-8 py-5 bg-white border border-slate-100 rounded-[24px] outline-none shadow-sm focus:border-accent transition-all font-bold text-center">
                                  </div>
                                  <button type="button" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-accent transition-colors">Lewati langkah ini sementara</button>
                              </div>
@@ -505,9 +505,10 @@
                                 Kembali
                             </button>
                             <div class="flex items-center gap-4">
-                                <button type="button" onclick="document.getElementById('preview-card').scrollIntoView({behavior: 'smooth'})" class="hidden sm:block px-8 py-5 bg-white border border-slate-100 text-slate-400 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-slate-50 transition-all">Preview</button>
-                                <button type="submit" class="px-12 py-5 bg-primary text-white font-black rounded-[24px] shadow-2xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all text-lg">
-                                    Publish Suara
+                                <button type="button" onclick="document.getElementById('card-preview')?.scrollIntoView({behavior: 'smooth'})" class="hidden sm:block px-8 py-5 bg-white border border-slate-100 text-slate-400 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-slate-50 transition-all">Preview</button>
+                                <button type="submit" id="btn-submit-suara" class="px-10 py-5 bg-accent hover:bg-accent/90 text-white font-black rounded-[24px] shadow-2xl shadow-accent/30 hover:scale-[1.02] active:scale-95 transition-all text-lg flex items-center gap-3">
+                                    <span>Publish Suara</span>
+                                    <i data-lucide="send" class="w-5 h-5"></i>
                                 </button>
                             </div>
                         </div>
@@ -629,22 +630,56 @@
         let activeStep = 1;
 
         function goToStep(step) {
+            // Validate when moving forward
+            if (step > activeStep) {
+                if (activeStep === 1) {
+                    const title = (document.getElementById('input-title')?.value || '').trim();
+                    const category = document.getElementById('input-category')?.value || '';
+                    const location = (document.getElementById('input-location')?.value || '').trim();
+                    if (!title) {
+                        alert('Silakan isi Judul Suara terlebih dahulu.');
+                        document.getElementById('input-title')?.focus();
+                        return;
+                    }
+                    if (!category) {
+                        alert('Silakan pilih Kategori Isu.');
+                        document.getElementById('input-category')?.focus();
+                        return;
+                    }
+                    if (!location) {
+                        alert('Silakan isi Lokasi Isu.');
+                        document.getElementById('input-location')?.focus();
+                        return;
+                    }
+                } else if (activeStep === 2) {
+                    const description = (document.getElementById('input-description')?.value || '').trim();
+                    if (!description) {
+                        alert('Silakan isi Deskripsi Isu terlebih dahulu.');
+                        document.getElementById('input-description')?.focus();
+                        return;
+                    }
+                }
+            }
+
             // Update UI transition
             const sections = document.querySelectorAll('.form-section');
             sections.forEach(s => s.classList.remove('active'));
             
             setTimeout(() => {
-                document.getElementById('section-' + step).classList.add('active');
+                const targetSection = document.getElementById('section-' + step);
+                if (targetSection) targetSection.classList.add('active');
             }, 50);
 
             // Update Progress Line
             const progressPercentage = (step - 1) * 33.33;
-            document.getElementById('step-progress-line').style.width = progressPercentage + '%';
+            const progressLine = document.getElementById('step-progress-line');
+            if (progressLine) progressLine.style.width = progressPercentage + '%';
 
             // Update Circles
             for(let i=1; i<=4; i++) {
                 const circle = document.getElementById('step-' + i + '-circle');
                 const label = document.getElementById('step-' + i + '-label');
+                if (!circle || !label) continue;
                 
                 if(i < step) {
                     circle.className = 'w-12 h-12 rounded-2xl flex items-center justify-center border-2 step-circle shadow-inner step-completed';
@@ -665,8 +700,62 @@
             if(step > activeStep) showToast();
             
             activeStep = step;
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function validateAndSubmit(e) {
+            if (e) e.preventDefault();
+            
+            const title = (document.getElementById('input-title')?.value || '').trim();
+            const category = document.getElementById('input-category')?.value || '';
+            const location = (document.getElementById('input-location')?.value || '').trim();
+            const description = (document.getElementById('input-description')?.value || '').trim();
+            
+            if (!title) {
+                alert('Mohon lengkapi Judul Suara pada Langkah 1.');
+                goToStep(1);
+                document.getElementById('input-title')?.focus();
+                return false;
+            }
+            
+            if (!category) {
+                alert('Mohon pilih Kategori Isu pada Langkah 1.');
+                goToStep(1);
+                document.getElementById('input-category')?.focus();
+                return false;
+            }
+            
+            if (!location) {
+                alert('Mohon isi Lokasi Isu pada Langkah 1.');
+                goToStep(1);
+                document.getElementById('input-location')?.focus();
+                return false;
+            }
+            
+            if (!description) {
+                alert('Mohon lengkapi Deskripsi Isu pada Langkah 2.');
+                goToStep(2);
+                document.getElementById('input-description')?.focus();
+                return false;
+            }
+            
+            // Disable button to prevent double-submit & show loader
+            const submitBtn = document.getElementById('btn-submit-suara');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
+                submitBtn.innerHTML = `
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Memublikasikan Suara...</span>
+                `;
+            }
+            
+            document.getElementById('createSuaraForm').submit();
+            return true;
         }
 
         function getOriginalIcon(i) {
