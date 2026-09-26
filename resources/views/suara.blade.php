@@ -314,17 +314,17 @@
                             
                             <div class="flex items-center justify-between relative z-20">
                                 @php
-                                    $supporters = $m->votes ? $m->votes->where('type', 'pro')->pluck('user')->filter()->unique('id') : collect();
-                                    $totalSupporters = (int) $m->supporter_count;
+                                    $supporters = ($m && $m->votes) ? $m->votes->where('type', 'pro')->pluck('user')->filter()->unique('id') : collect();
+                                    $totalSupporters = (int) ($m->supporter_count ?? 0);
                                 @endphp
                                 <div class="flex items-center gap-3">
                                     <div class="flex -space-x-2">
                                         @if($supporters->isNotEmpty())
                                             @foreach($supporters->take(2) as $sup)
-                                                @if($sup->avatar_url)
+                                                @if($sup && $sup->avatar_url)
                                                     <img class="w-8 h-8 rounded-full border-2 border-white shadow-sm object-cover" src="{{ $sup->avatar_url }}" alt="{{ $sup->name }}" title="{{ $sup->name }}">
                                                 @else
-                                                    <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-[10px] flex items-center justify-center shadow-sm uppercase" title="{{ $sup->name }}">
+                                                    <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-[10px] flex items-center justify-center shadow-sm uppercase" title="{{ $sup->name ?? 'Warga' }}">
                                                         {{ substr($sup->name ?? 'W', 0, 2) }}
                                                     </div>
                                                 @endif

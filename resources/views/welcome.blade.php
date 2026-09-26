@@ -601,27 +601,27 @@
 
                                         <div class="flex items-center justify-between border-t border-slate-50 pt-8">
                                             @php
-                                                $issueSupporters = $issue->votes ? $issue->votes->where('type', 'pro')->pluck('user')->filter()->unique('id') : collect();
-                                                $totalIssueVoices = (int) $issue->supporter_count;
+                                                $issueSupporters = ($suara && $suara->votes) ? $suara->votes->where('type', 'pro')->pluck('user')->filter()->unique('id') : collect();
+                                                $totalIssueVoices = (int) ($suara->supporter_count ?? 0);
                                             @endphp
                                             <div class="flex items-center gap-3">
                                                 <div class="flex -space-x-3">
                                                     @if($issueSupporters->isNotEmpty())
                                                         @foreach($issueSupporters->take(3) as $isup)
-                                                            @if($isup->avatar_url)
+                                                            @if($isup && $isup->avatar_url)
                                                                 <img src="{{ $isup->avatar_url }}" class="w-11 h-11 rounded-xl border-[4px] border-white bg-slate-200 object-cover shadow-sm" alt="{{ $isup->name }}" title="{{ $isup->name }}">
                                                             @else
-                                                                <div class="w-11 h-11 rounded-xl border-[4px] border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-xs flex items-center justify-center shadow-sm uppercase" title="{{ $isup->name }}">
+                                                                <div class="w-11 h-11 rounded-xl border-[4px] border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-xs flex items-center justify-center shadow-sm uppercase" title="{{ $isup->name ?? 'Warga' }}">
                                                                     {{ substr($isup->name ?? 'W', 0, 2) }}
                                                                 </div>
                                                             @endif
                                                         @endforeach
-                                                    @elseif($issue->user)
-                                                        @if($issue->user->avatar_url)
-                                                            <img src="{{ $issue->user->avatar_url }}" class="w-11 h-11 rounded-xl border-[4px] border-white bg-slate-200 object-cover shadow-sm" alt="{{ $issue->user->name }}" title="Inisiator: {{ $issue->user->name }}">
+                                                    @elseif($suara->user)
+                                                        @if($suara->user->avatar_url)
+                                                            <img src="{{ $suara->user->avatar_url }}" class="w-11 h-11 rounded-xl border-[4px] border-white bg-slate-200 object-cover shadow-sm" alt="{{ $suara->user->name }}" title="Inisiator: {{ $suara->user->name }}">
                                                         @else
-                                                            <div class="w-11 h-11 rounded-xl border-[4px] border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-xs flex items-center justify-center shadow-sm uppercase" title="Inisiator: {{ $issue->user->name }}">
-                                                                {{ substr($issue->user->name ?? 'W', 0, 2) }}
+                                                            <div class="w-11 h-11 rounded-xl border-[4px] border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-xs flex items-center justify-center shadow-sm uppercase" title="Inisiator: {{ $suara->user->name }}">
+                                                                {{ substr($suara->user->name ?? 'W', 0, 2) }}
                                                             </div>
                                                         @endif
                                                     @else
