@@ -100,7 +100,7 @@
     </style>
 
     <header class="fixed top-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm transition-all duration-300">
-        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+        <nav class="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-12 py-4 flex items-center justify-between">
             <!-- Logo (Left) -->
             <a href="/" class="flex items-center group flex-shrink-0">
                 <img src="{{ asset('images/suara-logo-transparent.png') }}" alt="Suara Logo" class="h-8 w-auto group-hover:scale-110 transition-transform drop-shadow-xl">
@@ -155,10 +155,10 @@
         </nav>
     </header>
 
-    <main class="max-w-7xl mx-auto pb-24">
-               <!-- Hero Section -->
-        <section class="p-4 md:p-8">
-            <div class="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-[32px] overflow-hidden shadow-2xl mb-12">
+    <main class="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-12 pt-20 md:pt-24 pb-24">
+        <!-- Hero Section -->
+        <section class="w-full">
+            <div class="relative w-full aspect-[16/10] sm:aspect-[16/8] lg:aspect-[21/8] xl:aspect-[24/8] min-h-[360px] md:min-h-[460px] rounded-[32px] md:rounded-[40px] overflow-hidden shadow-2xl mb-8 md:mb-12">
                 @php
                     if ($suara->image) {
                         if (str_starts_with($suara->image, 'http')) {
@@ -173,39 +173,39 @@
                     }
                 @endphp
                 <img src="{{ $img }}" alt="{{ $suara->title }}" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
                 
                 <!-- Quick Share on Hero -->
                 <div class="absolute top-6 right-6 z-20">
-                    <button type="button" onclick="shareNative('{{ addslashes($suara->title) }}', '{{ url()->current() }}')" class="px-4 py-2.5 bg-slate-900/40 hover:bg-slate-900/70 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-xl transition-all active:scale-95 flex items-center gap-2 font-outfit text-xs font-bold">
+                    <button type="button" onclick="shareNative('{{ addslashes($suara->title) }}', '{{ url()->current() }}')" class="px-4 py-2.5 bg-slate-900/50 hover:bg-slate-900/80 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-xl transition-all active:scale-95 flex items-center gap-2 font-outfit text-xs font-bold">
                         <i data-lucide="share-2" class="w-4 h-4 text-emerald-400"></i>
                         <span>Bagikan</span>
                     </button>
                 </div>
 
-                <div class="absolute bottom-8 left-8 right-8 text-white">
-                    <div class="flex flex-wrap gap-3 mb-6">
+                <div class="absolute bottom-6 sm:bottom-10 left-6 sm:left-10 right-6 sm:right-10 text-white max-w-5xl">
+                    <div class="flex flex-wrap gap-3 mb-4 md:mb-6">
                         <span class="px-4 py-1.5 bg-accent text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg shadow-accent/20">{{ $suara->category }}</span>
                         <span class="px-4 py-1.5 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest rounded-full border border-white/30 flex items-center gap-2">
                             <i data-lucide="map-pin" class="w-3 h-3 text-emerald-400"></i> {{ $suara->location }}
                         </span>
                     </div>
-                    <h2 class="text-3xl md:text-5xl font-outfit font-extrabold mb-4 leading-tight tracking-tight uppercase ">{{ $suara->title }}</h2>
+                    <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-outfit font-extrabold mb-4 leading-tight tracking-tight uppercase">{{ $suara->title }}</h1>
                     <div class="flex items-center gap-3 text-slate-300 font-medium">
                         <div class="flex -space-x-2">
                             <img class="w-8 h-8 rounded-full border-2 border-white/20" src="https://i.pravatar.cc/100?u=1" alt="">
                             <img class="w-8 h-8 rounded-full border-2 border-white/20" src="https://i.pravatar.cc/100?u=2" alt="">
                             <div class="w-8 h-8 rounded-full border-2 border-white/20 bg-accent flex items-center justify-center text-[10px] font-bold">+9</div>
                         </div>
-                        <span class="text-sm">Didukung oleh {{ number_format($suara->supporter_count, 0, ',', '.') }}+ Voices</span>
+                        <span class="text-xs sm:text-sm">Didukung oleh <strong class="text-white">{{ number_format($suara->supporter_count, 0, ',', '.') }}+</strong> Voices</span>
                     </div>
                 </div>
             </div>
 
             <!-- Heat Index Timeline -->
-            <div class="bg-white rounded-[32px] p-8 md:p-12 shadow-sm border border-slate-100 mb-12 overflow-hidden">
-                <div class="flex items-center justify-between mb-10">
-                    <h3 class="text-xl font-outfit font-bold text-slate-800 flex items-center gap-3">
+            <div class="bg-white rounded-[32px] md:rounded-[40px] p-6 sm:p-8 md:p-10 shadow-sm border border-slate-100 mb-8 md:mb-12 overflow-hidden">
+                <div class="flex items-center justify-between mb-8 md:mb-10">
+                    <h3 class="text-lg sm:text-xl font-outfit font-bold text-slate-800 flex items-center gap-3">
                         <i data-lucide="activity" class="text-accent w-6 h-6"></i>
                         Heat Index Timeline
                     </h3>
@@ -215,11 +215,11 @@
                     </div>
                 </div>
 
-                <!-- Horizontal Scrollable Timeline on Mobile -->
-                <div class="overflow-x-auto pb-6 custom-scrollbar">
-                    <div class="flex items-start min-w-[1000px] justify-between relative px-4">
+                <!-- Horizontal Scrollable / Full Width Responsive Timeline -->
+                <div class="overflow-x-auto pb-4 custom-scrollbar">
+                    <div class="flex items-start justify-between min-w-[750px] lg:min-w-full relative px-2 sm:px-6">
                         <!-- Step 1 (Done) -->
-                        <div class="flex flex-col items-center text-center w-32 relative z-10">
+                        <div class="flex flex-col items-center text-center flex-1 relative z-10">
                             <div class="w-12 h-12 rounded-full bg-accent text-white flex items-center justify-center mb-4 shadow-lg shadow-accent/30 ring-4 ring-white">
                                 <i data-lucide="alert-circle" class="w-6 h-6"></i>
                             </div>
@@ -229,7 +229,7 @@
                         </div>
 
                         <!-- Step 2 (Done) -->
-                        <div class="flex flex-col items-center text-center w-32 relative z-10">
+                        <div class="flex flex-col items-center text-center flex-1 relative z-10">
                             <div class="w-12 h-12 rounded-full bg-accent text-white flex items-center justify-center mb-4 shadow-lg shadow-accent/30 ring-4 ring-white animate-subtle">
                                 <i data-lucide="megaphone" class="w-6 h-6"></i>
                             </div>
@@ -239,7 +239,7 @@
                         </div>
 
                         <!-- Step 3 (Active) -->
-                        <div class="flex flex-col items-center text-center w-32 relative z-10">
+                        <div class="flex flex-col items-center text-center flex-1 relative z-10">
                             <div class="w-14 h-14 rounded-full bg-white border-4 border-accent text-accent flex items-center justify-center mb-4 shadow-xl shadow-accent/10 ring-4 ring-white scale-110">
                                 <i data-lucide="scale" class="w-7 h-7"></i>
                             </div>
@@ -249,7 +249,7 @@
                         </div>
 
                         <!-- Step 4 (Future) -->
-                        <div class="flex flex-col items-center text-center w-32 relative z-10">
+                        <div class="flex flex-col items-center text-center flex-1 relative z-10">
                             <div class="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 text-slate-300 flex items-center justify-center mb-4 ring-4 ring-white">
                                 <i data-lucide="check-circle" class="w-6 h-6"></i>
                             </div>
@@ -259,7 +259,7 @@
                         </div>
 
                         <!-- Step 5 (Future) -->
-                        <div class="flex flex-col items-center text-center w-32 relative z-10">
+                        <div class="flex flex-col items-center text-center flex-1 relative z-10">
                             <div class="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 text-slate-300 flex items-center justify-center mb-4 ring-4 ring-white">
                                 <i data-lucide="fast-forward" class="w-6 h-6"></i>
                             </div>
@@ -268,7 +268,7 @@
                         </div>
 
                         <!-- Step 6 (Future) -->
-                        <div class="flex flex-col items-center text-center w-32 relative z-10">
+                        <div class="flex flex-col items-center text-center flex-1 relative z-10">
                             <div class="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 text-slate-300 flex items-center justify-center mb-4 ring-4 ring-white">
                                 <i data-lucide="zap" class="w-6 h-6"></i>
                             </div>
@@ -278,11 +278,11 @@
                 </div>
             </div>
 
-            <div class="grid lg:grid-cols-3 gap-12">
+            <div class="grid lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12">
                 <!-- Main Content (Left) -->
-                <div class="lg:col-span-2 space-y-12">
+                <div class="lg:col-span-8 space-y-8 md:space-y-12">
                     <!-- Issue Description -->
-                    <article class="bg-white rounded-[40px] p-8 md:p-12 shadow-sm border border-slate-100 prose prose-slate max-w-none">
+                    <article class="bg-white rounded-[32px] md:rounded-[40px] p-6 sm:p-8 md:p-12 shadow-sm border border-slate-100 prose prose-slate max-w-none">
                         <h2 class="text-3xl font-outfit font-extrabold text-slate-900 mb-8">Deskripsi Masalah</h2>
                         <p class="text-slate-600 leading-relaxed text-lg mb-8 whitespace-pre-line">
                             {{ $suara->description }}
@@ -494,7 +494,7 @@
                 </div>
 
                 <!-- Info Sidebar (Right) -->
-                <div class="space-y-8">
+                <div class="lg:col-span-4 space-y-8">
                     <!-- Progress Card -->
                     <div class="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100">
                         @php
@@ -660,7 +660,7 @@
                     </a>
                 </div>
                 
-                <div class="grid md:grid-cols-3 gap-8">
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     @forelse($relatedSuaras as $relSuara)
                         @php
                             $relImg = 'https://images.unsplash.com/photo-1540553016722-983e48a2cd10?auto=format&fit=crop&q=80&w=800';
@@ -698,7 +698,7 @@
                             </div>
                         </a>
                     @empty
-                        <div class="col-span-3 text-center p-12 bg-white rounded-[32px] border border-slate-100 text-slate-400">
+                        <div class="col-span-full text-center p-12 bg-white rounded-[32px] border border-slate-100 text-slate-400">
                             Belum ada suara terkait lainnya.
                         </div>
                     @endforelse
