@@ -254,35 +254,67 @@
                     <!-- Issue Description -->
                     <article class="bg-white rounded-[40px] p-8 md:p-12 shadow-sm border border-slate-100 prose prose-slate max-w-none">
                         <h2 class="text-3xl font-outfit font-extrabold text-slate-900 mb-8">Deskripsi Masalah</h2>
-                        <p class="text-slate-600 leading-relaxed text-lg mb-8 ">
+                        <p class="text-slate-600 leading-relaxed text-lg mb-8 whitespace-pre-line">
                             {{ $suara->description }}
                         </p>
+                        
                         <div class="grid md:grid-cols-2 gap-8 mb-10">
-                            <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100">
-                                <h4 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <!-- Poin Kritis -->
+                            <div class="p-8 bg-red-50/50 rounded-3xl border border-red-100/80">
+                                <h4 class="font-bold text-slate-900 mb-4 flex items-center gap-2 font-outfit text-base">
                                     <i data-lucide="shield-alert" class="w-5 h-5 text-red-500"></i>
-                                    Poin Kritis
+                                    Poin Kritis & Kondisi Lapangan
                                 </h4>
                                 <ul class="space-y-4 text-sm font-medium text-slate-600 list-none p-0">
-                                    <li class="flex gap-3"><span class="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 flex-shrink-0"></span> Tangga utama telah miring 15 derajat</li>
-                                    <li class="flex gap-3"><span class="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 flex-shrink-0"></span> Kabel listrik terkelupas di pegangan besi</li>
-                                    <li class="flex gap-3"><span class="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 flex-shrink-0"></span> Rawan aksi kriminal saat malam hari</li>
+                                    <li class="flex gap-3 items-start">
+                                        <span class="w-2 h-2 rounded-full bg-red-500 mt-1.5 flex-shrink-0"></span>
+                                        <span>Lokasi Masalah: <strong class="text-slate-900">{{ $suara->location ?? 'Tidak ditentukan' }}</strong></span>
+                                    </li>
+                                    <li class="flex gap-3 items-start">
+                                        <span class="w-2 h-2 rounded-full bg-red-500 mt-1.5 flex-shrink-0"></span>
+                                        <span>Kategori Isu: <strong class="text-slate-900">{{ $suara->category ?? 'Laporan Warga' }}</strong></span>
+                                    </li>
+                                    @if($suara->reference_link)
+                                        <li class="flex gap-3 items-start">
+                                            <span class="w-2 h-2 rounded-full bg-red-500 mt-1.5 flex-shrink-0"></span>
+                                            <span class="break-all">Dokumen / Bukti: <a href="{{ $suara->reference_link }}" target="_blank" class="text-accent font-bold hover:underline inline-flex items-center gap-1">Cek Referensi Validasi <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a></span>
+                                        </li>
+                                    @else
+                                        <li class="flex gap-3 items-start">
+                                            <span class="w-2 h-2 rounded-full bg-red-500 mt-1.5 flex-shrink-0"></span>
+                                            <span>Membutuhkan keterlibatan publik untuk mempercepat penanganan otoritas terkait.</span>
+                                        </li>
+                                    @endif
                                 </ul>
                             </div>
+
+                            <!-- Target Solusi -->
                             <div class="p-8 bg-accent/5 rounded-3xl border border-accent/10">
-                                <h4 class="font-bold text-accent mb-4 flex items-center gap-2">
+                                <h4 class="font-bold text-accent mb-4 flex items-center gap-2 font-outfit text-base">
                                     <i data-lucide="target" class="w-5 h-5"></i>
-                                    Target Solusi
+                                    Target Solusi & Harapan
                                 </h4>
-                                <ul class="space-y-4 text-sm font-medium text-slate-600 list-none p-0">
-                                    <li class="flex gap-3"><span class="w-1.5 h-1.5 rounded-full bg-accent mt-2 flex-shrink-0"></span> Renovasi total struktur utama</li>
-                                    <li class="flex gap-3"><span class="w-1.5 h-1.5 rounded-full bg-accent mt-2 flex-shrink-0"></span> Pemasangan 12 lampu solar LED</li>
-                                    <li class="flex gap-3"><span class="w-1.5 h-1.5 rounded-full bg-accent mt-2 flex-shrink-0"></span> CCTV terintegrasi ke pos polisi</li>
-                                </ul>
+                                <div class="space-y-4 text-sm font-medium text-slate-700 leading-relaxed">
+                                    @if(!empty($suara->expected_impact))
+                                        <div class="p-4 bg-white rounded-2xl border border-accent/10 shadow-sm text-slate-900 font-semibold">
+                                            "{{ $suara->expected_impact }}"
+                                        </div>
+                                    @else
+                                        <p class="text-slate-500 italic">Mendorong kolaborasi warga dan pemangku kebijakan untuk menyelesaikan isu ini secara tuntas.</p>
+                                    @endif
+
+                                    @if($suara->is_fundraising)
+                                        <div class="flex items-center gap-2 text-xs font-black text-emerald-600 bg-emerald-50 p-3 rounded-xl ring-1 ring-emerald-100">
+                                            <i data-lucide="banknote" class="w-4 h-4"></i>
+                                            <span>Target Pendanaan: Rp {{ number_format($suara->fund_target, 0, ',', '.') }}</span>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
+
                         <p class="text-slate-600 leading-relaxed">
-                            Kami mengajak seluruh elemen masyarakat, khususnya pengguna jalan di area ini, untuk bersatu mendesak pihak berkepentingan agar segera melakukan tindakan nyata sebelum terjadi hal-hal yang tidak diinginkan.
+                            Mari bersatu mengawal isu ini. Setiap dukungan, masukan, dan aksi Anda membawa dampak nyata bagi perubahan sosial di lingkungan sekitar.
                         </p>
                     </article>
 
@@ -292,108 +324,141 @@
                             $hasVoted = \App\Models\SuaraVote::where('user_id', auth()->id())->where('suara_id', $suara->id)->exists();
                         }
                     @endphp
-                    <!-- Interaction Options -->
+
+                    <!-- Interaction Options (Kontribusi Bersama) -->
                     <div class="space-y-6">
-                        <h3 class="text-2xl font-outfit font-extrabold text-slate-900 px-4">Kontribusi Bersama</h3>
-                        <div class="grid sm:grid-cols-4 gap-4 font-outfit">
+                        <div class="flex items-center justify-between px-2">
+                            <h3 class="text-2xl font-outfit font-extrabold text-slate-900">Kontribusi Bersama</h3>
+                            <span class="text-xs font-bold text-slate-400">Pilih bentuk kontribusi Anda</span>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-outfit">
                             <!-- Support by Voice -->
                             <button onclick="handleVote('vote')" id="proVoteBtn" 
-                                class="group p-8 bg-white rounded-[32px] border border-slate-100 shadow-sm transition-all text-center relative overflow-hidden {{ $hasVoted ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-xl hover:shadow-accent/10 hover:-translate-y-2' }}"
+                                class="group p-6 md:p-8 bg-white rounded-[32px] border border-slate-100 shadow-sm transition-all text-center relative overflow-hidden {{ $hasVoted ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-xl hover:shadow-accent/10 hover:-translate-y-2' }}"
                                 {{ $hasVoted ? 'disabled' : '' }}>
-                                <div class="w-20 h-20 {{ $hasVoted ? 'bg-slate-100 text-slate-400' : 'bg-accent/5 flex items-center justify-center mx-auto mb-6 group-hover:bg-accent group-hover:text-white transition-all' }} rounded-[24px] flex items-center justify-center mx-auto mb-6">
-                                     <i data-lucide="{{ $hasVoted ? 'check-circle' : 'megaphone' }}" class="w-10 h-10"></i>
+                                <div class="w-16 h-16 md:w-20 md:h-20 {{ $hasVoted ? 'bg-slate-100 text-slate-400' : 'bg-accent/5 flex items-center justify-center mx-auto mb-4 md:mb-6 group-hover:bg-accent group-hover:text-white transition-all' }} rounded-[24px] flex items-center justify-center mx-auto mb-4 md:mb-6">
+                                     <i data-lucide="{{ $hasVoted ? 'check-circle' : 'megaphone' }}" class="w-8 h-8 md:w-10 md:h-10"></i>
                                 </div>
-                                <h4 class="font-bold text-lg text-slate-900 mb-1">{{ $hasVoted ? 'Sudah Didukung' : 'Dukung' }}</h4>
-                                <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-4 leading-none">{{ $hasVoted ? 'Suara Anda Telah Tercatat' : 'Support by Voice' }}</p>
-                                <span id="proCountDisplay" class="text-accent font-black text-3xl  tracking-tighter block text-center w-full">{{ number_format($suara->supporter_count, 0, ',', '.') }}</span>
+                                <h4 class="font-bold text-base md:text-lg text-slate-900 mb-1">{{ $hasVoted ? 'Didukung' : 'Dukung' }}</h4>
+                                <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-3 leading-none">Support by Voice</p>
+                                <span id="proCountDisplay" class="text-accent font-black text-2xl md:text-3xl tracking-tighter block text-center w-full">{{ number_format($suara->supporter_count, 0, ',', '.') }}</span>
                             </button>
 
                             <!-- Support by Voice (KONTRA) -->
                             <button onclick="handleVote('oppose')" id="kontraVoteBtn" 
-                                class="group p-8 bg-white rounded-[32px] border border-slate-100 shadow-sm transition-all text-center relative overflow-hidden {{ $hasVoted ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-xl hover:shadow-rose-500/10 hover:-translate-y-2' }}"
+                                class="group p-6 md:p-8 bg-white rounded-[32px] border border-slate-100 shadow-sm transition-all text-center relative overflow-hidden {{ $hasVoted ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-xl hover:shadow-rose-500/10 hover:-translate-y-2' }}"
                                 {{ $hasVoted ? 'disabled' : '' }}>
-                                <div class="w-20 h-20 {{ $hasVoted ? 'bg-slate-100 text-slate-400' : 'bg-rose-50 flex items-center justify-center mx-auto mb-6 group-hover:bg-rose-500 group-hover:text-white transition-all' }} rounded-[24px] flex items-center justify-center mx-auto mb-6">
-                                     <i data-lucide="{{ $hasVoted ? 'check-circle' : 'thumbs-down' }}" class="w-10 h-10"></i>
+                                <div class="w-16 h-16 md:w-20 md:h-20 {{ $hasVoted ? 'bg-slate-100 text-slate-400' : 'bg-rose-50 flex items-center justify-center mx-auto mb-4 md:mb-6 group-hover:bg-rose-500 group-hover:text-white transition-all' }} rounded-[24px] flex items-center justify-center mx-auto mb-4 md:mb-6">
+                                     <i data-lucide="{{ $hasVoted ? 'check-circle' : 'thumbs-down' }}" class="w-8 h-8 md:w-10 md:h-10"></i>
                                 </div>
-                                <h4 class="font-bold text-lg text-slate-900 mb-1">{{ $hasVoted ? 'Pilihan Tercatat' : 'Sanggah' }}</h4>
-                                <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-4 leading-none">{{ $hasVoted ? 'Suara Anda Telah Tercatat' : 'Support by Kontra' }}</p>
-                                <span id="kontraCountDisplay" class="text-rose-500 font-black text-3xl  tracking-tighter block text-center w-full">{{ number_format($suara->opponent_count, 0, ',', '.') }}</span>
+                                <h4 class="font-bold text-base md:text-lg text-slate-900 mb-1">{{ $hasVoted ? 'Sanggahan' : 'Sanggah' }}</h4>
+                                <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-3 leading-none">Support by Kontra</p>
+                                <span id="kontraCountDisplay" class="text-rose-500 font-black text-2xl md:text-3xl tracking-tighter block text-center w-full">{{ number_format($suara->opponent_count, 0, ',', '.') }}</span>
                             </button>
 
                             <!-- Support by Fund -->
-                            <button class="group p-8 bg-white rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-2 transition-all text-center">
-                                <div class="w-20 h-20 bg-emerald-50 rounded-[24px] flex items-center justify-center mx-auto mb-6 group-hover:bg-emerald-500 group-hover:text-white transition-all">
-                                     <i data-lucide="wallet" class="w-10 h-10"></i>
+                            <div class="p-6 md:p-8 bg-white rounded-[32px] border border-slate-100 shadow-sm text-center">
+                                <div class="w-16 h-16 md:w-20 md:h-20 bg-emerald-50 text-emerald-600 rounded-[24px] flex items-center justify-center mx-auto mb-4 md:mb-6">
+                                     <i data-lucide="wallet" class="w-8 h-8 md:w-10 md:h-10"></i>
                                 </div>
-                                <h4 class="font-bold text-lg text-slate-900 mb-1">Donasi</h4>
-                                <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-4 leading-none">Support by Fund</p>
-                                <span class="text-emerald-500 font-black text-3xl group-hover:scale-110 transition-transform  tracking-tighter block">Rp 45.2M</span>
-                            </button>
+                                <h4 class="font-bold text-base md:text-lg text-slate-900 mb-1">Donasi</h4>
+                                <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-3 leading-none">Support by Fund</p>
+                                <span class="text-emerald-500 font-black text-xl md:text-2xl tracking-tighter block">
+                                    Rp {{ number_format($totalDonation, 0, ',', '.') }}
+                                </span>
+                            </div>
 
                             <!-- Support by Action -->
-                            <button class="group p-8 bg-white rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-2 transition-all text-center">
-                                <div class="w-20 h-20 bg-amber-50 rounded-[24px] flex items-center justify-center mx-auto mb-6 group-hover:bg-amber-500 group-hover:text-white transition-all">
-                                     <i data-lucide="users" class="w-10 h-10"></i>
+                            <div class="p-6 md:p-8 bg-white rounded-[32px] border border-slate-100 shadow-sm text-center">
+                                <div class="w-16 h-16 md:w-20 md:h-20 bg-amber-50 text-amber-500 rounded-[24px] flex items-center justify-center mx-auto mb-4 md:mb-6">
+                                     <i data-lucide="users" class="w-8 h-8 md:w-10 md:h-10"></i>
                                 </div>
-                                <h4 class="font-bold text-lg text-slate-900 mb-1">Terjun</h4>
-                                <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-4 leading-none">Support by Action</p>
-                                <span class="text-warning font-black text-3xl  tracking-tighter block">142 Aktif</span>
-                            </button>
+                                <h4 class="font-bold text-base md:text-lg text-slate-900 mb-1">Aksi Relawan</h4>
+                                <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-3 leading-none">Support by Action</p>
+                                <span class="text-warning font-black text-xl md:text-2xl tracking-tighter block">
+                                    {{ $activeMissionsCount > 0 ? $activeMissionsCount . ' Misi Aktif' : ($totalAksi > 0 ? $totalAksi . ' Personel' : '1 Siap Aksi') }}
+                                </span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Comment Section -->
-                    <div class="bg-white rounded-[40px] p-8 md:p-12 shadow-sm border border-slate-100">
-                        <h3 class="text-2xl font-outfit font-extrabold text-slate-900 mb-10 flex items-center justify-between">
-                            Diskusi Publik
-                            <span class="text-sm font-bold text-slate-400">124 Komentar</span>
+                    <!-- Diskusi Publik -->
+                    <div class="bg-white rounded-[40px] p-8 md:p-12 shadow-sm border border-slate-100" id="diskusi-publik-section">
+                        <h3 class="text-2xl font-outfit font-extrabold text-slate-900 mb-8 flex items-center justify-between">
+                            <span>Diskusi Publik</span>
+                            <span id="commentCountBadge" class="text-xs font-black uppercase tracking-wider px-3 py-1 bg-accent/10 text-accent rounded-full">
+                                {{ $comments->count() }} Komentar
+                            </span>
                         </h3>
                         
-                        <div class="flex gap-6 mb-12">
-                            <img src="https://ui-avatars.com/api/?name=User&background=2563EB&color=fff" class="w-14 h-14 rounded-2xl flex-shrink-0" alt="Avatar">
-                            <div class="flex-grow space-y-4">
-                                <textarea placeholder="Berikan pendapat atau masukan Anda..." class="w-full p-6 bg-slate-50 border border-slate-100 rounded-3xl outline-none focus:ring-4 focus:ring-accent/10 focus:bg-white focus:border-accent transition-all min-h-[120px] font-medium"></textarea>
-                                <div class="flex justify-end">
-                                    <button class="bg-primary text-white font-bold px-10 py-4 rounded-2xl hover:bg-slate-800 hover:shadow-lg transition-all active:scale-95 shadow-xl shadow-slate-900/10">Kirim Masukan</button>
+                        <!-- Comment Form -->
+                        <form id="commentForm" onsubmit="handleCommentSubmit(event)" class="flex gap-4 md:gap-6 mb-12">
+                            @csrf
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-accent/10 text-accent flex items-center justify-center flex-shrink-0 font-bold overflow-hidden">
+                                @if(auth()->check() && auth()->user()->avatar_url)
+                                    <img src="{{ auth()->user()->avatar_url }}" class="w-full h-full object-cover">
+                                @else
+                                    <i data-lucide="user" class="w-6 h-6"></i>
+                                @endif
+                            </div>
+                            <div class="flex-grow space-y-3">
+                                <textarea name="comment" id="commentText" placeholder="{{ auth()->check() ? 'Tuliskan tanggapan, bukti tambahan, atau saran solusi Anda...' : 'Silakan masuk ke akun Anda untuk ikut berdiskusi...' }}" {{ !auth()->check() ? 'onclick=toggleAuthModal("login") readonly' : '' }} class="w-full p-5 bg-slate-50 border border-slate-100 rounded-3xl outline-none focus:ring-4 focus:ring-accent/10 focus:bg-white focus:border-accent transition-all min-h-[100px] font-medium text-sm resize-none"></textarea>
+                                <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                                    <span class="text-[10px] text-slate-400 font-bold tracking-tight">
+                                        <i data-lucide="shield-check" class="w-3.5 h-3.5 inline text-emerald-500"></i> Partisipasi aktif memberikan +5 XP Reputasi
+                                    </span>
+                                    @auth
+                                        <button type="submit" id="btnSubmitComment" class="w-full sm:w-auto bg-primary hover:bg-slate-800 text-white font-black text-xs uppercase tracking-widest px-8 py-3.5 rounded-2xl hover:shadow-lg transition-all active:scale-95 shadow-xl shadow-slate-900/10 flex items-center justify-center gap-2">
+                                            <span>Kirim Masukan</span>
+                                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                                        </button>
+                                    @else
+                                        <button type="button" onclick="toggleAuthModal('login')" class="w-full sm:w-auto bg-accent text-white font-black text-xs uppercase tracking-widest px-8 py-3.5 rounded-2xl hover:bg-accent/90 transition-all flex items-center justify-center gap-2">
+                                            <span>Masuk untuk Berpendapat</span>
+                                        </button>
+                                    @endauth
                                 </div>
                             </div>
-                        </div>
+                        </form>
 
-                        <div class="space-y-10">
-                            <!-- Single Comment -->
-                            <div class="flex gap-6 group">
-                                <img src="https://i.pravatar.cc/100?u=a" class="w-12 h-12 rounded-2xl flex-shrink-0" alt="User">
-                                <div class="flex-grow border-b border-slate-50 pb-8 transition-transform duration-300 group-hover:translate-x-2">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <h5 class="font-bold text-slate-900">Aris Prastyo</h5>
-                                        <span class="text-xs font-bold text-slate-400">2 Jam Lalu</span>
+                        <!-- Comments List -->
+                        <div class="space-y-8" id="commentsListContainer">
+                            @forelse($comments as $comment)
+                                <div class="flex gap-4 md:gap-6 group" id="comment-item-{{ $comment->id }}">
+                                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-accent to-success text-white flex items-center justify-center flex-shrink-0 font-bold overflow-hidden shadow-sm">
+                                        @if($comment->user && $comment->user->avatar_url)
+                                            <img src="{{ $comment->user->avatar_url }}" class="w-full h-full object-cover">
+                                        @else
+                                            <span class="text-xs font-black uppercase">{{ substr($comment->user->name ?? 'Warga', 0, 2) }}</span>
+                                        @endif
                                     </div>
-                                    <p class="text-slate-600 font-medium leading-relaxed">Sangat setuju! JPO ini tiap pagi ramai sekali sama anak sekolah. Takut banget kalo tiba-tiba ada pijakan yang jebol.</p>
-                                    <div class="flex items-center gap-6 mt-4">
-                                        <button class="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-accent transition-colors uppercase tracking-widest">
-                                            <i data-lucide="thumbs-up" class="w-4 h-4 text-emerald-500"></i> Setuju (24)
-                                        </button>
-                                        <button class="text-xs font-black text-slate-400 hover:text-accent transition-colors uppercase tracking-widest">Balas</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Single Comment -->
-                            <div class="flex gap-6 group">
-                                <img src="https://i.pravatar.cc/100?u=b" class="w-12 h-12 rounded-2xl flex-shrink-0" alt="User">
-                                <div class="flex-grow border-b border-slate-50 pb-8 transition-transform duration-300 group-hover:translate-x-2">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <h5 class="font-bold text-slate-900">Siti Rahmawati</h5>
-                                        <span class="text-xs font-bold text-slate-400">5 Jam Lalu</span>
-                                    </div>
-                                    <p class="text-slate-600 font-medium leading-relaxed">Bukan cuma infrastruktur, pencahayaan juga krusial bgt. Kalo malem gelap bgt, sering ada penodongan di situ.</p>
-                                    <div class="flex items-center gap-6 mt-4">
-                                        <button class="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-accent transition-colors uppercase tracking-widest">
-                                            <i data-lucide="thumbs-up" class="w-4 h-4"></i> Setuju (8)
-                                        </button>
-                                        <button class="text-xs font-black text-slate-400 hover:text-accent transition-colors uppercase tracking-widest">Balas</button>
+                                    <div class="flex-grow border-b border-slate-50 pb-8 transition-transform duration-300">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <div class="flex items-center gap-2">
+                                                <h5 class="font-bold text-slate-900 text-sm md:text-base">{{ $comment->user->name ?? 'Warga Komunitas' }}</h5>
+                                                <span class="text-[9px] font-black uppercase px-2 py-0.5 bg-slate-100 text-slate-500 rounded-md">
+                                                    {{ $comment->user->level ?? 'Partisipan' }}
+                                                </span>
+                                            </div>
+                                            <span class="text-[11px] font-bold text-slate-400">{{ $comment->created_at->diffForHumans() }}</span>
+                                        </div>
+                                        <p class="text-slate-600 font-medium leading-relaxed text-sm whitespace-pre-line">{{ $comment->comment }}</p>
+                                        <div class="flex items-center gap-6 mt-4">
+                                            <button onclick="handleLikeComment({{ $comment->id }}, this)" class="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-accent transition-colors uppercase tracking-widest">
+                                                <i data-lucide="thumbs-up" class="w-4 h-4 text-emerald-500"></i> Setuju (<span class="like-counter">{{ $comment->likes_count ?? 0 }}</span>)
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @empty
+                                <div id="emptyCommentsState" class="p-10 text-center space-y-3 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                                    <div class="w-12 h-12 bg-white rounded-2xl shadow-sm text-slate-300 flex items-center justify-center mx-auto">
+                                        <i data-lucide="message-square" class="w-6 h-6"></i>
+                                    </div>
+                                    <h5 class="font-bold text-slate-700 text-sm">Belum Ada Diskusi</h5>
+                                    <p class="text-xs text-slate-400 max-w-xs mx-auto font-medium">Jadilah yang pertama menyampaikan pendapat atau masukan untuk isu ini!</p>
+                                </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -407,11 +472,11 @@
                             $proPct = $total > 0 ? round(($suara->supporter_count / $total) * 100) : 0;
                         @endphp
                         <div class="flex items-center justify-between mb-6">
-                            <span class="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Support Percentage</span>
+                            <span class="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Indeks Dukungan</span>
                             <span class="text-accent font-black">{{ $proPct }}%</span>
                         </div>
-                        <div class="w-full h-3 bg-slate-50 rounded-full overflow-hidden mb-8">
-                            <div class="h-full bg-accent rounded-full w-[{{ $proPct }}%] relative overflow-hidden">
+                        <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden mb-8">
+                            <div class="h-full bg-accent rounded-full relative overflow-hidden" style="width: {{ $proPct }}%">
                                 <div class="absolute inset-0 bg-white/30 animate-pulse"></div>
                             </div>
                         </div>
@@ -427,45 +492,70 @@
                         </div>
                     </div>
 
-                    <!-- Stakeholders Info -->
-                    <div class="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100 space-y-8">
+                    <!-- Tim Pengawal -->
+                    <div class="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100 space-y-6">
                         <h4 class="text-lg font-outfit font-black text-slate-900 border-b border-slate-50 pb-4">Tim Pengawal</h4>
                         
-                        <!-- Creator -->
-                        <div class="flex items-center gap-4 group cursor-pointer">
-                            <div class="w-14 h-14 bg-accent text-white rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                                <i data-lucide="user" class="w-6 h-6"></i>
+                        <!-- Inisiator / Creator -->
+                        @php $creator = $suara->user ?? null; @endphp
+                        <div class="flex items-center gap-4 group">
+                            <div class="w-14 h-14 bg-gradient-to-tr from-accent to-blue-700 text-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-accent/20 overflow-hidden">
+                                @if($creator && $creator->avatar_url)
+                                    <img src="{{ $creator->avatar_url }}" class="w-full h-full object-cover">
+                                @else
+                                    <i data-lucide="user" class="w-6 h-6"></i>
+                                @endif
                             </div>
-                            <div>
-                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Creator</span>
-                                <h5 class="font-bold text-slate-900">Budi Santoso</h5>
-                                <p class="text-xs text-slate-500">Aliansi Warga Peduli Cileungsi</p>
+                            <div class="min-w-0 flex-1">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Inisiator Suara</span>
+                                <h5 class="font-bold text-slate-900 truncate">{{ $creator->name ?? 'Warga Komunitas' }}</h5>
+                                <p class="text-xs text-slate-500">{{ $creator->level ?? 'Partisipan' }} • {{ $suara->location ?? 'Indonesia' }}</p>
                             </div>
                         </div>
 
-                        <!-- Moderator -->
-                        <div class="flex items-center gap-4 group cursor-pointer">
-                            <div class="w-14 h-14 bg-emerald-500 text-white rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <!-- Moderator / Verifikator -->
+                        <div class="flex items-center gap-4 group">
+                            <div class="w-14 h-14 bg-emerald-500 text-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-500/20">
                                 <i data-lucide="shield-check" class="w-6 h-6"></i>
                             </div>
                             <div>
-                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Moderator</span>
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Moderator</span>
                                 <h5 class="font-bold text-slate-900">Tim Suara</h5>
-                                <p class="text-xs text-slate-500">Verifikator Independen</p>
+                                <p class="text-xs text-slate-500">Verifikator Publik & AI</p>
                             </div>
                         </div>
 
-                        <!-- Coordinator -->
-                        <div class="flex items-center gap-4 group cursor-pointer">
-                            <div class="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                                <i data-lucide="crown" class="w-6 h-6"></i>
+                        <!-- Coordinator / Field Leaders or Top Supporters -->
+                        @if($topSupporters->isNotEmpty())
+                            @php $topSupporter = $topSupporters->first()->user; @endphp
+                            @if($topSupporter)
+                                <div class="flex items-center gap-4 group">
+                                    <div class="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/20 overflow-hidden">
+                                        @if($topSupporter->avatar_url)
+                                            <img src="{{ $topSupporter->avatar_url }}" class="w-full h-full object-cover">
+                                        @else
+                                            <i data-lucide="crown" class="w-6 h-6 text-amber-400"></i>
+                                        @endif
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Pendukung Teratas</span>
+                                        <h5 class="font-bold text-slate-900 truncate">{{ $topSupporter->name }}</h5>
+                                        <p class="text-xs text-slate-500">{{ $topSupporter->level ?? 'Warga Aktif' }}</p>
+                                    </div>
+                                </div>
+                            @endif
+                        @else
+                            <div class="flex items-center gap-4 group">
+                                <div class="w-14 h-14 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="users" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Kolaborasi</span>
+                                    <h5 class="font-bold text-slate-900">Warga Terbuka</h5>
+                                    <p class="text-xs text-slate-500">Mari bergabung mengawal</p>
+                                </div>
                             </div>
-                            <div>
-                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Coordinator</span>
-                                <h5 class="font-bold text-slate-900">H. Ridwan Hakim</h5>
-                                <p class="text-xs text-slate-500">Ketua RW 08 Cileungsi</p>
-                            </div>
-                        </div>
+                        @endif
                     </div>
 
                     <!-- CTA Bar Mobile -->
@@ -475,58 +565,61 @@
                 </div>
             </div>
 
-            <!-- Related Suggestions -->
+            <!-- Suara Terkait (Related Issues from Database) -->
             <div class="mt-24">
                 <div class="flex items-center justify-between mb-10">
-                    <h3 class="text-3xl font-outfit font-extrabold text-slate-900">Suara Terkait</h3>
-                    <a href="/suara" class="text-accent font-bold hover:underline">Lihat Semua</a>
+                    <div>
+                        <h3 class="text-3xl font-outfit font-extrabold text-slate-900">Suara Terkait</h3>
+                        <p class="text-sm text-slate-400 font-medium mt-1">Aspirasi lain dalam kategori yang sama</p>
+                    </div>
+                    <a href="/suara" class="text-accent font-bold hover:underline text-sm uppercase tracking-wider flex items-center gap-1">
+                        <span>Lihat Semua</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
                 </div>
+                
                 <div class="grid md:grid-cols-3 gap-8">
-                    <!-- Related 1 -->
-                    <div class="bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm group hover:shadow-xl transition-all cursor-pointer">
-                        <div class="h-44 relative">
-                            <img src="https://images.unsplash.com/photo-1544333346-64e4ba984fa3?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
-                            <span class="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-black p-2 rounded-lg border border-white/20">Lingkungan</span>
-                        </div>
-                        <div class="p-8">
-                            <h4 class="font-bold text-slate-900 mb-4 line-clamp-1 group-hover:text-accent transition-colors">Program Bersih-Bersih Kali Indonesia</h4>
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-slate-400">Jakarta Utara</span>
-                                <span class="text-emerald-500 font-bold text-xs uppercase tracking-widest">Active</span>
+                    @forelse($relatedSuaras as $relSuara)
+                        @php
+                            $relImg = 'https://images.unsplash.com/photo-1540553016722-983e48a2cd10?auto=format&fit=crop&q=80&w=800';
+                            if ($relSuara->image) {
+                                if (str_starts_with($relSuara->image, 'http')) {
+                                    $relImg = $relSuara->image;
+                                } else if (str_starts_with($relSuara->image, 'images/')) {
+                                    $relImg = asset($relSuara->image);
+                                } else {
+                                    $relImg = asset('storage/' . $relSuara->image);
+                                }
+                            }
+                        @endphp
+                        <a href="/suara-detail/{{ $relSuara->id }}" class="bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm group hover:shadow-xl hover:border-accent/30 transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="h-44 relative overflow-hidden">
+                                    <img src="{{ $relImg }}" alt="{{ $relSuara->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
+                                    <span class="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-black px-3 py-1 rounded-lg border border-white/20 uppercase tracking-widest">{{ $relSuara->category ?? 'Lainnya' }}</span>
+                                </div>
+                                <div class="p-6">
+                                    <h4 class="font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-accent transition-colors font-outfit text-base">{{ $relSuara->title }}</h4>
+                                    <p class="text-xs text-slate-400 font-medium line-clamp-2">{{ $relSuara->description }}</p>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <!-- Related 2 -->
-                    <div class="bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm group hover:shadow-xl transition-all cursor-pointer">
-                        <div class="h-44 relative">
-                            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
-                            <span class="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-black p-2 rounded-lg border border-white/20">Pendidikan</span>
-                        </div>
-                        <div class="p-8">
-                            <h4 class="font-bold text-slate-900 mb-4 line-clamp-1 group-hover:text-accent transition-colors">Donasi Gadget Layak Pakai Pelosok</h4>
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-slate-400">Malang</span>
-                                <span class="text-emerald-500 font-bold text-xs uppercase tracking-widest">Active</span>
+                            <div class="p-6 pt-0 flex items-center justify-between text-xs font-bold border-t border-slate-50 mt-4">
+                                <span class="text-slate-400 flex items-center gap-1">
+                                    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-accent"></i>
+                                    {{ $relSuara->location ?? 'Indonesia' }}
+                                </span>
+                                <span class="text-accent flex items-center gap-1">
+                                    <i data-lucide="megaphone" class="w-3.5 h-3.5"></i>
+                                    {{ number_format($relSuara->supporter_count, 0, ',', '.') }}
+                                </span>
                             </div>
+                        </a>
+                    @empty
+                        <div class="col-span-3 text-center p-12 bg-white rounded-[32px] border border-slate-100 text-slate-400">
+                            Belum ada suara terkait lainnya.
                         </div>
-                    </div>
-                    <!-- Related 3 -->
-                    <div class="bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm group hover:shadow-xl transition-all cursor-pointer">
-                        <div class="h-44 relative">
-                            <img src="https://images.unsplash.com/photo-1585822719534-90ae8669c6fc?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
-                            <span class="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-black p-2 rounded-lg border border-white/20">Lainnya</span>
-                        </div>
-                        <div class="p-8">
-                            <h4 class="font-bold text-slate-900 mb-4 line-clamp-1 group-hover:text-accent transition-colors">Revitalisasi Taman Kota Terbengkalai</h4>
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-slate-400">Bandung</span>
-                                <span class="text-emerald-500 font-bold text-xs uppercase tracking-widest">Active</span>
-                            </div>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
             </div>
         </section>
@@ -677,6 +770,134 @@
                 const btn = type === 'vote' ? document.getElementById('proVoteBtn') : document.getElementById('kontraVoteBtn');
                 btn.classList.remove('opacity-50', 'pointer-events-none');
             }
+        }
+
+        async function handleCommentSubmit(e) {
+            e.preventDefault();
+            @guest
+                toggleAuthModal('login');
+                return;
+            @endguest
+
+            const textarea = document.getElementById('commentText');
+            const submitBtn = document.getElementById('btnSubmitComment');
+            const commentVal = textarea.value.trim();
+            if (!commentVal) return;
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50');
+            }
+
+            try {
+                const response = await fetch(`/suara/{{ $suara->id }}/comment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ comment: commentVal })
+                });
+
+                if (response.status === 401) {
+                    toggleAuthModal('login');
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.success && data.comment) {
+                    textarea.value = '';
+                    const container = document.getElementById('commentsListContainer');
+                    const emptyState = document.getElementById('emptyCommentsState');
+                    if (emptyState) emptyState.remove();
+
+                    // Create comment element
+                    const newEl = document.createElement('div');
+                    newEl.className = 'flex gap-4 md:gap-6 group animate-fadeIn';
+                    newEl.id = `comment-item-${data.comment.id}`;
+
+                    const avatarHtml = data.comment.user_avatar 
+                        ? `<img src="${data.comment.user_avatar}" class="w-full h-full object-cover">`
+                        : `<span class="text-xs font-black uppercase">${data.comment.user_initials}</span>`;
+
+                    newEl.innerHTML = `
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-accent to-success text-white flex items-center justify-center flex-shrink-0 font-bold overflow-hidden shadow-sm">
+                            ${avatarHtml}
+                        </div>
+                        <div class="flex-grow border-b border-slate-50 pb-8 transition-transform duration-300">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-2">
+                                    <h5 class="font-bold text-slate-900 text-sm md:text-base">${escapeHtml(data.comment.user_name)}</h5>
+                                    <span class="text-[9px] font-black uppercase px-2 py-0.5 bg-slate-100 text-slate-500 rounded-md">
+                                        ${escapeHtml(data.comment.user_level)}
+                                    </span>
+                                </div>
+                                <span class="text-[11px] font-bold text-slate-400">Baru saja</span>
+                            </div>
+                            <p class="text-slate-600 font-medium leading-relaxed text-sm whitespace-pre-line">${escapeHtml(data.comment.comment)}</p>
+                            <div class="flex items-center gap-6 mt-4">
+                                <button onclick="handleLikeComment(${data.comment.id}, this)" class="flex items-center gap-2 text-xs font-black text-slate-400 hover:text-accent transition-colors uppercase tracking-widest">
+                                    <i data-lucide="thumbs-up" class="w-4 h-4 text-emerald-500"></i> Setuju (<span class="like-counter">0</span>)
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    container.prepend(newEl);
+                    lucide.createIcons();
+
+                    // Update count
+                    const badge = document.getElementById('commentCountBadge');
+                    if (badge) {
+                        const currentCount = parseInt(badge.innerText) || 0;
+                        badge.innerText = `${currentCount + 1} Komentar`;
+                    }
+                } else {
+                    alert(data.message || 'Gagal mengirim komentar');
+                }
+            } catch (err) {
+                console.error('Error submitting comment:', err);
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-50');
+                }
+            }
+        }
+
+        async function handleLikeComment(commentId, btn) {
+            try {
+                const response = await fetch(`/suara-comment/${commentId}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const counter = btn.querySelector('.like-counter');
+                    if (counter) counter.innerText = data.likes_count;
+                    btn.classList.add('text-accent');
+                }
+            } catch (err) {
+                console.error('Error liking comment:', err);
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.toString().replace(/[&<>"']/g, function(m) { return map[m]; });
         }
     </script>
     

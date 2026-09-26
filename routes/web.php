@@ -28,9 +28,103 @@ Route::get('/tentang', function () {
 
 
 Route::get('/suara-detail/{id}', function ($id) {
-    $suara = \App\Models\Suara::findOrFail($id);
-    return view('suara_detail', compact('suara'));
+    $suara = \App\Models\Suara::with(['user.badges', 'missions', 'financeTransactions', 'votes.user', 'comments.user'])->findOrFail($id);
+
+    // 1. Comments
+    $comments = \App\Models\SuaraComment::where('suara_id', $suara->id)->with('user.badges')->latest()->get();
+
+    // 2. Related Suaras (same category or location, else latest published)
+    $relatedSuaras = \App\Models\Suara::where('id', '!=', $suara->id)
+        ->where('status', 'published')
+        ->where(function($q) use ($suara) {
+            if ($suara->category) {
+                $q->where('category', $suara->category);
+            }
+            if ($suara->location) {
+                $q->orWhere('location', $suara->location);
+            }
+        })
+        ->latest()
+        ->take(3)
+        ->get();
+
+    if ($relatedSuaras->count() < 3) {
+        $extra = \App\Models\Suara::where('id', '!=', $suara->id)
+            ->where('status', 'published')
+            ->whereNotIn('id', $relatedSuaras->pluck('id'))
+            ->latest()
+            ->take(3 - $relatedSuaras->count())
+            ->get();
+        $relatedSuaras = $relatedSuaras->concat($extra);
+    }
+
+    // 3. Stats for Kontribusi Bersama
+    $totalDonation = (float) $suara->financeTransactions()->where('type', 'inbound')->sum('amount');
+    $activeMissionsCount = $suara->missions()->where('status', 'active')->count();
+    $totalMissionPersonnel = (int) $suara->missions()->sum('target_personnel');
+    $totalAksi = max($totalMissionPersonnel, $activeMissionsCount > 0 ? $activeMissionsCount * 10 : 0);
+
+    // 4. Tim Pengawal
+    $topSupporters = $suara->votes()->with('user')->where('type', 'pro')->take(3)->get();
+    $fieldLeaders = $suara->missions()->with('user')->latest()->take(2)->get();
+
+    return view('suara_detail', compact('suara', 'comments', 'relatedSuaras', 'totalDonation', 'activeMissionsCount', 'totalAksi', 'topSupporters', 'fieldLeaders'));
 })->name('suara.detail');
+
+Route::post('/suara/{id}/comment', function (Request $request, $id) {
+    $request->validate([
+        'comment' => 'required|string|min:3|max:1000',
+    ]);
+
+    $user = auth()->user();
+    $suara = \App\Models\Suara::findOrFail($id);
+
+    $comment = \App\Models\SuaraComment::create([
+        'suara_id' => $suara->id,
+        'user_id' => $user->id,
+        'comment' => $request->comment,
+        'likes_count' => 0,
+    ]);
+
+    // Reward XP to commenter
+    \App\Services\ReputationService::rewardAction(
+        $user,
+        'comment_suara',
+        'COMMENT_ISSUE',
+        5,
+        'Memberikan masukan pada diskusi publik isu: ' . $suara->title
+    );
+
+    if ($request->ajax()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Komentar berhasil dipublikasikan!',
+            'comment' => [
+                'id' => $comment->id,
+                'name' => $user->name,
+                'avatar_url' => $user->avatar_url ?? null,
+                'comment' => $comment->comment,
+                'created_at' => 'Baru saja',
+                'likes_count' => 0
+            ]
+        ]);
+    }
+
+    return redirect()->back()->with('success', 'Masukan Anda berhasil dikirim ke diskusi publik!');
+})->middleware('auth')->name('suara.comment');
+
+Route::post('/suara-comment/{id}/like', function (Request $request, $id) {
+    $comment = \App\Models\SuaraComment::findOrFail($id);
+    $comment->increment('likes_count');
+    
+    if ($request->ajax()) {
+        return response()->json([
+            'success' => true,
+            'likes_count' => $comment->likes_count
+        ]);
+    }
+    return redirect()->back();
+})->middleware('auth')->name('suara.comment.like');
 
 Route::get('/dashboard', function () {
     $user = \App\Models\User::with(['badges', 'reputationLogs'])->find(\Illuminate\Support\Facades\Auth::id());

@@ -44,4 +44,9 @@ class Suara extends Model
     {
         return $this->hasMany(SuaraVote::class);
     }
+
+    public function comments()
+    {
+        return $this->hasMany(SuaraComment::class);
+    }
 }
