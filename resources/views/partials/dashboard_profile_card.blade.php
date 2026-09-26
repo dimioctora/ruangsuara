@@ -23,10 +23,16 @@
         <div class="relative group">
             <div class="w-32 h-32 md:w-44 md:h-44 rounded-[40px] bg-gradient-to-tr from-accent to-success p-1 shadow-2xl relative overflow-hidden">
                 <div class="w-full h-full bg-white rounded-[38px] border-4 border-white flex items-center justify-center overflow-hidden">
-                    <svg class="w-full h-full scale-110" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="50" cy="35" r="20" fill="url(#avatarGrad1)" />
-                        <path d="M20,85 Q50,60 80,85 L80,100 L20,100 Z" fill="url(#avatarGrad2)" />
-                    </svg>
+                    @if($user->avatar_url)
+                        <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="w-full h-full object-cover global-user-avatar-card">
+                    @else
+                        <div class="global-user-avatar-card-svg w-full h-full flex items-center justify-center">
+                            <svg class="w-full h-full scale-110" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="35" r="20" fill="url(#avatarGrad1)" />
+                                <path d="M20,85 Q50,60 80,85 L80,100 L20,100 Z" fill="url(#avatarGrad2)" />
+                            </svg>
+                        </div>
+                    @endif
                 </div>
                 @if($levelIndex == 10)
                 <div class="absolute inset-0 bg-white/10 shimmer-gold opacity-30 mix-blend-overlay"></div>

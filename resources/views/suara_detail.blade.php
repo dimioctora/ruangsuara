@@ -106,15 +106,19 @@
                                 <!-- Avatar Background Gradient Ring (Matching Image 2) -->
                                 <div class="absolute inset-0 border-2 border-transparent bg-gradient-to-br from-accent to-success [mask-image:linear-gradient(white,white)] [mask-clip:content-box] -m-[2px] rounded-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
                                 
-                                <svg class="w-full h-full p-2" viewBox="0 0 100 100">
-                                    <defs>
-                                        <linearGradient id="navAvatarGradGlobal" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#10B981;stop-opacity:1" />
-                                        </linearGradient>
-                                    </defs>
-                                    <path fill="url(#navAvatarGradGlobal)" d="M50 50c11.046 0 20-8.954 20-20s-8.954-20-20-20-20 8.954-20 20 8.954 20 20 20zm0 10c-16.569 0-30 13.431-30 30h60c0-16.569-13.431-30-30-30z" opacity="0.8" />
-                                </svg>
+                                @if(auth()->user()->avatar_url)
+                                    <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                                @else
+                                    <svg class="w-full h-full p-2" viewBox="0 0 100 100">
+                                        <defs>
+                                            <linearGradient id="navAvatarGradGlobal" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
+                                                <stop offset="100%" style="stop-color:#10B981;stop-opacity:1" />
+                                            </linearGradient>
+                                        </defs>
+                                        <path fill="url(#navAvatarGradGlobal)" d="M50 50c11.046 0 20-8.954 20-20s-8.954-20-20-20-20 8.954-20 20 8.954 20 20 20zm0 10c-16.569 0-30 13.431-30 30h60c0-16.569-13.431-30-30-30z" opacity="0.8" />
+                                    </svg>
+                                @endif
                             </div>
                         </a>
                     </div>

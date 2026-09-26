@@ -37,6 +37,17 @@ class User extends Authenticatable
         'is_verified',
     ];
 
+    public function getAvatarUrlAttribute()
+    {
+        if (!$this->avatar) {
+            return null;
+        }
+        if (str_starts_with($this->avatar, 'http://') || str_starts_with($this->avatar, 'https://')) {
+            return $this->avatar;
+        }
+        return asset('storage/' . $this->avatar);
+    }
+
     public function badges()
     {
         return $this->belongsToMany(Badge::class, 'user_badges')->withPivot('earned_at');

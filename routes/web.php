@@ -87,6 +87,12 @@ Route::get('/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
 Route::get('/auth/google', [\App\Http\Controllers\AuthController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [\App\Http\Controllers\AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
+// Profile & Avatar Routes
+Route::post('/profile/update', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update')->middleware('auth');
+Route::post('/profile/avatar', [\App\Http\Controllers\ProfileController::class, 'uploadAvatar'])->name('profile.avatar')->middleware('auth');
+Route::delete('/profile/avatar', [\App\Http\Controllers\ProfileController::class, 'removeAvatar'])->name('profile.avatar.remove')->middleware('auth');
+Route::post('/profile/avatar/remove', [\App\Http\Controllers\ProfileController::class, 'removeAvatar'])->name('profile.avatar.remove.post')->middleware('auth');
+
 Route::post('/create-suara', function (Request $request) {
     $validated = $request->validate([
         'title' => 'required|string|max:100',

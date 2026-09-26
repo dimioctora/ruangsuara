@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Saya — Suara</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
@@ -173,10 +176,16 @@
                         </div>
                         <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-accent to-success p-0.5 shadow-lg shadow-accent/20 group-hover:scale-110 transition-transform overflow-hidden relative">
                              <div class="relative w-full h-full rounded-[14px] bg-white flex items-center justify-center overflow-hidden">
-                                <svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="50" cy="35" r="20" fill="url(#navAvatarGrad1)" />
-                                    <path d="M20,85 Q50,60 80,85 L80,100 L20,100 Z" fill="url(#navAvatarGrad2)" />
-                                </svg>
+                                @if($user->avatar_url)
+                                    <img id="navbarAvatarImg" src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="w-full h-full object-cover global-user-avatar">
+                                @else
+                                    <div id="navbarAvatarSvg" class="w-full h-full flex items-center justify-center">
+                                        <svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="50" cy="35" r="20" fill="url(#navAvatarGrad1)" />
+                                            <path d="M20,85 Q50,60 80,85 L80,100 L20,100 Z" fill="url(#navAvatarGrad2)" />
+                                        </svg>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -933,38 +942,77 @@
                         <!-- Left: Profile Info -->
                         <div class="lg:col-span-2 space-y-8">
                             <div class="bg-white rounded-[40px] p-10 card-prominent space-y-8">
-                                <div class="flex items-center gap-8">
-                                    <div class="w-24 h-24 rounded-[32px] bg-slate-50 border-2 border-slate-100 flex items-center justify-center overflow-hidden relative group">
-                                        <svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="50" cy="35" r="20" fill="url(#avatarGrad1)" />
-                                            <path d="M20,85 Q50,60 80,85 L80,100 L20,100 Z" fill="url(#navAvatarGrad2)" />
-                                        </svg>
-                                        <button class="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
-                                            <i data-lucide="camera" class="w-6 h-6"></i>
-                                        </button>
+                                <!-- Avatar Upload & Crop Section -->
+                                <div class="flex flex-col sm:flex-row items-center sm:items-start gap-8 pb-8 border-b border-slate-100">
+                                    <div class="relative group cursor-pointer flex-shrink-0" onclick="triggerAvatarUpload()">
+                                        <div class="w-28 h-28 rounded-[32px] bg-slate-50 border-2 border-slate-200/80 flex items-center justify-center overflow-hidden relative shadow-md group-hover:border-accent group-hover:shadow-lg transition-all">
+                                            <div id="settingsAvatarContainer" class="w-full h-full flex items-center justify-center">
+                                                @if($user->avatar_url)
+                                                    <img id="settingsAvatarImg" src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
+                                                @else
+                                                    <div id="settingsAvatarSvg" class="w-full h-full flex items-center justify-center">
+                                                        <svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <circle cx="50" cy="35" r="20" fill="url(#avatarGrad1)" />
+                                                            <path d="M20,85 Q50,60 80,85 L80,100 L20,100 Z" fill="url(#navAvatarGrad2)" />
+                                                        </svg>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center text-white backdrop-blur-[2px]">
+                                                <i data-lucide="camera" class="w-7 h-7 mb-1 text-white"></i>
+                                                <span class="text-[9px] font-black uppercase tracking-wider">Ubah Foto</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h4 class="text-xl font-bold text-slate-900">{{ $user->name }}</h4>
-                                        <p class="text-xs font-medium text-slate-400">Lengkapi data diri untuk membuka fitur inisiator</p>
+
+                                    <!-- Hidden File Input for Avatar -->
+                                    <input type="file" id="avatarFileInput" accept="image/png, image/jpeg, image/webp" class="hidden" onchange="handleAvatarFileSelect(this)">
+
+                                    <div class="text-center sm:text-left space-y-3 flex-1">
+                                        <div>
+                                            <h4 class="text-xl font-bold text-slate-900">{{ $user->name }}</h4>
+                                            <p class="text-xs font-medium text-slate-400 mt-0.5">
+                                                @if($user->is_verified)
+                                                    <span class="text-emerald-600 font-bold inline-flex items-center gap-1"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Terverifikasi sebagai Inisiator</span>
+                                                @else
+                                                    Lengkapi data diri untuk membuka fitur inisiator
+                                                @endif
+                                            </p>
+                                        </div>
+
+                                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 pt-1">
+                                            <button type="button" onclick="triggerAvatarUpload()" class="px-4 py-2 bg-accent/10 text-accent hover:bg-accent hover:text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2">
+                                                <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                                                Upload & Crop Foto
+                                            </button>
+                                            <button type="button" id="btnDeleteAvatar" onclick="deleteUserAvatar()" class="px-4 py-2 bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 {{ $user->avatar ? '' : 'hidden' }}">
+                                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                Hapus
+                                            </button>
+                                        </div>
+                                        <p class="text-[11px] text-slate-400 font-medium">Mendukung format JPG, PNG, atau WebP. Dilengkapi fitur crop rasio 1:1 dan kompresi cerdas otomatis.</p>
                                     </div>
                                 </div>
 
-                                <form action="#" class="space-y-8">
+                                <form action="{{ route('profile.update') }}" method="POST" class="space-y-8">
+                                    @csrf
+                                    <input type="hidden" name="avatar_base64" id="avatarBase64FormInput">
+
                                     <div class="space-y-2">
                                         <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">No. ID (KTP / Passport) <span class="text-red-500">*</span></label>
-                                        <input type="text" value="{{ $user->id_number ?? '' }}" placeholder="Contoh: 317XXXXXXXXXXXXX" class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium">
+                                        <input type="text" name="id_number" value="{{ $user->id_number ?? '' }}" placeholder="Contoh: 317XXXXXXXXXXXXX" class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium">
                                     </div>
 
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div class="space-y-2">
                                             <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Nama Lengkap <span class="text-red-500">*</span></label>
-                                            <input type="text" value="{{ $user->name }}" class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium">
+                                            <input type="text" name="name" value="{{ $user->name }}" required class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium">
                                         </div>
                                         <div class="space-y-2 relative">
-                                            <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Email <span class="text-red-500">*</span></label>
+                                            <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Email <span class="text-slate-400 font-normal">(Terhubung)</span></label>
                                             <div class="relative group">
-                                                <input type="email" value="{{ $user->email }}" class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium pr-24">
-                                                <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-accent/10 text-accent text-[9px] font-black uppercase tracking-widest rounded-xl hover:bg-accent hover:text-white transition-all">Verifikasi</button>
+                                                <input type="email" value="{{ $user->email }}" readonly class="w-full px-6 py-4 bg-slate-100/70 border border-slate-200/60 rounded-2xl text-slate-500 cursor-not-allowed font-medium pr-28">
+                                                <span class="absolute right-3 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-wider rounded-lg border border-emerald-200/50">Aktif</span>
                                             </div>
                                         </div>
                                     </div>
@@ -972,31 +1020,32 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div class="space-y-2">
                                             <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">No Telp <span class="text-red-500">*</span></label>
-                                            <input type="text" value="{{ $user->phone ?? '' }}" placeholder="+62 8XX XXXX XXXX" class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium">
+                                            <input type="text" name="phone" value="{{ $user->phone ?? '' }}" placeholder="+62 8XX XXXX XXXX" class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium">
                                         </div>
                                         <div class="space-y-2">
                                             <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Kota <span class="text-red-500">*</span></label>
-                                            <input type="text" value="{{ $user->city ?? '' }}" placeholder="Jakarta" class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium">
+                                            <input type="text" name="city" value="{{ $user->city ?? '' }}" placeholder="Jakarta" class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium">
                                         </div>
                                     </div>
 
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div class="space-y-2">
                                             <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Alamat Lengkap <span class="text-red-500">*</span></label>
-                                            <input type="text" value="{{ $user->address ?? '' }}" placeholder="Jl. Sudirman No. 12..." class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium">
+                                            <input type="text" name="address" value="{{ $user->address ?? '' }}" placeholder="Jl. Sudirman No. 12..." class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium">
                                         </div>
                                         <div class="space-y-2">
                                             <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Negara <span class="text-red-500">*</span></label>
-                                            <input type="text" value="{{ $user->country ?? 'Indonesia' }}" class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium">
+                                            <input type="text" name="country" value="{{ $user->country ?? 'Indonesia' }}" class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium">
                                         </div>
                                     </div>
 
                                     <div class="space-y-2">
                                         <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">TagLine</label>
-                                        <textarea rows="3" class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium" placeholder="Tuliskan slogan inspiratif Anda...">{{ $user->tagline ?? $user->bio ?? 'Pejuang perubahan untuk lingkungan yang lebih baik.' }}</textarea>
+                                        <textarea name="tagline" rows="3" class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:bg-white focus:border-accent transition-all font-medium" placeholder="Tuliskan slogan inspiratif Anda...">{{ $user->tagline ?? $user->bio ?? 'Pejuang perubahan untuk lingkungan yang lebih baik.' }}</textarea>
                                     </div>
                                     <div class="pt-4 flex justify-end">
-                                        <button type="submit" class="px-10 py-4 bg-accent text-white font-black rounded-2xl shadow-xl shadow-accent/20 hover:scale-105 active:scale-95 transition-all text-sm tracking-widest uppercase">
+                                        <button type="submit" class="px-10 py-4 bg-accent text-white font-black rounded-2xl shadow-xl shadow-accent/20 hover:scale-105 active:scale-95 transition-all text-sm tracking-widest uppercase flex items-center gap-2">
+                                            <i data-lucide="check" class="w-4 h-4"></i>
                                             Simpan Perubahan & Verifikasi
                                         </button>
                                     </div>
@@ -1266,6 +1315,409 @@
             const initialView = urlParams.get('view') || 'dashboard';
             setDashboardView(initialView);
         });
+
+        // ==========================================
+        // AVATAR UPLOAD, CROP & COMPRESSION LOGIC
+        // ==========================================
+        let cropperInstance = null;
+        let currentCropBlob = null;
+        let currentFlipX = 1;
+
+        function triggerAvatarUpload() {
+            const input = document.getElementById('avatarFileInput');
+            if (input) {
+                input.value = '';
+                input.click();
+            }
+        }
+
+        function handleAvatarFileSelect(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+
+            if (!file.type.match(/^image\/(jpeg|png|webp|gif|jpg)$/i)) {
+                alert('Silakan pilih file gambar yang valid (JPG, PNG, atau WebP).');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                alert('Ukuran file gambar maksimal 10 MB.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                openAvatarCropModal(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function openAvatarCropModal(imageSrc) {
+            const modal = document.getElementById('avatarCropModal');
+            const image = document.getElementById('avatarCropImage');
+            if (!modal || !image) return;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            image.src = imageSrc;
+
+            if (cropperInstance) {
+                cropperInstance.destroy();
+                cropperInstance = null;
+            }
+
+            currentFlipX = 1;
+
+            image.onload = function() {
+                cropperInstance = new Cropper(image, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    dragMode: 'move',
+                    autoCropArea: 0.9,
+                    restore: false,
+                    guides: true,
+                    center: true,
+                    highlight: false,
+                    cropBoxMovable: true,
+                    cropBoxResizable: true,
+                    toggleDragModeOnDblclick: false,
+                    preview: '#cropCirclePreview',
+                    crop(event) {
+                        updateCompressEstimate();
+                    }
+                });
+
+                setTimeout(() => {
+                    if (window.lucide) lucide.createIcons();
+                }, 50);
+            };
+        }
+
+        function closeAvatarCropModal() {
+            const modal = document.getElementById('avatarCropModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+            if (cropperInstance) {
+                cropperInstance.destroy();
+                cropperInstance = null;
+            }
+            const input = document.getElementById('avatarFileInput');
+            if (input) input.value = '';
+        }
+
+        function cropperZoom(ratio) {
+            if (cropperInstance) cropperInstance.zoom(ratio);
+        }
+
+        function cropperRotate(degree) {
+            if (cropperInstance) cropperInstance.rotate(degree);
+        }
+
+        function cropperFlip() {
+            if (!cropperInstance) return;
+            currentFlipX = currentFlipX === 1 ? -1 : 1;
+            cropperInstance.scaleX(currentFlipX);
+        }
+
+        function cropperReset() {
+            if (!cropperInstance) return;
+            currentFlipX = 1;
+            cropperInstance.reset();
+        }
+
+        function updateCompressEstimate() {
+            if (!cropperInstance) return;
+            try {
+                const canvas = cropperInstance.getCroppedCanvas({
+                    width: 400,
+                    height: 400,
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high'
+                });
+                if (!canvas) return;
+
+                canvas.toBlob((blob) => {
+                    if (!blob) return;
+                    currentCropBlob = blob;
+                    const kb = Math.round(blob.size / 1024);
+                    const badge = document.getElementById('compressSizeBadge');
+                    if (badge) badge.innerText = '~' + kb + ' KB (Terkompresi)';
+                }, 'image/jpeg', 0.85);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function saveCroppedAvatar() {
+            if (!cropperInstance) return;
+
+            const btn = document.getElementById('btnSaveCrop');
+            const originalBtnHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="inline-block animate-spin mr-2">⏳</span> Memproses...`;
+            }
+
+            const canvas = cropperInstance.getCroppedCanvas({
+                width: 400,
+                height: 400,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high'
+            });
+
+            if (!canvas) {
+                alert('Gagal memproses pemotongan gambar.');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnHtml;
+                }
+                return;
+            }
+
+            // High efficiency JPEG compression (0.85 quality)
+            const base64Data = canvas.toDataURL('image/jpeg', 0.85);
+
+            // Update hidden input in form
+            const formInput = document.getElementById('avatarBase64FormInput');
+            if (formInput) formInput.value = base64Data;
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            fetch('{{ route("profile.avatar") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ image: base64Data })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    updatePageAvatars(data.avatar_url);
+
+                    const delBtn = document.getElementById('btnDeleteAvatar');
+                    if (delBtn) delBtn.classList.remove('hidden');
+
+                    closeAvatarCropModal();
+                    showFloatingToast('Foto profil berhasil di-crop, di-kompres, dan disimpan!');
+                } else {
+                    alert(data.message || 'Gagal menyimpan foto profil.');
+                }
+            })
+            .catch(err => {
+                console.error('Avatar upload error:', err);
+                updatePageAvatars(base64Data);
+                closeAvatarCropModal();
+                showFloatingToast('Foto profil siap disimpan bersama data form.');
+            })
+            .finally(() => {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnHtml;
+                }
+            });
+        }
+
+        function deleteUserAvatar() {
+            if (!confirm('Apakah Anda yakin ingin menghapus foto profil ini dan kembali ke avatar default?')) return;
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            fetch('{{ route("profile.avatar.remove.post") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    resetPageAvatarsToDefault();
+                    const delBtn = document.getElementById('btnDeleteAvatar');
+                    if (delBtn) delBtn.classList.add('hidden');
+
+                    const formInput = document.getElementById('avatarBase64FormInput');
+                    if (formInput) formInput.value = '';
+
+                    showFloatingToast('Foto profil berhasil dihapus.');
+                }
+            })
+            .catch(err => {
+                console.error('Error delete avatar:', err);
+            });
+        }
+
+        function updatePageAvatars(imageUrl) {
+            // Settings avatar container
+            const settingsContainer = document.getElementById('settingsAvatarContainer');
+            if (settingsContainer) {
+                settingsContainer.innerHTML = `<img id="settingsAvatarImg" src="${imageUrl}" alt="User Avatar" class="w-full h-full object-cover">`;
+            }
+
+            // Navbar avatar
+            const navImg = document.getElementById('navbarAvatarImg');
+            const navSvg = document.getElementById('navbarAvatarSvg');
+            if (navImg) {
+                navImg.src = imageUrl;
+            } else if (navSvg && navSvg.parentElement) {
+                navSvg.parentElement.innerHTML = `<img id="navbarAvatarImg" src="${imageUrl}" alt="User Avatar" class="w-full h-full object-cover global-user-avatar">`;
+            }
+
+            // Dashboard profile card
+            const cardImgs = document.querySelectorAll('.global-user-avatar-card');
+            cardImgs.forEach(img => { img.src = imageUrl; });
+            const cardSvgs = document.querySelectorAll('.global-user-avatar-card-svg');
+            cardSvgs.forEach(svg => {
+                if (svg.parentElement) {
+                    svg.parentElement.innerHTML = `<img src="${imageUrl}" alt="User Avatar" class="w-full h-full object-cover global-user-avatar-card">`;
+                }
+            });
+        }
+
+        function resetPageAvatarsToDefault() {
+            const settingsContainer = document.getElementById('settingsAvatarContainer');
+            if (settingsContainer) {
+                settingsContainer.innerHTML = `
+                    <svg id="settingsAvatarSvg" class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="35" r="20" fill="url(#avatarGrad1)" />
+                        <path d="M20,85 Q50,60 80,85 L80,100 L20,100 Z" fill="url(#navAvatarGrad2)" />
+                    </svg>
+                `;
+            }
+
+            const navImg = document.getElementById('navbarAvatarImg');
+            if (navImg && navImg.parentElement) {
+                navImg.parentElement.innerHTML = `
+                    <div id="navbarAvatarSvg" class="w-full h-full flex items-center justify-center">
+                        <svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="35" r="20" fill="url(#navAvatarGrad1)" />
+                            <path d="M20,85 Q50,60 80,85 L80,100 L20,100 Z" fill="url(#navAvatarGrad2)" />
+                        </svg>
+                    </div>
+                `;
+            }
+
+            const cardImgs = document.querySelectorAll('.global-user-avatar-card');
+            cardImgs.forEach(img => {
+                if (img.parentElement) {
+                    img.parentElement.innerHTML = `
+                        <div class="global-user-avatar-card-svg w-full h-full flex items-center justify-center">
+                            <svg class="w-full h-full scale-110" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="35" r="20" fill="url(#avatarGrad1)" />
+                                <path d="M20,85 Q50,60 80,85 L80,100 L20,100 Z" fill="url(#avatarGrad2)" />
+                            </svg>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function showFloatingToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-8 right-8 z-[300] bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700 animate-fade-in text-sm font-bold';
+            toast.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5 text-emerald-400 flex-shrink-0"></i> <span>${msg}</span>`;
+            document.body.appendChild(toast);
+            if (window.lucide) lucide.createIcons();
+            setTimeout(() => {
+                toast.style.transition = 'all 0.4s ease';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                setTimeout(() => toast.remove(), 400);
+            }, 3500);
+        }
     </script>
+
+    <!-- Modal: Crop & Compress Avatar -->
+    <div id="avatarCropModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md transition-all duration-300">
+        <div class="bg-white rounded-[32px] w-full max-w-2xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[92vh] animate-fade-in">
+            <!-- Modal Header -->
+            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-accent/10 text-accent flex items-center justify-center">
+                        <i data-lucide="crop" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-outfit font-black text-slate-900">Crop & Kompres Foto Profil</h3>
+                        <p class="text-xs text-slate-400 font-medium">Sesuaikan posisi, zoom, dan rotasi foto</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeAvatarCropModal()" class="w-9 h-9 rounded-xl hover:bg-slate-200/60 text-slate-400 hover:text-slate-700 flex items-center justify-center transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    <!-- Cropper Area (Left) -->
+                    <div class="md:col-span-2">
+                        <div class="w-full h-72 sm:h-80 bg-slate-950 rounded-2xl overflow-hidden relative flex items-center justify-center border border-slate-200">
+                            <img id="avatarCropImage" src="" alt="Crop image" class="max-w-full">
+                        </div>
+                    </div>
+
+                    <!-- Live Preview & Controls (Right) -->
+                    <div class="flex flex-col items-center text-center space-y-4">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Hasil Preview Bulat</p>
+                        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-accent shadow-xl relative bg-slate-100">
+                            <div id="cropCirclePreview" class="w-full h-full overflow-hidden"></div>
+                        </div>
+
+                        <!-- Compression Info Badge -->
+                        <div class="w-full bg-slate-50 border border-slate-100 rounded-2xl p-3 space-y-1">
+                            <div class="flex items-center justify-between text-[11px] font-bold text-slate-600">
+                                <span class="flex items-center gap-1"><i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-500"></i> Smart Compress</span>
+                                <span id="compressSizeBadge" class="text-emerald-600 font-black">~50 KB</span>
+                            </div>
+                            <p class="text-[9px] text-slate-400 leading-tight">Foto dioptimasi otomatis agar loading super cepat.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Toolbar Controls -->
+                <div class="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" onclick="cropperZoom(0.1)" title="Zoom In" class="p-2.5 bg-white hover:bg-slate-100 text-slate-700 rounded-xl border border-slate-200/80 shadow-sm transition-all flex items-center justify-center">
+                            <i data-lucide="zoom-in" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="cropperZoom(-0.1)" title="Zoom Out" class="p-2.5 bg-white hover:bg-slate-100 text-slate-700 rounded-xl border border-slate-200/80 shadow-sm transition-all flex items-center justify-center">
+                            <i data-lucide="zoom-out" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="cropperRotate(-90)" title="Putar Kiri 90°" class="p-2.5 bg-white hover:bg-slate-100 text-slate-700 rounded-xl border border-slate-200/80 shadow-sm transition-all flex items-center justify-center">
+                            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="cropperRotate(90)" title="Putar Kanan 90°" class="p-2.5 bg-white hover:bg-slate-100 text-slate-700 rounded-xl border border-slate-200/80 shadow-sm transition-all flex items-center justify-center">
+                            <i data-lucide="rotate-cw" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="cropperFlip()" title="Balik Horizontal" class="p-2.5 bg-white hover:bg-slate-100 text-slate-700 rounded-xl border border-slate-200/80 shadow-sm transition-all flex items-center justify-center">
+                            <i data-lucide="flip-horizontal" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <button type="button" onclick="cropperReset()" class="px-3 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3">
+                <button type="button" onclick="closeAvatarCropModal()" class="px-5 py-2.5 text-slate-600 hover:text-slate-900 font-bold text-sm transition-colors">
+                    Batal
+                </button>
+                <button type="button" id="btnSaveCrop" onclick="saveCroppedAvatar()" class="px-6 py-2.5 bg-accent hover:bg-accent/90 text-white font-black text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-accent/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+                    <i data-lucide="check" class="w-4 h-4"></i>
+                    <span>Terapkan & Simpan Foto</span>
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
