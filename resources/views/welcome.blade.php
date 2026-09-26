@@ -600,13 +600,37 @@
                                         </div>
 
                                         <div class="flex items-center justify-between border-t border-slate-50 pt-8">
+                                            @php
+                                                $issueSupporters = $issue->votes ? $issue->votes->where('type', 'pro')->pluck('user')->filter()->unique('id') : collect();
+                                                $totalIssueVoices = (int) $issue->supporter_count;
+                                            @endphp
                                             <div class="flex items-center gap-3">
                                                 <div class="flex -space-x-3">
-                                                    @for($i=1; $i<=3; $i++)
-                                                    <img src="https://i.pravatar.cc/100?u={{ $index.$i }}" class="w-11 h-11 rounded-xl border-[4px] border-white bg-slate-200 object-cover" alt="Avatar">
-                                                    @endfor
+                                                    @if($issueSupporters->isNotEmpty())
+                                                        @foreach($issueSupporters->take(3) as $isup)
+                                                            @if($isup->avatar_url)
+                                                                <img src="{{ $isup->avatar_url }}" class="w-11 h-11 rounded-xl border-[4px] border-white bg-slate-200 object-cover shadow-sm" alt="{{ $isup->name }}" title="{{ $isup->name }}">
+                                                            @else
+                                                                <div class="w-11 h-11 rounded-xl border-[4px] border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-xs flex items-center justify-center shadow-sm uppercase" title="{{ $isup->name }}">
+                                                                    {{ substr($isup->name ?? 'W', 0, 2) }}
+                                                                </div>
+                                                            @endif
+                                                        @endforeach
+                                                    @elseif($issue->user)
+                                                        @if($issue->user->avatar_url)
+                                                            <img src="{{ $issue->user->avatar_url }}" class="w-11 h-11 rounded-xl border-[4px] border-white bg-slate-200 object-cover shadow-sm" alt="{{ $issue->user->name }}" title="Inisiator: {{ $issue->user->name }}">
+                                                        @else
+                                                            <div class="w-11 h-11 rounded-xl border-[4px] border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-xs flex items-center justify-center shadow-sm uppercase" title="Inisiator: {{ $issue->user->name }}">
+                                                                {{ substr($issue->user->name ?? 'W', 0, 2) }}
+                                                            </div>
+                                                        @endif
+                                                    @else
+                                                        <div class="w-11 h-11 rounded-xl border-[4px] border-white bg-slate-100 flex items-center justify-center text-slate-400">
+                                                            <i data-lucide="user" class="w-5 h-5"></i>
+                                                        </div>
+                                                    @endif
                                                 </div>
-                                                <span class="text-[10px] font-bold text-slate-400 tracking-tight ml-2">Total {{ $kontraCount }} Suara</span>
+                                                <span class="text-[10px] font-bold text-slate-400 tracking-tight ml-2">{{ number_format($totalIssueVoices, 0, ',', '.') }} Voices</span>
                                             </div>
                                             <div class="flex flex-col text-right">
                                                 <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Dibutuhkan</span>

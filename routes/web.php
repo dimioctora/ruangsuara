@@ -8,13 +8,13 @@ Route::get('/', function () {
     $stats = \App\Services\PlatformStatsService::getStats();
     $activeReportsCount = $stats['activeReportsCount'];
     $visitorDisplay = $stats['visitorDisplay'];
-    $recentIssues = \App\Models\Suara::where('status', 'published')->latest()->take(10)->get();
+    $recentIssues = \App\Models\Suara::where('status', 'published')->with(['user', 'votes.user'])->latest()->take(10)->get();
 
     return view('welcome', compact('activeReportsCount', 'visitorDisplay', 'recentIssues', 'stats'));
 });
 
 Route::get('/suara', function () {
-    $suaras = \App\Models\Suara::latest()->get();
+    $suaras = \App\Models\Suara::with(['user', 'votes.user'])->latest()->get();
     return view('suara', compact('suaras'));
 });
 

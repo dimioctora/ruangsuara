@@ -313,18 +313,48 @@
                             </div>
                             
                             <div class="flex items-center justify-between relative z-20">
+                                @php
+                                    $supporters = $m->votes ? $m->votes->where('type', 'pro')->pluck('user')->filter()->unique('id') : collect();
+                                    $totalSupporters = (int) $m->supporter_count;
+                                @endphp
                                 <div class="flex items-center gap-3">
                                     <div class="flex -space-x-2">
-                                        <img class="w-8 h-8 rounded-full border-2 border-white shadow-sm" src="https://i.pravatar.cc/150?u=1" alt="">
-                                        <img class="w-8 h-8 rounded-full border-2 border-white shadow-sm" src="https://i.pravatar.cc/150?u=2" alt="">
-                                        <div class="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-500 shadow-sm">+9</div>
+                                        @if($supporters->isNotEmpty())
+                                            @foreach($supporters->take(2) as $sup)
+                                                @if($sup->avatar_url)
+                                                    <img class="w-8 h-8 rounded-full border-2 border-white shadow-sm object-cover" src="{{ $sup->avatar_url }}" alt="{{ $sup->name }}" title="{{ $sup->name }}">
+                                                @else
+                                                    <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-[10px] flex items-center justify-center shadow-sm uppercase" title="{{ $sup->name }}">
+                                                        {{ substr($sup->name ?? 'W', 0, 2) }}
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        @elseif($m->user)
+                                            @if($m->user->avatar_url)
+                                                <img class="w-8 h-8 rounded-full border-2 border-white shadow-sm object-cover" src="{{ $m->user->avatar_url }}" alt="{{ $m->user->name }}" title="Inisiator: {{ $m->user->name }}">
+                                            @else
+                                                <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-[10px] flex items-center justify-center shadow-sm uppercase" title="Inisiator: {{ $m->user->name }}">
+                                                    {{ substr($m->user->name ?? 'W', 0, 2) }}
+                                                </div>
+                                            @endif
+                                        @else
+                                            <div class="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-slate-400">
+                                                <i data-lucide="user" class="w-4 h-4"></i>
+                                            </div>
+                                        @endif
+
+                                        @if($totalSupporters > 2)
+                                            <div class="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-600 shadow-sm">
+                                                +{{ $totalSupporters - min(2, $supporters->count()) }}
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="flex flex-col">
                                         <span class="text-[10px] font-black text-slate-900 leading-none">{{ number_format($m->supporter_count, 0, ',', '.') }}</span>
                                         <span class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter leading-none">Voices</span>
                                     </div>
                                 </div>
-                                <button onclick="event.preventDefault(); event.stopPropagation();" class="flex items-center gap-1.5 text-slate-400 hover:text-slate-600 transition-colors uppercase text-[10px] font-black tracking-widest">
+                                <button onclick="event.preventDefault(); event.stopPropagation(); copyShareLinkModal('{{ url('/suara-detail/' . $m->id) }}', '{{ addslashes($m->title) }}')" class="flex items-center gap-1.5 text-slate-400 hover:text-accent transition-colors uppercase text-[10px] font-black tracking-widest">
                                     <i data-lucide="share-2" class="w-4 h-4"></i> Bagikan
                                 </button>
                             </div>
@@ -768,6 +798,48 @@
             }
         }
 
+        async function copyShareLinkModal(url, title) {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: title || document.title,
+                        text: `Ayo kawal bersama aspirasi: "${title}" di Ruang Suara!`,
+                        url: url
+                    });
+                    return;
+                } catch (e) {}
+            }
+
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(url);
+                } else {
+                    const tempInput = document.createElement('input');
+                    tempInput.value = url;
+                    document.body.appendChild(tempInput);
+                    tempInput.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempInput);
+                }
+                showShareToastSuara('Tautan aspirasi berhasil disalin ke clipboard!');
+            } catch (err) {
+                alert('Tautan: ' + url);
+            }
+        }
+
+        function showShareToastSuara(message) {
+            let toast = document.getElementById('suaraShareToast');
+            if (!toast) return;
+            const msg = document.getElementById('suaraShareToastMsg');
+            if (msg) msg.innerText = message;
+            toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3000);
+        }
+
         // Auto-open modal based on query parameter
         window.addEventListener('load', () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -777,5 +849,15 @@
             }
         });
     </script>
+
+    <!-- Share Toast Notification -->
+    <div id="suaraShareToast" class="fixed bottom-8 right-8 z-[250] bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700/50 transform translate-y-24 opacity-0 pointer-events-none transition-all duration-300 ease-out font-outfit">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+        </div>
+        <div>
+            <p class="text-xs font-bold text-slate-200" id="suaraShareToastMsg">Tautan berhasil disalin ke clipboard!</p>
+        </div>
+    </div>
 </body>
 </html>

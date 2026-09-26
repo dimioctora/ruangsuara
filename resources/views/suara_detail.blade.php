@@ -192,12 +192,42 @@
                     </div>
                     <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-outfit font-extrabold mb-4 leading-tight tracking-tight uppercase">{{ $suara->title }}</h1>
                     <div class="flex items-center gap-3 text-slate-300 font-medium">
+                        @php
+                            $heroSupporters = $suara->votes ? $suara->votes->where('type', 'pro')->pluck('user')->filter()->unique('id') : collect();
+                            $totalHeroVoices = (int) $suara->supporter_count;
+                        @endphp
                         <div class="flex -space-x-2">
-                            <img class="w-8 h-8 rounded-full border-2 border-white/20" src="https://i.pravatar.cc/100?u=1" alt="">
-                            <img class="w-8 h-8 rounded-full border-2 border-white/20" src="https://i.pravatar.cc/100?u=2" alt="">
-                            <div class="w-8 h-8 rounded-full border-2 border-white/20 bg-accent flex items-center justify-center text-[10px] font-bold">+9</div>
+                            @if($heroSupporters->isNotEmpty())
+                                @foreach($heroSupporters->take(3) as $hSup)
+                                    @if($hSup->avatar_url)
+                                        <img class="w-8 h-8 rounded-full border-2 border-white/40 object-cover shadow-sm" src="{{ $hSup->avatar_url }}" alt="{{ $hSup->name }}" title="{{ $hSup->name }}">
+                                    @else
+                                        <div class="w-8 h-8 rounded-full border-2 border-white/40 bg-gradient-to-tr from-accent to-emerald-500 text-white font-black text-[10px] flex items-center justify-center shadow-sm uppercase" title="{{ $hSup->name }}">
+                                            {{ substr($hSup->name ?? 'W', 0, 2) }}
+                                        </div>
+                                    @endif
+                                @endforeach
+                            @elseif($suara->user)
+                                @if($suara->user->avatar_url)
+                                    <img class="w-8 h-8 rounded-full border-2 border-white/40 object-cover shadow-sm" src="{{ $suara->user->avatar_url }}" alt="{{ $suara->user->name }}" title="Inisiator: {{ $suara->user->name }}">
+                                @else
+                                    <div class="w-8 h-8 rounded-full border-2 border-white/40 bg-gradient-to-tr from-accent to-emerald-500 text-white font-black text-[10px] flex items-center justify-center shadow-sm uppercase" title="Inisiator: {{ $suara->user->name }}">
+                                        {{ substr($suara->user->name ?? 'W', 0, 2) }}
+                                    </div>
+                                @endif
+                            @else
+                                <div class="w-8 h-8 rounded-full border-2 border-white/40 bg-white/20 flex items-center justify-center text-white">
+                                    <i data-lucide="user" class="w-4 h-4"></i>
+                                </div>
+                            @endif
+
+                            @if($totalHeroVoices > 3)
+                                <div class="w-8 h-8 rounded-full border-2 border-white/40 bg-accent text-white flex items-center justify-center text-[10px] font-black shadow-sm">
+                                    +{{ $totalHeroVoices - min(3, $heroSupporters->count()) }}
+                                </div>
+                            @endif
                         </div>
-                        <span class="text-xs sm:text-sm">Didukung oleh <strong class="text-white">{{ number_format($suara->supporter_count, 0, ',', '.') }}+</strong> Voices</span>
+                        <span class="text-xs sm:text-sm">Didukung oleh <strong class="text-white">{{ number_format($totalHeroVoices, 0, ',', '.') }}+</strong> Voices</span>
                     </div>
                 </div>
             </div>
