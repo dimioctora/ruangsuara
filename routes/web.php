@@ -94,17 +94,51 @@ Route::delete('/profile/avatar', [\App\Http\Controllers\ProfileController::class
 Route::post('/profile/avatar/remove', [\App\Http\Controllers\ProfileController::class, 'removeAvatar'])->name('profile.avatar.remove.post')->middleware('auth');
 
 Route::post('/create-suara', function (Request $request) {
-    $validated = $request->validate([
-        'title' => 'required|string|max:100',
-        'category' => 'required',
-        'location' => 'required',
-        'description' => 'required',
-        'contribution_type' => 'required',
-    ]);
+    $isDraft = $request->input('action_type') === 'draft' || $request->has('save_draft') || $request->input('status') === 'draft';
+
+    if ($isDraft) {
+        $request->validate([
+            'title' => 'required|string|max:100',
+        ]);
+        $status = 'draft';
+    } else {
+        $request->validate([
+            'title' => 'required|string|max:100',
+            'category' => 'required',
+            'location' => 'required',
+            'description' => 'required',
+            'contribution_type' => 'required',
+        ]);
+        $status = 'published';
+    }
 
     $imagePath = null;
     if ($request->hasFile('image')) {
         $imagePath = $request->file('image')->store('suaras', 'public');
+    }
+
+    if ($request->filled('draft_id')) {
+        $existing = \App\Models\Suara::where('id', $request->draft_id)->where('user_id', auth()->id())->first();
+        if ($existing) {
+            $data = [
+                'title' => $request->title,
+                'category' => $request->category,
+                'location' => $request->location,
+                'reference_link' => $request->reference_link,
+                'description' => $request->description,
+                'contribution_type' => $request->contribution_type ?? 'voice',
+                'expected_impact' => $request->expected_impact,
+                'is_fundraising' => $request->has('is_fundraising'),
+                'fund_target' => $request->fund_target,
+                'status' => $status,
+            ];
+            if ($imagePath) {
+                $data['image'] = $imagePath;
+            }
+            $existing->update($data);
+            $msg = $status === 'draft' ? 'Draft isu berhasil diperbarui!' : 'Suara berhasil dipublikasikan!';
+            return redirect('/dashboard?view=suara')->with('success', $msg);
+        }
     }
 
     \App\Models\Suara::create([
@@ -115,15 +149,22 @@ Route::post('/create-suara', function (Request $request) {
         'reference_link' => $request->reference_link,
         'description' => $request->description,
         'image' => $imagePath,
-        'contribution_type' => $request->contribution_type,
+        'contribution_type' => $request->contribution_type ?? 'voice',
         'expected_impact' => $request->expected_impact,
         'is_fundraising' => $request->has('is_fundraising'),
         'fund_target' => $request->fund_target,
-        'status' => 'published' // Default to published for now as requested
+        'status' => $status
     ]);
 
-    return redirect('/dashboard?view=suara')->with('success', 'Suara berhasil dipublikasikan!');
+    $msg = $status === 'draft' ? 'Draft isu berhasil disimpan!' : 'Suara berhasil dipublikasikan!';
+    return redirect('/dashboard?view=suara')->with('success', $msg);
 })->middleware('auth');
+
+Route::delete('/suara/{id}', function ($id) {
+    $suara = \App\Models\Suara::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+    $suara->delete();
+    return redirect('/dashboard?view=suara')->with('success', 'Suara / Draft berhasil dihapus!');
+})->name('suara.destroy')->middleware('auth');
 
 
 
@@ -170,13 +211,17 @@ Route::post('/suara-manage/{id}/update-issue', function (Illuminate\Http\Request
     return redirect()->back()->with('success', 'Detail Suara berhasil diperbarui!');
 })->middleware('auth');
 
-Route::get('/create-suara', function () {
+Route::get('/create-suara', function (Request $request) {
     $user = \App\Models\User::find(\Illuminate\Support\Facades\Auth::id());
     // Level 2 (Partisipan) minimal 100 XP untuk buat isu, KECUALI sudah VERIFIED
     if (!$user->is_verified && $user->xp < 100) {
         return redirect('/dashboard')->with('error', 'Akses Terbatas : Sesuai regulasi Suara, Anda perlu melengkapi verifikasi Profil & Email di menu Pengaturan untuk mulai mempublikasikan Suara');
     }
-    return view('create_suara', compact('user'));
+    $draft = null;
+    if ($request->filled('draft_id')) {
+        $draft = \App\Models\Suara::where('id', $request->draft_id)->where('user_id', $user->id)->first();
+    }
+    return view('create_suara', compact('user', 'draft'));
 })->middleware('auth');
 
 Route::post('/suara', [SuaraController::class, 'store'])->name('suara.store');

@@ -603,38 +603,43 @@
                 <!-- View: Suara Saya (New) -->
                 <div id="view-suara" class="hidden space-y-10">
                     <!-- Header with Search & Filter -->
-                    <div class="flex flex-col md:row md:items-center justify-between gap-6 px-2">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
                         <div class="space-y-1">
                             <h2 class="text-3xl font-outfit font-black text-slate-900 tracking-tight">Suara Saya</h2>
-                            <p class="text-sm text-slate-400 font-medium">Kelola dan pantau setiap kontribusi Anda</p>
+                            <p class="text-sm text-slate-400 font-medium">Kelola, sunting draft, dan pantau setiap kontribusi Anda</p>
                         </div>
                         <div class="flex items-center gap-3">
-                            <div class="relative group">
-                                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-accent transition-colors"></i>
-                                <input type="text" placeholder="Cari suara..." class="pl-11 pr-6 py-3 bg-white border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-accent/5 focus:border-accent transition-all text-sm font-medium w-full md:w-64">
-                            </div>
-                            <button class="w-12 h-12 flex items-center justify-center bg-white border border-slate-100 rounded-2xl hover:bg-slate-50 transition-all shadow-sm">
-                                <i data-lucide="sliders-horizontal" class="w-5 h-5 text-slate-600"></i>
-                            </button>
+                            <a href="/create-suara" class="px-5 py-3 bg-accent text-white font-black rounded-2xl text-xs uppercase tracking-wider hover:scale-105 active:scale-95 transition-all shadow-lg shadow-accent/20 flex items-center gap-2">
+                                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                                Buat Suara Baru
+                            </a>
                         </div>
                     </div>
 
                     <!-- Tabs / Segmentation -->
-                    <nav class="flex items-center gap-8 border-b border-slate-100 px-2 overflow-x-auto custom-scrollbar whitespace-nowrap">
-                        <button class="pb-4 text-sm font-black text-accent border-b-2 border-accent transition-all tracking-wide">Dibuat ({{ $suaras->count() }})</button>
-                        <button class="pb-4 text-sm font-bold text-slate-400 hover:text-slate-600 transition-all tracking-wide">Didukung ({{ $stats['user_votes_count'] ?? 0 }})</button>
-                        <button class="pb-4 text-sm font-bold text-slate-400 hover:text-slate-600 transition-all tracking-wide">Aksi Bergabung ({{ $stats['total_aksi'] ?? 0 }})</button>
+                    <nav class="flex items-center gap-4 sm:gap-8 border-b border-slate-100 px-2 overflow-x-auto custom-scrollbar whitespace-nowrap">
+                        <button onclick="filterSuaraList('all')" id="tab-filter-all" class="pb-4 text-sm font-black text-accent border-b-2 border-accent transition-all tracking-wide">
+                            Semua ({{ $suaras->count() }})
+                        </button>
+                        <button onclick="filterSuaraList('published')" id="tab-filter-published" class="pb-4 text-sm font-bold text-slate-400 hover:text-slate-600 border-b-2 border-transparent transition-all tracking-wide flex items-center gap-2">
+                            <span>Dipublikasikan</span>
+                            <span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black">{{ $suaras->where('status', '!=', 'draft')->count() }}</span>
+                        </button>
+                        <button onclick="filterSuaraList('draft')" id="tab-filter-draft" class="pb-4 text-sm font-bold text-slate-400 hover:text-slate-600 border-b-2 border-transparent transition-all tracking-wide flex items-center gap-2">
+                            <span>Draft Tersimpan</span>
+                            <span class="px-2 py-0.5 bg-amber-50 text-amber-600 rounded-full text-[10px] font-black">{{ $suaras->where('status', 'draft')->count() }}</span>
+                        </button>
                     </nav>
 
                     <!-- Movement List (Card-Based UI) -->
-                    <div class="grid grid-cols-1 gap-6">
+                    <div class="grid grid-cols-1 gap-6" id="suara-list-container">
                         @if($suaras->isEmpty())
                             <div class="bg-white rounded-[40px] p-12 card-shadow border border-slate-100 text-center space-y-4">
                                 <div class="w-16 h-16 bg-slate-50 text-slate-200 rounded-full flex items-center justify-center mx-auto">
                                     <i data-lucide="folder-open" class="w-8 h-8"></i>
                                 </div>
-                                <h4 class="text-xl font-outfit font-black text-slate-900">Belum Ada Suara</h4>
-                                <p class="text-sm text-slate-400 font-medium max-w-sm mx-auto ">Anda belum mempublikasikan suara apapun. Jadilah inisiator pertama di lingkunganmu!</p>
+                                <h4 class="text-xl font-outfit font-black text-slate-900">Belum Ada Suara atau Draft</h4>
+                                <p class="text-sm text-slate-400 font-medium max-w-sm mx-auto ">Anda belum memiliki suara atau draft isu. Mulai tulis aspirasimu sekarang!</p>
                                 <div class="pt-4">
                                      <a href="/create-suara" class="inline-flex items-center gap-3 px-8 py-3 bg-accent text-white font-black rounded-2xl text-[10px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all">
                                          Buat Suara Sekarang
@@ -645,8 +650,9 @@
                         @endif
 
                         @foreach($suaras as $suara)
+                            @php $isDraft = ($suara->status === 'draft'); @endphp
                             <!-- Card: {{ $suara->title }} -->
-                            <div class="bg-white rounded-[40px] p-8 card-shadow border border-slate-100 hover:border-accent/30 transition-all group relative">
+                            <div class="suara-item bg-white rounded-[40px] p-8 card-shadow border border-slate-100 hover:border-accent/30 transition-all group relative {{ $isDraft ? 'bg-amber-50/10 border-amber-100/50' : '' }}" data-status="{{ $suara->status ?? 'draft' }}">
                                 <div class="flex flex-col md:flex-row gap-8">
                                     <!-- Thumbnail -->
                                     <div class="w-full md:w-48 h-48 md:h-auto rounded-[32px] overflow-hidden flex-shrink-0 relative bg-slate-100 group">
@@ -654,64 +660,94 @@
                                             <img src="{{ Storage::url($suara->image) }}" alt="{{ $suara->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center text-slate-300">
-                                                <i data-lucide="image" class="w-8 h-8"></i>
+                                                <i data-lucide="{{ $isDraft ? 'file-text' : 'image' }}" class="w-8 h-8"></i>
                                             </div>
                                         @endif
                                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
                                         <div class="absolute bottom-4 left-4">
-                                             <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-lg text-[8px] font-black text-white uppercase tracking-widest border border-white/20">{{ $suara->category ?? 'Lainnya' }}</span>
+                                             <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-lg text-[8px] font-black text-white uppercase tracking-widest border border-white/20">{{ $suara->category ?? 'Belum dipilih' }}</span>
                                         </div>
                                     </div>
 
                                     <div class="flex-1 space-y-4">
-                                        <div class="flex items-start justify-between">
+                                        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
                                             <div class="space-y-1">
                                                 <h4 class="text-xl font-outfit font-black text-slate-900 leading-tight">{{ $suara->title }}</h4>
                                                 <div class="flex items-center gap-2 text-slate-400">
                                                     <i data-lucide="map-pin" class="w-3 h-3"></i>
-                                                    <span class="text-[10px] font-bold uppercase tracking-widest">{{ $suara->location ?? 'Lokasi Tidak Ditentukan' }}</span>
+                                                    <span class="text-[10px] font-bold uppercase tracking-widest">{{ $suara->location ?? 'Lokasi Belum Diatur' }}</span>
                                                 </div>
                                             </div>
-                                            <div class="flex items-center gap-2">
-                                                <span class="px-3 py-1 bg-blue-50 text-accent text-[9px] font-black uppercase tracking-widest rounded-full ring-1 ring-accent/10">Bakal Aspiration</span>
-                                                <div class="flex items-center gap-1 bg-warning/10 px-2 py-1 rounded-full">
-                                                    <i data-lucide="flame" class="w-3 h-3 text-warning fill-warning/20"></i>
-                                                    <span class="text-[9px] font-black text-warning">New</span>
-                                                </div>
+                                            <div class="flex items-center gap-2 flex-shrink-0">
+                                                @if($isDraft)
+                                                    <span class="px-3 py-1 bg-amber-50 text-amber-700 text-[9px] font-black uppercase tracking-widest rounded-full ring-1 ring-amber-200/80 flex items-center gap-1.5">
+                                                        <i data-lucide="bookmark" class="w-3 h-3 text-amber-500"></i>
+                                                        Draft Tersimpan
+                                                    </span>
+                                                @else
+                                                    <span class="px-3 py-1 bg-emerald-50 text-emerald-600 text-[9px] font-black uppercase tracking-widest rounded-full ring-1 ring-emerald-200">
+                                                        Published
+                                                    </span>
+                                                    <div class="flex items-center gap-1 bg-warning/10 px-2 py-1 rounded-full">
+                                                        <i data-lucide="flame" class="w-3 h-3 text-warning fill-warning/20"></i>
+                                                        <span class="text-[9px] font-black text-warning">Active</span>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
 
-                                        <p class="text-sm text-slate-500 font-medium line-clamp-2 ">{{ $suara->description ?? 'Tidak ada deskripsi.' }}</p>
+                                        <p class="text-sm text-slate-500 font-medium line-clamp-2 ">{{ $suara->description ?? 'Belum ada deskripsi detail.' }}</p>
 
                                         <!-- Mini Timeline -->
-                                        <div class="flex items-center gap-2 py-2">
-                                            <div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden flex">
-                                                <div class="h-full bg-accent w-1/4"></div>
-                                                <div class="h-full bg-slate-200 w-1/4 opacity-20"></div>
-                                                <div class="h-full bg-slate-100 w-1/4 opacity-20"></div>
-                                                <div class="h-full bg-slate-100 w-1/4 opacity-20"></div>
+                                        @if(!$isDraft)
+                                            <div class="flex items-center gap-2 py-2">
+                                                <div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden flex">
+                                                    <div class="h-full bg-accent w-1/4"></div>
+                                                    <div class="h-full bg-slate-200 w-1/4 opacity-20"></div>
+                                                    <div class="h-full bg-slate-100 w-1/4 opacity-20"></div>
+                                                    <div class="h-full bg-slate-100 w-1/4 opacity-20"></div>
+                                                </div>
+                                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Issue Phase</span>
                                             </div>
-                                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Issue Phase</span>
-                                        </div>
+                                        @else
+                                            <div class="p-3 bg-amber-50/60 rounded-2xl border border-amber-100 text-[11px] text-amber-800 font-medium flex items-center gap-2">
+                                                <i data-lucide="info" class="w-4 h-4 text-amber-600 flex-shrink-0"></i>
+                                                <span>Draft ini hanya terlihat oleh Anda dan belum dipublikasikan ke publik.</span>
+                                            </div>
+                                        @endif
 
                                         <div class="flex items-center justify-between pt-4 border-t border-slate-50">
                                             <div class="flex items-center gap-6">
                                                 <div class="flex items-center gap-2 text-slate-400 group/item">
                                                     <i data-lucide="megaphone" class="w-4 h-4 group-hover/item:text-accent transition-colors"></i>
-                                                    <span class="text-xs font-bold">0</span>
+                                                    <span class="text-xs font-bold">{{ $suara->supporter_count ?? 0 }}</span>
                                                 </div>
                                                 <div class="flex items-center gap-2 text-slate-400 group/item">
-                                                    <i data-lucide="message-square" class="w-4 h-4 group-hover/item:text-accent transition-colors"></i>
-                                                    <span class="text-xs font-bold">0</span>
+                                                    <i data-lucide="clock" class="w-4 h-4"></i>
+                                                    <span class="text-[10px] font-bold text-slate-400">{{ $suara->updated_at ? $suara->updated_at->diffForHumans() : '-' }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex items-center gap-2">
-                                                <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:text-accent hover:bg-white hover:shadow-sm transition-all shadow-sm md:shadow-none">
-                                                    <i data-lucide="share-2" class="w-4 h-4"></i>
-                                                </button>
-                                                <button onclick="window.location.href='/suara-manage/{{ $suara->id }}'" class="px-6 py-2.5 bg-accent text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-accent/20">
-                                                    Kelola
-                                                </button>
+                                                @if($isDraft)
+                                                    <form action="{{ route('suara.destroy', $suara->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus draft ini?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm" title="Hapus Draft">
+                                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                        </button>
+                                                    </form>
+                                                    <a href="/create-suara?draft_id={{ $suara->id }}" class="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-amber-500/20 flex items-center gap-2">
+                                                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                                                        Lanjutkan Edit
+                                                    </a>
+                                                @else
+                                                    <button onclick="navigator.clipboard?.writeText(window.location.origin + '/suara-detail/{{ $suara->id }}'); alert('Link suara berhasil disalin!')" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:text-accent hover:bg-white hover:shadow-sm transition-all shadow-sm md:shadow-none" title="Bagikan">
+                                                        <i data-lucide="share-2" class="w-4 h-4"></i>
+                                                    </button>
+                                                    <button onclick="window.location.href='/suara-manage/{{ $suara->id }}'" class="px-6 py-2.5 bg-accent text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-accent/20">
+                                                        Kelola
+                                                    </button>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -1485,6 +1521,32 @@
                     lucide.createIcons();
                 }
             }, 30);
+        }
+
+        function filterSuaraList(status) {
+            const tabs = ['all', 'published', 'draft'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('tab-filter-' + t);
+                if (btn) {
+                    if (t === status) {
+                        btn.className = 'pb-4 text-sm font-black text-accent border-b-2 border-accent transition-all tracking-wide flex items-center gap-2';
+                    } else {
+                        btn.className = 'pb-4 text-sm font-bold text-slate-400 hover:text-slate-600 border-b-2 border-transparent transition-all tracking-wide flex items-center gap-2';
+                    }
+                }
+            });
+
+            const items = document.querySelectorAll('.suara-item');
+            items.forEach(item => {
+                const itemStatus = item.getAttribute('data-status') || 'draft';
+                if (status === 'all') {
+                    item.style.display = '';
+                } else if (status === 'draft') {
+                    item.style.display = (itemStatus === 'draft') ? '' : 'none';
+                } else if (status === 'published') {
+                    item.style.display = (itemStatus !== 'draft') ? '' : 'none';
+                }
+            });
         }
 
         document.addEventListener('DOMContentLoaded', () => {

@@ -206,10 +206,29 @@
                     </div>
                 </div>
 
+                <!-- Draft Mode Notice Banner -->
+                @if(isset($draft) && $draft)
+                    <div class="mb-6 p-5 bg-amber-50 border border-amber-200/80 rounded-3xl flex items-center justify-between gap-4 shadow-sm animate-fade-in">
+                        <div class="flex items-center gap-3 text-amber-900">
+                            <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="bookmark" class="w-5 h-5"></i>
+                            </div>
+                            <div class="text-xs font-medium">
+                                <span class="font-bold text-amber-800">Melanjutkan Draft:</span> "{{ $draft->title }}" (Tersimpan {{ $draft->updated_at ? $draft->updated_at->diffForHumans() : 'sebelumnya' }})
+                            </div>
+                        </div>
+                        <a href="/create-suara" class="px-4 py-2 bg-white text-amber-800 text-[11px] font-black rounded-xl border border-amber-200 hover:bg-amber-100 transition-all uppercase tracking-wider whitespace-nowrap">
+                            Buat Baru
+                        </a>
+                    </div>
+                @endif
+
                 <!-- Main Card Dashboard -->
                 <form id="createSuaraForm" action="/create-suara" method="POST" enctype="multipart/form-data" onsubmit="return validateAndSubmit(event)" class="bg-white rounded-[40px] border border-slate-100 card-shadow overflow-hidden relative">
                     @csrf
-                    <input type="hidden" name="contribution_type" id="hidden-contribution-type" value="voice">
+                    <input type="hidden" name="action_type" id="hidden-action-type" value="publish">
+                    <input type="hidden" name="draft_id" id="hidden-draft-id" value="{{ old('draft_id', $draft->id ?? '') }}">
+                    <input type="hidden" name="contribution_type" id="hidden-contribution-type" value="{{ old('contribution_type', $draft->contribution_type ?? 'voice') }}">
                     
                     <!-- Section A: Basic Info -->
                     <div id="section-1" class="form-section active p-8 md:p-14 section-animate">
@@ -243,7 +262,7 @@
                                     <span id="title-char-count" class="text-[10px] font-bold text-slate-300">0 / 100</span>
                                 </div>
                                 <div class="relative group">
-                                    <input type="text" name="title" id="input-title" value="{{ old('title') }}" placeholder="Contoh: Revitalisasi Danau Sunter untuk Wisata Gratis" class="w-full px-8 py-5 pr-14 bg-slate-50 border border-slate-100 rounded-[24px] outline-none transition-all font-semibold placeholder:text-slate-300 focus:bg-white focus:border-accent focus:shadow-[0_0_0_4px_rgba(37,99,235,0.08)]" maxlength="100">
+                                    <input type="text" name="title" id="input-title" value="{{ old('title', $draft->title ?? '') }}" placeholder="Contoh: Revitalisasi Danau Sunter untuk Wisata Gratis" class="w-full px-8 py-5 pr-14 bg-slate-50 border border-slate-100 rounded-[24px] outline-none transition-all font-semibold placeholder:text-slate-300 focus:bg-white focus:border-accent focus:shadow-[0_0_0_4px_rgba(37,99,235,0.08)]" maxlength="100">
                                     <div id="title-status-icon" class="absolute right-6 top-1/2 -translate-y-1/2 hidden transition-all scale-110">
                                         <!-- Will be injected by JS -->
                                     </div>
@@ -268,15 +287,16 @@
                                     <div class="relative group">
                                         <select id="input-category" name="category" class="w-full px-8 py-5 bg-slate-50 border border-slate-100 rounded-[24px] outline-none transition-all font-semibold appearance-none cursor-pointer focus:bg-white focus:border-accent focus:shadow-[0_0_0_4px_rgba(37,99,235,0.08)]">
                                             <option value="">Pilih Kategori</option>
-                                            <option value="Lingkungan" {{ old('category') == 'Lingkungan' ? 'selected' : '' }}>Lingkungan</option>
-                                            <option value="Keadilan" {{ old('category') == 'Keadilan' ? 'selected' : '' }}>Keadilan</option>
-                                            <option value="Hak Asasi Manusia" {{ old('category') == 'Hak Asasi Manusia' ? 'selected' : '' }}>Hak Asasi Manusia</option>
-                                            <option value="Pemerintah & Politik" {{ old('category') == 'Pemerintah & Politik' ? 'selected' : '' }}>Pemerintah & Politik</option>
-                                            <option value="Pendidikan" {{ old('category') == 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
-                                            <option value="Entertainment" {{ old('category') == 'Entertainment' ? 'selected' : '' }}>Entertainment</option>
-                                            <option value="Suara Konsumen" {{ old('category') == 'Suara Konsumen' ? 'selected' : '' }}>Suara Konsumen</option>
-                                            <option value="Infrastruktur" {{ old('category') == 'Infrastruktur' ? 'selected' : '' }}>Infrastruktur</option>
-                                            <option value="Lainnya" {{ old('category') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                            @php $currentCat = old('category', $draft->category ?? ''); @endphp
+                                            <option value="Lingkungan" {{ $currentCat == 'Lingkungan' ? 'selected' : '' }}>Lingkungan</option>
+                                            <option value="Keadilan" {{ $currentCat == 'Keadilan' ? 'selected' : '' }}>Keadilan</option>
+                                            <option value="Hak Asasi Manusia" {{ $currentCat == 'Hak Asasi Manusia' ? 'selected' : '' }}>Hak Asasi Manusia</option>
+                                            <option value="Pemerintah & Politik" {{ $currentCat == 'Pemerintah & Politik' ? 'selected' : '' }}>Pemerintah & Politik</option>
+                                            <option value="Pendidikan" {{ $currentCat == 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
+                                            <option value="Entertainment" {{ $currentCat == 'Entertainment' ? 'selected' : '' }}>Entertainment</option>
+                                            <option value="Suara Konsumen" {{ $currentCat == 'Suara Konsumen' ? 'selected' : '' }}>Suara Konsumen</option>
+                                            <option value="Infrastruktur" {{ $currentCat == 'Infrastruktur' ? 'selected' : '' }}>Infrastruktur</option>
+                                            <option value="Lainnya" {{ $currentCat == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                                         </select>
                                         <i data-lucide="chevron-down" class="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none group-focus-within:text-accent transition-colors"></i>
                                     </div>
@@ -285,7 +305,7 @@
                                     <label class="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-1">Lokasi Isu</label>
                                     <div class="relative group">
                                         <i data-lucide="map-pin" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-accent transition-colors"></i>
-                                        <input type="text" id="input-location" name="location" value="{{ old('location') }}" placeholder="Misal: Jakarta Utara" class="w-full pl-14 pr-8 py-5 bg-slate-50 border border-slate-100 rounded-[24px] outline-none transition-all font-semibold placeholder:text-slate-300 focus:bg-white focus:border-accent focus:shadow-[0_0_0_4px_rgba(37,99,235,0.08)]">
+                                        <input type="text" id="input-location" name="location" value="{{ old('location', $draft->location ?? '') }}" placeholder="Misal: Jakarta Utara" class="w-full pl-14 pr-8 py-5 bg-slate-50 border border-slate-100 rounded-[24px] outline-none transition-all font-semibold placeholder:text-slate-300 focus:bg-white focus:border-accent focus:shadow-[0_0_0_4px_rgba(37,99,235,0.08)]">
                                     </div>
                                 </div>
                             </div>
@@ -297,21 +317,27 @@
                                 </label>
                                 <div class="relative group">
                                     <i data-lucide="link" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-accent transition-colors"></i>
-                                    <input type="url" id="input-link" name="reference_link" value="{{ old('reference_link') }}" placeholder="Link berita atau dokumen pendukung" class="w-full pl-14 pr-8 py-5 bg-white border border-slate-100 rounded-[24px] outline-none transition-all font-semibold placeholder:text-slate-300 focus:border-accent">
+                                    <input type="url" id="input-link" name="reference_link" value="{{ old('reference_link', $draft->reference_link ?? '') }}" placeholder="Link berita atau dokumen pendukung" class="w-full pl-14 pr-8 py-5 bg-white border border-slate-100 rounded-[24px] outline-none transition-all font-semibold placeholder:text-slate-300 focus:border-accent">
                                 </div>
                                 <p class="text-[10px] text-slate-400 font-medium  ml-1 leading-relaxed">Penyertaan referensi resmi meningkatkan kepercayaan publik dan mempercepat moderasi.</p>
                             </div>
                         </div>
 
-                        <div class="pt-12 flex items-center justify-between border-t border-slate-50 mt-10">
-                            <a href="/dashboard" class="px-8 py-5 text-slate-400 font-bold hover:text-slate-600 transition-all flex items-center gap-2">
+                        <div class="pt-12 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-50 mt-10">
+                            <a href="/dashboard" class="px-6 py-4 text-slate-400 font-bold hover:text-slate-600 transition-all flex items-center gap-2 text-sm order-3 sm:order-1">
                                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                                 Batal & Kembali
                             </a>
-                             <button type="button" onclick="goToStep(2)" class="group px-10 py-5 bg-accent text-white font-black rounded-[24px] shadow-xl shadow-accent/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
-                                Lanjut Langkah Berikutnya
-                                <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
-                            </button>
+                            <div class="flex items-center gap-3 w-full sm:w-auto justify-end order-1 sm:order-2">
+                                <button type="button" onclick="saveDraft()" class="px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-[24px] text-xs uppercase tracking-wider flex items-center gap-2 transition-all">
+                                    <i data-lucide="bookmark" class="w-4 h-4 text-amber-500"></i>
+                                    Simpan Draft
+                                </button>
+                                <button type="button" onclick="goToStep(2)" class="group px-8 py-4 bg-accent text-white font-black rounded-[24px] shadow-xl shadow-accent/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3 text-sm">
+                                    Lanjut Langkah 2
+                                    <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -330,7 +356,7 @@
                             <div class="space-y-4">
                                 <label class="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-1">Penjelasan Detail Isu</label>
                                 <div class="relative">
-                                    <textarea id="input-description" name="description" rows="8" placeholder="Ceritakan permasalahan secara mendalam, siapa yang terdampak, dan solusi apa yang Anda tawarkan..." class="w-full px-8 py-7 bg-slate-50 border border-slate-100 rounded-[32px] outline-none focus:bg-white focus:border-accent focus:shadow-[0_0_0_4px_rgba(37,99,235,0.08)] transition-all font-medium resize-none leading-relaxed">{{ old('description') }}</textarea>
+                                    <textarea id="input-description" name="description" rows="8" placeholder="Ceritakan permasalahan secara mendalam, siapa yang terdampak, dan solusi apa yang Anda tawarkan..." class="w-full px-8 py-7 bg-slate-50 border border-slate-100 rounded-[32px] outline-none focus:bg-white focus:border-accent focus:shadow-[0_0_0_4px_rgba(37,99,235,0.08)] transition-all font-medium resize-none leading-relaxed">{{ old('description', $draft->description ?? '') }}</textarea>
                                 </div>
                             </div>
                             
@@ -338,14 +364,14 @@
                                 <label class="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-1">Media Pendukung (Foto)</label>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div id="upload-zone" onclick="document.getElementById('file-upload').click()" class="aspect-video sm:aspect-auto sm:h-48 border-2 border-dashed border-slate-200 rounded-[32px] bg-slate-50/50 flex flex-col items-center justify-center gap-4 group cursor-pointer hover:bg-white hover:border-accent transition-all overflow-hidden relative">
-                                        <div class="flex flex-col items-center gap-3">
+                                        <div class="flex flex-col items-center gap-3 {{ !empty($draft->image) ? 'hidden' : '' }}">
                                             <div class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover:text-accent group-hover:scale-110 transition-all">
                                                 <i data-lucide="image-plus" class="w-6 h-6"></i>
                                             </div>
                                             <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-accent">Unggah Media</p>
                                         </div>
                                         <input type="file" name="image" id="file-upload" class="hidden" accept="image/*" onchange="handleFile(this)">
-                                        <img id="image-preview" class="hidden absolute inset-0 w-full h-full object-cover">
+                                        <img id="image-preview" src="{{ !empty($draft->image) ? Storage::url($draft->image) : '' }}" class="{{ empty($draft->image) ? 'hidden' : '' }} absolute inset-0 w-full h-full object-cover">
                                     </div>
                                     <div class="bg-slate-50/50 rounded-[32px] border border-slate-100 p-8 flex flex-col justify-center gap-3">
                                         <div class="flex items-center gap-3 text-accent">
@@ -360,15 +386,21 @@
                             </div>
                         </div>
 
-                        <div class="pt-12 flex items-center justify-between border-t border-slate-50 mt-10">
-                             <button type="button" onclick="goToStep(1)" class="px-8 py-5 text-slate-400 font-bold hover:text-slate-600 transition-all flex items-center gap-2">
+                        <div class="pt-12 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-50 mt-10">
+                             <button type="button" onclick="goToStep(1)" class="px-6 py-4 text-slate-400 font-bold hover:text-slate-600 transition-all flex items-center gap-2 text-sm order-3 sm:order-1">
                                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                                 Kembali
                             </button>
-                             <button type="button" onclick="goToStep(3)" class="group px-10 py-5 bg-primary text-white font-black rounded-[24px] shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
-                                Langkah Opsi Target
-                                <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
-                            </button>
+                            <div class="flex items-center gap-3 w-full sm:w-auto justify-end order-1 sm:order-2">
+                                <button type="button" onclick="saveDraft()" class="px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-[24px] text-xs uppercase tracking-wider flex items-center gap-2 transition-all">
+                                    <i data-lucide="bookmark" class="w-4 h-4 text-amber-500"></i>
+                                    Simpan Draft
+                                </button>
+                                <button type="button" onclick="goToStep(3)" class="group px-8 py-4 bg-primary text-white font-black rounded-[24px] shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3 text-sm">
+                                    Lanjut Langkah 3
+                                    <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -389,7 +421,7 @@
                                 <label class="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-1">Hasil yang Diharapkan</label>
                                 <div class="relative group">
                                     <i data-lucide="award" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-accent transition-colors"></i>
-                                    <input type="text" id="input-goal" name="expected_impact" value="{{ old('expected_impact') }}" placeholder="Misal: Janji tertulis Pemprov untuk pembangunan jembatan penyeberangan..." class="w-full pl-14 pr-8 py-5 bg-slate-50 border border-slate-100 rounded-[24px] outline-none transition-all font-bold placeholder:text-slate-300 focus:bg-white focus:border-accent">
+                                    <input type="text" id="input-goal" name="expected_impact" value="{{ old('expected_impact', $draft->expected_impact ?? '') }}" placeholder="Misal: Janji tertulis Pemprov untuk pembangunan jembatan penyeberangan..." class="w-full pl-14 pr-8 py-5 bg-slate-50 border border-slate-100 rounded-[24px] outline-none transition-all font-bold placeholder:text-slate-300 focus:bg-white focus:border-accent">
                                 </div>
                                 <p class="text-[9px] text-slate-400 font-bold uppercase tracking-tighter ml-1">Gambarkan target konkrit yang ingin dicapai dari Suara ini.</p>
                             </div>
@@ -407,17 +439,17 @@
                                         </div>
                                     </div>
                                     <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" name="is_fundraising" value="1" id="toggle-fund" class="sr-only peer" onchange="toggleFundraising(this.checked)" {{ old('is_fundraising') ? 'checked' : '' }}>
+                                        <input type="checkbox" name="is_fundraising" value="1" id="toggle-fund" class="sr-only peer" onchange="toggleFundraising(this.checked)" {{ old('is_fundraising', $draft->is_fundraising ?? false) ? 'checked' : '' }}>
                                         <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
                                     </label>
                                 </div>
                             </div>
 
-                            <div id="fund-target-container" class="hidden animate-fade-in space-y-3 bg-accent/5 p-8 rounded-[32px] border border-accent/10">
+                            <div id="fund-target-container" class="{{ old('is_fundraising', $draft->is_fundraising ?? false) ? '' : 'hidden' }} animate-fade-in space-y-3 bg-accent/5 p-8 rounded-[32px] border border-accent/10">
                                 <label class="text-[11px] font-black uppercase tracking-widest text-accent ml-1">Target Penggalangan Dana (Rp)</label>
                                 <div class="relative group">
                                     <span class="absolute left-6 top-1/2 -translate-y-1/2 text-sm font-black text-accent">Rp</span>
-                                    <input type="number" name="fund_target" id="input-fund-target" value="{{ old('fund_target') }}" placeholder="Contoh: 50.000.000" class="w-full pl-14 pr-8 py-5 bg-white border border-accent/20 rounded-[24px] outline-none transition-all font-bold placeholder:text-accent/30 focus:border-accent focus:ring-4 focus:ring-accent/5">
+                                    <input type="number" name="fund_target" id="input-fund-target" value="{{ old('fund_target', $draft->fund_target ?? '') }}" placeholder="Contoh: 50.000.000" class="w-full pl-14 pr-8 py-5 bg-white border border-accent/20 rounded-[24px] outline-none transition-all font-bold placeholder:text-accent/30 focus:border-accent focus:ring-4 focus:ring-accent/5">
                                 </div>
                                 <p class="text-[9px] text-accent/60 font-medium  ml-1">*Dana yang terkumpul akan dikelola secara transparan oleh sistem Suara. Masukkan angka target dana yang dibutuhkan.</p>
                             </div>
@@ -451,15 +483,21 @@
                             </div>
                         </div>
 
-                        <div class="pt-12 flex items-center justify-between border-t border-slate-100 mt-10">
-                            <button type="button" onclick="goToStep(2)" class="px-8 py-5 text-slate-400 font-bold hover:text-slate-600 transition-all flex items-center gap-2">
+                        <div class="pt-12 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-100 mt-10">
+                            <button type="button" onclick="goToStep(2)" class="px-6 py-4 text-slate-400 font-bold hover:text-slate-600 transition-all flex items-center gap-2 text-sm order-3 sm:order-1">
                                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                                 Kembali
                             </button>
-                             <button type="button" onclick="goToStep(4)" class="group px-10 py-5 bg-gradient-to-r from-accent to-blue-700 text-white font-black rounded-[24px] shadow-xl shadow-accent/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
-                                Persiapan Tim & Publish
-                                <i data-lucide="party-popper" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
-                            </button>
+                            <div class="flex items-center gap-3 w-full sm:w-auto justify-end order-1 sm:order-2">
+                                <button type="button" onclick="saveDraft()" class="px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-[24px] text-xs uppercase tracking-wider flex items-center gap-2 transition-all">
+                                    <i data-lucide="bookmark" class="w-4 h-4 text-amber-500"></i>
+                                    Simpan Draft
+                                </button>
+                                <button type="button" onclick="goToStep(4)" class="group px-8 py-4 bg-gradient-to-r from-accent to-blue-700 text-white font-black rounded-[24px] shadow-xl shadow-accent/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3 text-sm">
+                                    Lanjut Langkah 4
+                                    <i data-lucide="party-popper" class="w-4 h-4 group-hover:rotate-12 transition-transform"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -499,16 +537,20 @@
                              </div>
                         </div>
 
-                        <div class="pt-12 flex items-center justify-between border-t border-slate-100 mt-10">
-                            <button type="button" onclick="goToStep(3)" class="px-8 py-5 text-slate-400 font-bold hover:text-slate-600 transition-all flex items-center gap-2">
+                        <div class="pt-12 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-100 mt-10">
+                            <button type="button" onclick="goToStep(3)" class="px-6 py-4 text-slate-400 font-bold hover:text-slate-600 transition-all flex items-center gap-2 text-sm order-3 sm:order-1">
                                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                                 Kembali
                             </button>
-                            <div class="flex items-center gap-4">
-                                <button type="button" onclick="document.getElementById('card-preview')?.scrollIntoView({behavior: 'smooth'})" class="hidden sm:block px-8 py-5 bg-white border border-slate-100 text-slate-400 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-slate-50 transition-all">Preview</button>
-                                <button type="submit" id="btn-submit-suara" class="px-10 py-5 bg-accent hover:bg-accent/90 text-white font-black rounded-[24px] shadow-2xl shadow-accent/30 hover:scale-[1.02] active:scale-95 transition-all text-lg flex items-center gap-3">
+                            <div class="flex items-center gap-3 w-full sm:w-auto justify-end order-1 sm:order-2">
+                                <button type="button" onclick="saveDraft()" class="px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-[24px] text-xs uppercase tracking-wider flex items-center gap-2 transition-all">
+                                    <i data-lucide="bookmark" class="w-4 h-4 text-amber-500"></i>
+                                    Simpan Draft
+                                </button>
+                                <button type="button" onclick="document.getElementById('card-preview')?.scrollIntoView({behavior: 'smooth'})" class="hidden sm:block px-6 py-4 bg-white border border-slate-100 text-slate-400 text-xs font-black uppercase tracking-wider rounded-[24px] hover:bg-slate-50 transition-all">Preview</button>
+                                <button type="submit" id="btn-submit-suara" class="px-8 py-4 bg-accent hover:bg-accent/90 text-white font-black rounded-[24px] shadow-2xl shadow-accent/30 hover:scale-[1.02] active:scale-95 transition-all text-sm flex items-center gap-3">
                                     <span>Publish Suara</span>
-                                    <i data-lucide="send" class="w-5 h-5"></i>
+                                    <i data-lucide="send" class="w-4 h-4"></i>
                                 </button>
                             </div>
                         </div>
@@ -891,6 +933,42 @@
             if(el) el.addEventListener('input', liveSync);
         });
 
+        function saveDraft() {
+            const title = (document.getElementById('input-title')?.value || '').trim();
+            if (!title) {
+                alert('Mohon isi minimal Judul Suara pada Langkah 1 untuk dapat menyimpan draft.');
+                goToStep(1);
+                document.getElementById('input-title')?.focus();
+                return;
+            }
+
+            document.getElementById('hidden-action-type').value = 'draft';
+
+            // Show feedback
+            const toast = document.getElementById('toast-success');
+            if (toast) {
+                const toastTitle = toast.querySelector('h5');
+                const toastDesc = toast.querySelector('p');
+                if (toastTitle) toastTitle.innerText = "Menyimpan Draft...";
+                if (toastDesc) toastDesc.innerText = "Isu Anda sedang disimpan sebagai draft...";
+                showToast();
+            }
+
+            setTimeout(() => {
+                document.getElementById('createSuaraForm').submit();
+            }, 300);
+        }
+
+        // Initialize state on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentContribution = document.getElementById('hidden-contribution-type')?.value || 'voice';
+            selectContribution(currentContribution);
+
+            const isFundActive = document.getElementById('toggle-fund')?.checked;
+            toggleFundraising(isFundActive);
+
+            liveSync();
+        });
     </script>
 </body>
 </html>
