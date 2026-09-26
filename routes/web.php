@@ -83,6 +83,10 @@ Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login']);
 Route::post('/signup', [\App\Http\Controllers\AuthController::class, 'register']);
 Route::get('/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
 
+// Google OAuth Routes
+Route::get('/auth/google', [\App\Http\Controllers\AuthController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [\App\Http\Controllers\AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+
 Route::post('/create-suara', function (Request $request) {
     $validated = $request->validate([
         'title' => 'required|string|max:100',
