@@ -147,8 +147,8 @@
         </defs>
     </svg>
 
-    <!-- Header / Navbar -->
-    <header class="sticky top-0 z-[100] glass">
+    <!-- Header / Navbar (Fixed on Top) -->
+    <header class="fixed top-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm transition-all duration-300">
         <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
             <!-- Logo (Left) -->
             <a href="/" class="flex items-center group flex-shrink-0">

@@ -131,7 +131,7 @@
     </svg>
 
     <!-- Navbar Minimalis -->
-    <header class="sticky top-0 z-[100] glass">
+    <header class="sticky top-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm transition-all duration-300">
         <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-6">
                 <a href="/dashboard" class="w-11 h-11 flex items-center justify-center rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-accent hover:border-accent/20 hover:shadow-lg hover:shadow-accent/5 transition-all outline-none">

@@ -70,8 +70,8 @@
         }
     </style>
 
-    <!-- Header / Navbar -->
-    <header class="sticky top-0 z-[100] glass">
+    <!-- Header / Navbar (Fixed on Top) -->
+    <header class="fixed top-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm transition-all duration-300">
         <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
             <!-- Logo (Left) -->
             <a href="/" class="flex items-center group flex-shrink-0">
@@ -387,15 +387,21 @@
                         <img src="{{ asset('images/suara-logo-transparent.png') }}" alt="Suara Logo" class="h-8 w-auto group-hover:rotate-6 transition-transform drop-shadow-2xl">
                     </a>
                     <p class="text-sm leading-relaxed  mb-8">Platform perubahan sosial terdepan di Indonesia. Mengubah setiap aspirasi menjadi solusi nyata.</p>
-                    <div class="flex items-center gap-4">
-                        <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors hover:text-white">
-                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                    <div class="flex items-center gap-3">
+                        <a href="https://discord.com" target="_blank" rel="noopener noreferrer" title="Discord" class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center hover:bg-[#5865F2] transition-all hover:text-white text-slate-400 group">
+                            <svg class="w-4 h-4 fill-current transition-transform group-hover:scale-110" viewBox="0 0 24 24">
+                                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                            </svg>
                         </a>
-                        <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors hover:text-white">
-                            <i data-lucide="twitter" class="w-5 h-5"></i>
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] transition-all hover:text-white text-slate-400 group">
+                            <svg class="w-4 h-4 fill-current transition-transform group-hover:scale-110" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
                         </a>
-                        <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors hover:text-white">
-                            <i data-lucide="facebook" class="w-5 h-5"></i>
+                        <a href="https://threads.net" target="_blank" rel="noopener noreferrer" title="Threads" class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center hover:bg-white hover:text-slate-900 transition-all text-slate-400 group">
+                            <svg class="w-4 h-4 fill-current transition-transform group-hover:scale-110" viewBox="0 0 24 24">
+                                <path d="M12.186 24C5.518 24 0 18.57 0 12.002 0 5.434 5.518.003 12.186.003c3.486 0 6.643 1.458 8.914 3.824 2.227 2.32 3.4 5.474 3.3 8.878-.22 7.49-6.07 10.74-11.758 10.74h-.056c-3.15-.015-5.642-.995-7.408-2.91-1.695-1.838-2.585-4.436-2.585-7.534 0-3.097.89-5.696 2.585-7.534C6.95 3.55 9.444 2.57 12.593 2.555h.056c2.404.01 4.542.668 6.182 1.898a.968.968 0 0 1 .236 1.348.97.97 0 0 1-1.347.237c-1.332-.994-3.09-1.536-5.07-1.545h-.047c-2.613.013-4.664.81-5.932 2.305-1.34 1.576-2.02 3.805-2.02 6.623 0 2.818.68 5.047 2.02 6.623 1.268 1.495 3.319 2.292 5.932 2.305h.047c4.615 0 9.28-2.457 9.47-8.77.085-2.884-.916-5.556-2.82-7.525-1.92-1.986-4.603-3.21-7.556-3.21C6.545 1.938 1.938 6.456 1.938 12.002c0 5.546 4.607 10.064 10.248 10.064 2.917 0 5.372-1.077 7.098-3.116a.97.97 0 0 1 1.368-.13.97.97 0 0 1 .13 1.368C18.672 22.757 15.688 24 12.186 24zm-.095-8.087c-2.127 0-3.834-.82-4.57-2.193-.526-.983-.564-2.193-.105-3.32.553-1.356 1.77-2.29 3.257-2.502.463-.066.935-.098 1.418-.098 1.748 0 3.328.47 4.453 1.325.295.224.498.54.58.905.08.364.004.743-.217 1.053-.518.728-1.42 1.157-2.54 1.21-1.076.05-2.08-.26-2.83-.872a.968.968 0 0 1 .15-1.503.97.97 0 0 1 1.503.15c.42.343.996.516 1.636.486.663-.03 1.16-.264 1.408-.663-.79-.586-1.956-.91-3.273-.91-.355 0-.702.023-1.038.07-1.002.143-1.808.766-2.158 1.666-.307.788-.276 1.595.084 2.268.487.91 1.69 1.464 3.197 1.464 1.206 0 2.29-.356 3.136-1.03.327-.26.804-.213 1.066.113.26.326.213.803-.114 1.066-1.12.893-2.553 1.366-4.143 1.366z"/>
+                            </svg>
                         </a>
                     </div>
                 </div>
@@ -588,12 +594,16 @@
 
             <div class="p-8 md:p-10 space-y-8">
                 <!-- Login View -->
-                <div id="loginView" class="space-y-6">
+                <form id="loginView" method="POST" action="/login" class="space-y-6">
+                    @csrf
+                    @if($errors->has('auth') && session('auth') == 'login')
+                        <div class="bg-red-50 text-red-500 text-xs p-3 rounded-xl font-bold">{{ $errors->first('auth') }}</div>
+                    @endif
                     <div class="space-y-2">
                         <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Email</label>
                         <div class="relative group">
                             <i data-lucide="mail" class="absolute left-6 top-5 w-5 h-5 text-slate-300 group-focus-within:text-accent transition-colors"></i>
-                            <input type="email" placeholder="nama@email.com" class="w-full pl-16 pr-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white focus:border-primary transition-all font-medium">
+                            <input type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com" class="w-full pl-16 pr-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white focus:border-primary transition-all font-medium">
                         </div>
                     </div>
                     <div class="space-y-2">
@@ -603,13 +613,13 @@
                         </div>
                         <div class="relative group">
                             <i data-lucide="lock" class="absolute left-6 top-5 w-5 h-5 text-slate-300 group-focus-within:text-accent transition-colors"></i>
-                            <input type="password" id="loginPassword" placeholder="••••••••" class="w-full pl-16 pr-14 py-5 bg-slate-50 border border-slate-100 rounded-3xl outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white focus:border-primary transition-all font-medium">
+                            <input type="password" name="password" id="loginPassword" required placeholder="••••••••" class="w-full pl-16 pr-14 py-5 bg-slate-50 border border-slate-100 rounded-3xl outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white focus:border-primary transition-all font-medium">
                             <button type="button" onclick="togglePassword('loginPassword')" class="absolute right-6 top-5 text-slate-300 hover:text-accent transition-colors">
                                 <i data-lucide="eye" class="w-5 h-5"></i>
                             </button>
                         </div>
                     </div>
-                    <button onclick="window.location.href='/dev-login'" class="w-full bg-accent py-5 rounded-3xl text-white font-black text-lg shadow-xl shadow-accent/20 hover:scale-[1.02] active:scale-95 transition-all">
+                    <button type="submit" class="w-full bg-accent py-5 rounded-3xl text-white font-black text-lg shadow-xl shadow-accent/20 hover:scale-[1.02] active:scale-95 transition-all">
                         Masuk Sekarang
                     </button>
 
@@ -620,25 +630,29 @@
                             <span class="relative bg-white px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest mx-auto block w-max">Atau dengan</span>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
-                            <button class="flex items-center justify-center gap-3 py-4 border border-slate-100 rounded-2xl font-bold text-slate-700 hover:bg-slate-50 transition-all">
+                            <button type="button" class="flex items-center justify-center gap-3 py-4 border border-slate-100 rounded-2xl font-bold text-slate-700 hover:bg-slate-50 transition-all">
                                 <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#fbbc05" d="M5.1 12c0-.7.1-1.4.3-2.1L1.1 6.6C.4 8.2 0 10.1 0 12s.4 3.8 1.1 5.4l4.3-3.3c-.2-.7-.3-1.4-.3-2.1z"/><path fill="#ea4335" d="M12 4.1c1.6 0 3.1.6 4.2 1.5l3.1-3.1C17.3 1 14.8 0 12 0 7.3 0 3.3 2.7 1.1 6.6L5.4 9.9c1.1-3.3 4.2-5.8 6.6-5.8z"/><path fill="#34a853" d="M12 19.9c-2.4 0-4.5-2.5-5.6-5.8L2.1 17.4C4.3 21.3 8.3 24 13 24c3.4 0 6.2-1.1 8.3-2.9l-4.1-3.1c-1.2.8-2.6 1.1-4.2 1.1z"/><path fill="#4285f4" d="M24 12c0-.8-.1-1.7-.2-2.5H12v4.8h6.8c-.3 1.5-1.1 2.8-2.4 3.6l4.1 3.1c2.4-2.1 4.5-5.2 4.5-9z"/></svg>
                                 <span class="text-xs">Google</span>
                             </button>
-                            <button class="flex items-center justify-center gap-3 py-4 border border-slate-100 rounded-2xl font-bold text-slate-700 hover:bg-slate-50 transition-all">
+                            <button type="button" class="flex items-center justify-center gap-3 py-4 border border-slate-100 rounded-2xl font-bold text-slate-700 hover:bg-slate-50 transition-all">
                                 <i data-lucide="apple" class="w-5 h-5"></i>
                                 <span class="text-xs">Apple ID</span>
                             </button>
                         </div>
                     </div>
-                </div>
+                </form>
 
                 <!-- Signup View -->
-                <div id="signupView" class="hidden space-y-6">
+                <form id="signupView" method="POST" action="/signup" class="hidden space-y-6">
+                    @csrf
+                    @if($errors->any() && (!session('auth') || session('auth') != 'login'))
+                        <div class="bg-red-50 text-red-500 text-xs p-3 rounded-xl font-bold">Terdapat kesalahan pada input Anda. Silakan periksa kembali.</div>
+                    @endif
                     <div class="space-y-2">
                         <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Nama Lengkap</label>
                         <div class="relative group">
                             <i data-lucide="user" class="absolute left-6 top-5 w-5 h-5 text-slate-300 group-focus-within:text-accent transition-colors"></i>
-                            <input type="text" placeholder="Masukkan nama lengkap" class="w-full pl-16 pr-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white focus:border-primary transition-all font-medium">
+                            <input type="text" name="name" value="{{ old('name') }}" required placeholder="Masukkan nama lengkap" class="w-full pl-16 pr-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white focus:border-primary transition-all font-medium">
                         </div>
                     </div>
 
@@ -646,7 +660,7 @@
                         <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Email</label>
                         <div class="relative group">
                             <i data-lucide="mail" class="absolute left-6 top-5 w-5 h-5 text-slate-300 group-focus-within:text-accent transition-colors"></i>
-                            <input type="email" placeholder="nama@email.com" class="w-full pl-16 pr-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white focus:border-primary transition-all font-medium">
+                            <input type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com" class="w-full pl-16 pr-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white focus:border-primary transition-all font-medium">
                         </div>
                     </div>
 
@@ -654,7 +668,7 @@
                         <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Password</label>
                         <div class="relative group">
                             <i data-lucide="lock" class="absolute left-6 top-5 w-5 h-5 text-slate-300 group-focus-within:text-accent transition-colors"></i>
-                            <input type="password" id="signupPassword" placeholder="Min. 8 Karakter" class="w-full pl-16 pr-14 py-5 bg-slate-50 border border-slate-100 rounded-3xl outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white focus:border-primary transition-all font-medium">
+                            <input type="password" name="password" id="signupPassword" required placeholder="Min. 8 Karakter" class="w-full pl-16 pr-14 py-5 bg-slate-50 border border-slate-100 rounded-3xl outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white focus:border-primary transition-all font-medium">
                             <button type="button" onclick="togglePassword('signupPassword')" class="absolute right-6 top-5 text-slate-300 hover:text-accent transition-colors">
                                 <i data-lucide="eye" class="w-5 h-5"></i>
                             </button>
@@ -665,17 +679,17 @@
                         <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Konfirmasi Password</label>
                         <div class="relative group">
                             <i data-lucide="check-circle" class="absolute left-6 top-5 w-5 h-5 text-slate-300 group-focus-within:text-accent transition-colors"></i>
-                            <input type="password" id="signupConfirmPassword" placeholder="Ulangi Password" class="w-full pl-16 pr-14 py-5 bg-slate-50 border border-slate-100 rounded-3xl outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white focus:border-primary transition-all font-medium">
+                            <input type="password" name="password_confirmation" id="signupConfirmPassword" required placeholder="Ulangi Password" class="w-full pl-16 pr-14 py-5 bg-slate-50 border border-slate-100 rounded-3xl outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white focus:border-primary transition-all font-medium">
                             <button type="button" onclick="togglePassword('signupConfirmPassword')" class="absolute right-6 top-5 text-slate-300 hover:text-accent transition-colors">
                                 <i data-lucide="eye" class="w-5 h-5"></i>
                             </button>
                         </div>
                     </div>
 
-                    <button onclick="window.location.href='/dev-login'" class="w-full bg-accent py-5 rounded-3xl text-white font-black text-lg shadow-xl shadow-accent/20 hover:scale-[1.02] active:scale-95 transition-all mt-4">
+                    <button type="submit" class="w-full bg-accent py-5 rounded-3xl text-white font-black text-lg shadow-xl shadow-accent/20 hover:scale-[1.02] active:scale-95 transition-all mt-4">
                         Daftar Secepatnya
                     </button>
-                </div>
+                </form>
             </div>
         </div>
     </div>

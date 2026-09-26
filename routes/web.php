@@ -5,20 +5,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\SuaraController;
 
 Route::get('/', function () {
-    $activeReportsCount = 63 + \App\Models\Suara::where('status', 'published')->count();
-    $visitorCount = 156000 + \Illuminate\Support\Facades\DB::table('visitors')->count();
-    
-    // Format visitor count with K for display if needed, or just full number
-    // The user's screenshot had 156K+, so let's format it.
-    if ($visitorCount >= 1000) {
-        $visitorDisplay = number_format($visitorCount / 1000, 1, '.', '') . 'K+';
-    } else {
-        $visitorDisplay = $visitorCount . '+';
-    }
-
+    $stats = \App\Services\PlatformStatsService::getStats();
+    $activeReportsCount = $stats['activeReportsCount'];
+    $visitorDisplay = $stats['visitorDisplay'];
     $recentIssues = \App\Models\Suara::where('status', 'published')->latest()->take(10)->get();
 
-    return view('welcome', compact('activeReportsCount', 'visitorDisplay', 'recentIssues'));
+    return view('welcome', compact('activeReportsCount', 'visitorDisplay', 'recentIssues', 'stats'));
 });
 
 Route::get('/suara', function () {
@@ -201,17 +193,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 });
 
 Route::get('/api/stats', function () {
-    $activeReportsCount = 63 + \App\Models\Suara::where('status', 'published')->count();
-    $visitorCount = 156000 + \Illuminate\Support\Facades\DB::table('visitors')->count();
-    
-    $visitorDisplay = ($visitorCount >= 1000) ? 
-        number_format($visitorCount / 1000, 0) . 'K+' : 
-        $visitorCount . '+';
-
-    return response()->json([
-        'activeReportsCount' => number_format($activeReportsCount, 0, ',', '.'),
-        'visitorDisplay' => $visitorDisplay,
-        'rawActive' => $activeReportsCount,
-        'rawVisitor' => $visitorCount
-    ]);
+    $stats = \App\Services\PlatformStatsService::getStats();
+    return response()->json($stats);
 });

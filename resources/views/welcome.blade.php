@@ -141,8 +141,8 @@
         <div class="blob bg-cyan-100 top-[40%] left-[20%]"></div>
     </div>
 
-    <!-- Header / Navbar -->
-    <header class="sticky top-0 z-[100] glass">
+    <!-- Header / Navbar (Fixed on Top) -->
+    <header class="fixed top-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm transition-all duration-300">
         <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
             <!-- Logo (Left) -->
             <a href="/" class="flex items-center group flex-shrink-0">
@@ -265,15 +265,24 @@
                     </div>
                     
                     <!-- Hero Stats -->
-                    <div class="flex items-center gap-16">
-                        <div class="group cursor-default">
-                            <div id="heroActiveStats" class="text-4xl font-extrabold text-slate-900 group-hover:text-accent transition-colors">{{ number_format($activeReportsCount, 0, ',', '.') }}</div>
-                            <div class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Laporan Aktif</div>
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center gap-2">
+                            <span class="relative flex h-2.5 w-2.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            </span>
+                            <span class="text-[11px] font-bold tracking-wider text-slate-400 uppercase">Live Monitoring</span>
                         </div>
-                        <div class="w-px h-14 bg-slate-200"></div>
-                        <div class="group cursor-default">
-                            <div id="heroVisitorStats" class="text-4xl font-extrabold text-slate-900 group-hover:text-secondary transition-colors">{{ $visitorDisplay }}</div>
-                            <div class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Pendukung</div>
+                        <div class="flex items-center gap-10 md:gap-16">
+                            <div class="group cursor-default">
+                                <div id="heroActiveStats" class="text-4xl md:text-5xl font-extrabold text-slate-900 group-hover:text-accent transition-all duration-300 font-outfit">{{ number_format($activeReportsCount, 0, ',', '.') }}</div>
+                                <div class="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Laporan Aktif</div>
+                            </div>
+                            <div class="w-px h-12 md:h-14 bg-slate-200"></div>
+                            <div class="group cursor-default">
+                                <div id="heroVisitorStats" class="text-4xl md:text-5xl font-extrabold text-slate-900 group-hover:text-secondary transition-all duration-300 font-outfit">{{ $visitorDisplay }}</div>
+                                <div class="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Pendukung</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -428,23 +437,23 @@
                                 </div>
                              </div>
                              
-                             <div class="space-y-6">
-                                <!-- Metric 1: Total Gerakan -->
+                              <div class="space-y-6">
+                                <!-- Metric 1: Total Issue -->
                                 <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 flex items-center justify-between group hover:bg-white hover:shadow-md transition-all">
                                     <div>
-                                        <p class="text-sm font-bold text-slate-500 mb-1">Total Gerakan</p>
-                                        <p id="totalGerakanCount" class="text-4xl font-black text-slate-900 font-outfit" data-target="{{ $activeReportsCount }}">0</p>
+                                        <p class="text-sm font-bold text-slate-500 mb-1">Total Issue</p>
+                                        <p id="totalIssueCount" class="text-4xl font-black text-slate-900 font-outfit" data-target="{{ $stats['rawTotalIssues'] ?? 0 }}">{{ $stats['totalIssues'] ?? 0 }}</p>
                                     </div>
                                     <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm text-accent group-hover:scale-110 transition-transform">
                                         <i data-lucide="layers" class="w-7 h-7"></i>
                                     </div>
                                 </div>
 
-                                <!-- Metric 2: Selesai Bulan Ini -->
+                                <!-- Metric 2: Case Closed -->
                                 <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 flex items-center justify-between group hover:bg-white hover:shadow-md transition-all">
                                     <div>
-                                        <p class="text-sm font-bold text-slate-500 mb-1">Selesai Bulan Ini</p>
-                                        <p id="selesaiCount" class="text-4xl font-black text-slate-900 font-outfit" data-target="142">0</p>
+                                        <p class="text-sm font-bold text-slate-500 mb-1">Case Closed</p>
+                                        <p id="caseClosedCount" class="text-4xl font-black text-slate-900 font-outfit" data-target="{{ $stats['rawCaseClosed'] ?? 0 }}">{{ $stats['caseClosed'] ?? 0 }}</p>
                                     </div>
                                     <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm text-success group-hover:scale-110 transition-transform">
                                         <i data-lucide="check-circle-2" class="w-7 h-7"></i>
@@ -454,40 +463,34 @@
                         </div>
                     </div>
 
-                    <div class="lg:pl-10">
-                        <div class="inline-flex px-4 py-2 rounded-full bg-accent/10 text-accent text-[10px] font-black uppercase tracking-widest mb-6">
+                    <div class="lg:pl-6 flex flex-col justify-center">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent/10 text-accent text-[10px] font-black uppercase tracking-widest mb-3 w-fit">
+                            <span class="w-1.5 h-1.5 rounded-full bg-accent animate-ping"></span>
                             Transparansi Data
                         </div>
-                        <h2 class="text-4xl md:text-5xl font-black font-outfit text-slate-900 mb-6 tracking-tight leading-tight py-1">Aktivitas <span class="text-accent">Terkini</span></h2>
-                        <p class="text-slate-500 text-lg leading-relaxed mb-10 font-medium">Log aktivitas sistem yang memantau pergerakan secara transparan dan seketika.</p>
+                        <h2 class="text-3xl md:text-4xl font-black font-outfit text-slate-900 mb-2 tracking-tight leading-tight">Aktivitas <span class="text-accent">Terkini</span></h2>
+                        <p class="text-slate-500 text-sm md:text-base leading-relaxed mb-6 font-medium">Log aktivitas sistem yang memantau pergerakan secara transparan dan seketika.</p>
                         
-                        <div class="space-y-4">
-                            <!-- Activity Card 1 -->
-                            <div class="bg-white border border-slate-100 rounded-2xl p-5 flex items-start gap-4 shadow-sm hover:shadow-md transition-all">
-                                <div class="w-2.5 h-2.5 rounded-full bg-accent mt-2"></div>
-                                <div>
-                                    <p class="text-slate-800 font-bold font-outfit text-base">Sarah mendaftarkan inisiatif baru</p>
-                                    <p class="text-slate-400 text-xs font-medium mt-1">2 menit lalu</p>
+                        <div id="liveActivitiesContainer" class="space-y-3">
+                            @forelse($stats['activities'] ?? [] as $act)
+                            <div class="bg-white border border-slate-100 rounded-2xl p-3.5 px-4 flex items-center gap-3.5 shadow-sm hover:shadow-md transition-all group">
+                                <div class="w-2.5 h-2.5 rounded-full {{ $act['dot_color'] ?? 'bg-accent' }} shrink-0 group-hover:scale-125 transition-transform"></div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-slate-800 font-bold font-outfit text-sm truncate leading-snug">{{ $act['title'] }}</p>
+                                    <p class="text-slate-400 text-[11px] font-semibold mt-0.5">{{ $act['time'] }}</p>
                                 </div>
                             </div>
-
-                            <!-- Activity Card 2 -->
-                            <div class="bg-white border border-slate-100 rounded-2xl p-5 flex items-start gap-4 shadow-sm hover:shadow-md transition-all">
-                                <div class="w-2.5 h-2.5 rounded-full bg-success mt-2"></div>
-                                <div>
-                                    <p class="text-slate-800 font-bold font-outfit text-base">156 orang mendukung kampanye kebersihan</p>
-                                    <p class="text-slate-400 text-xs font-medium mt-1">15 menit lalu</p>
+                            @empty
+                            <div class="bg-white/80 border border-dashed border-slate-200 rounded-2xl p-8 text-center">
+                                <div class="w-10 h-10 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2">
+                                    <i data-lucide="inbox" class="w-5 h-5"></i>
                                 </div>
+                                <p class="text-slate-500 text-sm font-semibold">Belum ada aktivitas tercatat.</p>
+                                <a href="/create-suara" class="inline-flex items-center gap-1.5 text-accent text-xs font-bold mt-2 hover:underline">
+                                    Mulai inisiatif pertama <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                                </a>
                             </div>
-
-                            <!-- Activity Card 3 -->
-                            <div class="bg-white border border-slate-100 rounded-2xl p-5 flex items-start gap-4 shadow-sm hover:shadow-md transition-all">
-                                <div class="w-2.5 h-2.5 rounded-full bg-orange-500 mt-2"></div>
-                                <div>
-                                    <p class="text-slate-800 font-bold font-outfit text-base">Target pendanaan logistik terpenuhi</p>
-                                    <p class="text-slate-400 text-xs font-medium mt-1">1 jam lalu</p>
-                                </div>
-                            </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -705,18 +708,26 @@
                     <p class="text-slate-400 text-lg leading-relaxed mb-10 max-w-md">
                         Menggerakkan perubahan melalui kolaborasi radikal dan transparansi total untuk Indonesia yang lebih baik.
                     </p>
-                    <div class="flex items-center gap-4">
-                        <a href="#" class="w-12 h-12 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center hover:bg-accent hover:border-accent hover:-translate-y-1 transition-all text-slate-500 hover:text-white group">
-                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                    <div class="flex items-center gap-3.5">
+                        <!-- Discord -->
+                        <a href="https://discord.com" target="_blank" rel="noopener noreferrer" title="Discord" class="w-12 h-12 bg-slate-900/90 border border-slate-800/80 rounded-2xl flex items-center justify-center hover:bg-[#5865F2] hover:border-[#5865F2] hover:shadow-lg hover:shadow-[#5865F2]/25 hover:-translate-y-1 transition-all text-slate-400 hover:text-white group">
+                            <svg class="w-5 h-5 fill-current transition-transform group-hover:scale-110" viewBox="0 0 24 24">
+                                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                            </svg>
                         </a>
-                        <a href="#" class="w-12 h-12 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center hover:bg-accent hover:border-accent hover:-translate-y-1 transition-all text-slate-500 hover:text-white group">
-                            <i data-lucide="twitter" class="w-5 h-5"></i>
+                        
+                        <!-- Instagram -->
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" class="w-12 h-12 bg-slate-900/90 border border-slate-800/80 rounded-2xl flex items-center justify-center hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:border-transparent hover:shadow-lg hover:shadow-pink-500/25 hover:-translate-y-1 transition-all text-slate-400 hover:text-white group">
+                            <svg class="w-5 h-5 fill-current transition-transform group-hover:scale-110" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
                         </a>
-                        <a href="#" class="w-12 h-12 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center hover:bg-accent hover:border-accent hover:-translate-y-1 transition-all text-slate-500 hover:text-white group">
-                            <i data-lucide="linkedin" class="w-5 h-5"></i>
-                        </a>
-                        <a href="#" class="w-12 h-12 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center hover:bg-accent hover:border-accent hover:-translate-y-1 transition-all text-slate-500 hover:text-white group">
-                            <i data-lucide="github" class="w-5 h-5"></i>
+                        
+                        <!-- Threads -->
+                        <a href="https://threads.net" target="_blank" rel="noopener noreferrer" title="Threads" class="w-12 h-12 bg-slate-900/90 border border-slate-800/80 rounded-2xl flex items-center justify-center hover:bg-white hover:border-white hover:shadow-lg hover:shadow-white/20 hover:-translate-y-1 transition-all text-slate-400 hover:text-slate-900 group">
+                            <svg class="w-5 h-5 fill-current transition-transform group-hover:scale-110" viewBox="0 0 24 24">
+                                <path d="M12.186 24C5.518 24 0 18.57 0 12.002 0 5.434 5.518.003 12.186.003c3.486 0 6.643 1.458 8.914 3.824 2.227 2.32 3.4 5.474 3.3 8.878-.22 7.49-6.07 10.74-11.758 10.74h-.056c-3.15-.015-5.642-.995-7.408-2.91-1.695-1.838-2.585-4.436-2.585-7.534 0-3.097.89-5.696 2.585-7.534C6.95 3.55 9.444 2.57 12.593 2.555h.056c2.404.01 4.542.668 6.182 1.898a.968.968 0 0 1 .236 1.348.97.97 0 0 1-1.347.237c-1.332-.994-3.09-1.536-5.07-1.545h-.047c-2.613.013-4.664.81-5.932 2.305-1.34 1.576-2.02 3.805-2.02 6.623 0 2.818.68 5.047 2.02 6.623 1.268 1.495 3.319 2.292 5.932 2.305h.047c4.615 0 9.28-2.457 9.47-8.77.085-2.884-.916-5.556-2.82-7.525-1.92-1.986-4.603-3.21-7.556-3.21C6.545 1.938 1.938 6.456 1.938 12.002c0 5.546 4.607 10.064 10.248 10.064 2.917 0 5.372-1.077 7.098-3.116a.97.97 0 0 1 1.368-.13.97.97 0 0 1 .13 1.368C18.672 22.757 15.688 24 12.186 24zm-.095-8.087c-2.127 0-3.834-.82-4.57-2.193-.526-.983-.564-2.193-.105-3.32.553-1.356 1.77-2.29 3.257-2.502.463-.066.935-.098 1.418-.098 1.748 0 3.328.47 4.453 1.325.295.224.498.54.58.905.08.364.004.743-.217 1.053-.518.728-1.42 1.157-2.54 1.21-1.076.05-2.08-.26-2.83-.872a.968.968 0 0 1 .15-1.503.97.97 0 0 1 1.503.15c.42.343.996.516 1.636.486.663-.03 1.16-.264 1.408-.663-.79-.586-1.956-.91-3.273-.91-.355 0-.702.023-1.038.07-1.002.143-1.808.766-2.158 1.666-.307.788-.276 1.595.084 2.268.487.91 1.69 1.464 3.197 1.464 1.206 0 2.29-.356 3.136-1.03.327-.26.804-.213 1.066.113.26.326.213.803-.114 1.066-1.12.893-2.553 1.366-4.143 1.366z"/>
+                            </svg>
                         </a>
                     </div>
                 </div>
@@ -1017,38 +1028,97 @@
             revealObserver.observe(section);
         });
 
-        // Real-time Stats Polling
+        // Real-time Stats Polling & Live Feedback
+        let lastStats = {
+            active: null,
+            visitor: null
+        };
+
         async function fetchStats() {
             try {
                 const response = await fetch('/api/stats');
+                if (!response.ok) return;
                 const data = await response.json();
                 
-                // Update Hero Stats
                 const heroActive = document.getElementById('heroActiveStats');
                 const heroVisitor = document.getElementById('heroVisitorStats');
                 const commandCenterCount = document.getElementById('totalGerakanCount');
 
-                if (heroActive) heroActive.innerText = data.activeReportsCount;
-                if (heroVisitor) heroVisitor.innerText = data.visitorDisplay;
-                
-                // Update Command Center data-target for the counter to use if it hasn't run yet
-                // or just update it directly if it already ran.
-                if (commandCenterCount) {
-                    const currentTarget = parseInt(commandCenterCount.getAttribute('data-target'));
-                    if (data.rawActive !== currentTarget) {
-                        commandCenterCount.setAttribute('data-target', data.rawActive);
-                        // If it's already visible and "active", we might want to update the text directly
-                        if (commandCenterCount.closest('.reveal-on-scroll').classList.contains('active')) {
-                            commandCenterCount.innerText = data.rawActive.toLocaleString();
-                        }
+                // Animate if active reports count changed
+                if (heroActive && heroActive.innerText !== data.activeReportsCount) {
+                    if (lastStats.active !== null) {
+                        heroActive.classList.add('text-accent', 'scale-110');
+                        setTimeout(() => heroActive.classList.remove('text-accent', 'scale-110'), 800);
                     }
+                    heroActive.innerText = data.activeReportsCount;
+                    lastStats.active = data.activeReportsCount;
+                }
+
+                // Animate if visitor / supporter count changed
+                if (heroVisitor && heroVisitor.innerText !== data.visitorDisplay) {
+                    if (lastStats.visitor !== null) {
+                        heroVisitor.classList.add('text-secondary', 'scale-110');
+                        setTimeout(() => heroVisitor.classList.remove('text-secondary', 'scale-110'), 800);
+                    }
+                    heroVisitor.innerText = data.visitorDisplay;
+                    lastStats.visitor = data.visitorDisplay;
+                }
+                
+                // Update Command Center counters
+                const totalIssueEl = document.getElementById('totalIssueCount');
+                const caseClosedEl = document.getElementById('caseClosedCount');
+                if (totalIssueEl && data.totalIssues !== undefined) {
+                    totalIssueEl.innerText = data.totalIssues;
+                }
+                if (caseClosedEl && data.caseClosed !== undefined) {
+                    caseClosedEl.innerText = data.caseClosed;
+                }
+
+                // Update Live Activity Cards
+                const activitiesContainer = document.getElementById('liveActivitiesContainer');
+                if (activitiesContainer) {
+                    if (Array.isArray(data.activities) && data.activities.length > 0) {
+                        activitiesContainer.innerHTML = data.activities.map(act => `
+                            <div class="bg-white border border-slate-100 rounded-2xl p-3.5 px-4 flex items-center gap-3.5 shadow-sm hover:shadow-md transition-all group">
+                                <div class="w-2.5 h-2.5 rounded-full ${act.dot_color || 'bg-accent'} shrink-0 group-hover:scale-125 transition-transform"></div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-slate-800 font-bold font-outfit text-sm truncate leading-snug">${escapeHtml(act.title)}</p>
+                                    <p class="text-slate-400 text-[11px] font-semibold mt-0.5">${escapeHtml(act.time)}</p>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        activitiesContainer.innerHTML = `
+                            <div class="bg-white/80 border border-dashed border-slate-200 rounded-2xl p-8 text-center">
+                                <div class="w-10 h-10 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2">
+                                    <i data-lucide="inbox" class="w-5 h-5"></i>
+                                </div>
+                                <p class="text-slate-500 text-sm font-semibold">Belum ada aktivitas tercatat.</p>
+                                <a href="/create-suara" class="inline-flex items-center gap-1.5 text-accent text-xs font-bold mt-2 hover:underline">
+                                    Mulai inisiatif pertama &rarr;
+                                </a>
+                            </div>
+                        `;
+                    }
+                    if (window.lucide) lucide.createIcons();
                 }
             } catch (error) {
-                console.error('Error fetching stats:', error);
+                console.error('Error fetching real-time stats:', error);
             }
         }
 
-        // Swiper Initialization
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.innerText = text;
+            return div.innerHTML;
+        }
+
+        // Auto poll every 3 seconds & when tab gets focus
+        setInterval(fetchStats, 3000);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') fetchStats();
+        });
+        window.addEventListener('focus', fetchStats);
         const recentIssuesSwiper = new Swiper('.recentIssuesSwiper', {
             slidesPerView: 1,
             spaceBetween: 20,
