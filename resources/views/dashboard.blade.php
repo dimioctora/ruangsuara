@@ -506,60 +506,6 @@
 
             <!-- Main Content Container -->
             <main class="flex-grow space-y-8 md:space-y-10 min-w-0">
-                
-                <!-- Mobile Carousel Navigation Bar (Horizontal Interactive Pills for Mobile View) -->
-                <div class="lg:hidden animate-fade-in" style="animation-delay: 0.05s">
-                    <div class="bg-white/95 backdrop-blur-xl rounded-[28px] p-2 card-shadow border border-slate-200/80 shadow-md">
-                        <div id="mobileMenuCarousel" class="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1 px-1 snap-x snap-mandatory">
-                            
-                            <!-- Dashboard -->
-                            <button type="button" 
-                                    onclick="setDashboardView('dashboard')" 
-                                    id="carousel-dashboard" 
-                                    class="flex-shrink-0 snap-start flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs font-black transition-all duration-200 active:scale-95 whitespace-nowrap bg-accent text-white shadow-lg shadow-accent/25 border border-accent">
-                                <i data-lucide="layout-dashboard" class="w-4 h-4 flex-shrink-0"></i>
-                                <span>Dashboard</span>
-                            </button>
-
-                            <!-- Monitoring -->
-                            <button type="button" 
-                                    onclick="setDashboardView('monitoring')" 
-                                    id="carousel-monitoring" 
-                                    class="flex-shrink-0 snap-start flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs font-black transition-all duration-200 active:scale-95 whitespace-nowrap bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50">
-                                <i data-lucide="eye" class="w-4 h-4 flex-shrink-0"></i>
-                                <span>Monitoring</span>
-                            </button>
-
-                            <!-- Suara Saya -->
-                            <button type="button" 
-                                    onclick="setDashboardView('suara')" 
-                                    id="carousel-suara" 
-                                    class="flex-shrink-0 snap-start flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs font-black transition-all duration-200 active:scale-95 whitespace-nowrap bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50">
-                                <i data-lucide="compass" class="w-4 h-4 flex-shrink-0"></i>
-                                <span>Suara Saya</span>
-                            </button>
-
-                            <!-- Sistem Reputasi -->
-                            <button type="button" 
-                                    onclick="setDashboardView('reputasi')" 
-                                    id="carousel-reputasi" 
-                                    class="flex-shrink-0 snap-start flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs font-black transition-all duration-200 active:scale-95 whitespace-nowrap bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50">
-                                <i data-lucide="medal" class="w-4 h-4 flex-shrink-0 text-amber-500"></i>
-                                <span>Reputasi</span>
-                            </button>
-
-                            <!-- Pengaturan Profil -->
-                            <button type="button" 
-                                    onclick="setDashboardView('pengaturan')" 
-                                    id="carousel-pengaturan" 
-                                    class="flex-shrink-0 snap-start flex items-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs font-black transition-all duration-200 active:scale-95 whitespace-nowrap bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50">
-                                <i data-lucide="settings" class="w-4 h-4 flex-shrink-0"></i>
-                                <span>Pengaturan</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
                 <!-- View: Dashboard (Profile & Summary) -->
                 <div id="view-dashboard" class="space-y-10">
                     <!-- 1. Top Profile & Gamification Section -->
