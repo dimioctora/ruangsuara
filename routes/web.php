@@ -13,8 +13,49 @@ Route::get('/', function () {
     return view('welcome', compact('activeReportsCount', 'visitorDisplay', 'recentIssues', 'stats'));
 });
 
-Route::get('/suara', function () {
-    $suaras = \App\Models\Suara::with(['user', 'votes.user'])->latest()->get();
+Route::get('/suara', function (Request $request) {
+    $query = \App\Models\Suara::where(function($q) {
+        $q->where('status', 'published')->orWhereNull('status');
+    })->with(['user', 'votes.user'])->latest();
+
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function($builder) use ($search) {
+            $builder->where('title', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%")
+                ->orWhere('location', 'like', "%{$search}%")
+                ->orWhere('category', 'like', "%{$search}%");
+        });
+    }
+
+    if ($request->filled('category')) {
+        $categories = is_array($request->category) ? $request->category : explode(',', $request->category);
+        $categories = array_filter($categories);
+        if (!empty($categories)) {
+            $query->whereIn('category', $categories);
+        }
+    }
+
+    if ($request->filled('location') && $request->location !== 'Seluruh Indonesia') {
+        $query->where('location', 'like', "%{$request->location}%");
+    }
+
+    $suaras = $query->paginate(6);
+
+    if ($request->ajax() || $request->wantsJson()) {
+        $html = '';
+        foreach ($suaras as $m) {
+            $html .= view('partials.suara_card', compact('m'))->render();
+        }
+        return response()->json([
+            'html' => $html,
+            'hasMore' => $suaras->hasMorePages(),
+            'nextPage' => $suaras->currentPage() + 1,
+            'total' => $suaras->total(),
+            'count' => $suaras->count(),
+        ]);
+    }
+
     return view('suara', compact('suaras'));
 });
 
@@ -126,9 +167,42 @@ Route::post('/suara-comment/{id}/like', function (Request $request, $id) {
     return redirect()->back();
 })->middleware('auth')->name('suara.comment.like');
 
+Route::post('/suara/{id}/bookmark', function (Request $request, $id) {
+    $user = \Illuminate\Support\Facades\Auth::user();
+    $suara = \App\Models\Suara::findOrFail($id);
+
+    $existing = \App\Models\SuaraBookmark::where('user_id', $user->id)
+        ->where('suara_id', $suara->id)
+        ->first();
+
+    if ($existing) {
+        $existing->delete();
+        $bookmarked = false;
+        $message = 'Isu dihapus dari daftar pantauan.';
+    } else {
+        \App\Models\SuaraBookmark::create([
+            'user_id' => $user->id,
+            'suara_id' => $suara->id
+        ]);
+        $bookmarked = true;
+        $message = 'Isu berhasil disimpan untuk dipantau!';
+    }
+
+    if ($request->ajax() || $request->wantsJson()) {
+        return response()->json([
+            'success' => true,
+            'bookmarked' => $bookmarked,
+            'message' => $message
+        ]);
+    }
+
+    return redirect()->back()->with('success', $message);
+})->middleware('auth')->name('suara.bookmark');
+
 Route::get('/dashboard', function () {
     $user = \App\Models\User::with(['badges', 'reputationLogs'])->find(\Illuminate\Support\Facades\Auth::id());
     $suaras = \App\Models\Suara::where('user_id', $user->id)->latest()->get();
+    $savedSuaras = $user->bookmarkedSuaras()->with(['user', 'votes.user'])->latest()->get();
     $levelInfo = \App\Services\ReputationService::getLevelInfo($user->xp);
 
     // Dynamic Database Stats
@@ -155,6 +229,7 @@ Route::get('/dashboard', function () {
         'total_donation' => $totalDonation,
         'total_aksi' => $totalAksi,
         'user_votes_count' => $userVotesCount,
+        'saved_suaras_count' => $savedSuaras->count(),
     ];
 
     $allLevels = \App\Services\ReputationService::getAllLevels();
@@ -162,7 +237,7 @@ Route::get('/dashboard', function () {
     $userRank = \App\Models\User::where('xp', '>', $user->xp)->count() + 1;
     $topUsers = \App\Models\User::orderByDesc('xp')->orderByDesc('trust_score')->take(5)->get();
 
-    return view('dashboard', compact('user', 'suaras', 'levelInfo', 'stats', 'allLevels', 'totalUsers', 'userRank', 'topUsers'));
+    return view('dashboard', compact('user', 'suaras', 'savedSuaras', 'levelInfo', 'stats', 'allLevels', 'totalUsers', 'userRank', 'topUsers'));
 })->middleware('auth');
 
 Route::get('/login', function () {

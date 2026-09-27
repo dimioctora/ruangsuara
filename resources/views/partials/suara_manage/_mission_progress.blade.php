@@ -24,13 +24,13 @@
         @php
             $stages = [
                 1 => ['name' => 'Issue', 'icon' => 'alert-circle'],
-                2 => ['name' => 'Aspiration', 'icon' => 'message-square'],
-                3 => ['name' => 'Decision', 'icon' => 'scale'],
-                4 => ['name' => 'Result', 'icon' => 'rocket'],
+                2 => ['name' => 'Aspiration', 'icon' => 'megaphone'],
+                3 => ['name' => 'Update', 'icon' => 'refresh-cw'],
+                4 => ['name' => 'Decision', 'icon' => 'scale'],
+                5 => ['name' => 'Action Taken', 'icon' => 'zap'],
             ];
             $outcomes = [
-                5 => ['name' => 'Goal Achieved', 'icon' => 'check-circle', 'color' => 'success', 'label' => 'GOOD'],
-                6 => ['name' => 'Mission Failed', 'icon' => 'x-circle', 'color' => 'heat', 'label' => 'BAD'],
+                6 => ['name' => 'Mission Failed', 'icon' => 'x-circle', 'color' => 'heat', 'label' => 'FAILED'],
             ];
             $cStage = $suara->current_stage ?? 1;
             
@@ -38,7 +38,7 @@
             if ($cStage >= 5) {
                 $progressPercent = 100;
             } else {
-                $progressPercent = ($cStage - 1) * 33.3;
+                $progressPercent = ($cStage - 1) * 25;
             }
         @endphp
 

@@ -143,12 +143,12 @@
                 <label class="block text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Lokasi</label>
                 <div class="relative">
                     <i data-lucide="map-pin" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-                    <select class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium appearance-none">
-                        <option>Seluruh Indonesia</option>
-                        <option>Jakarta</option>
-                        <option>Bandung</option>
-                        <option>Surabaya</option>
-                        <option>Medan</option>
+                    <select id="filterLocation" class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium appearance-none">
+                        <option value="">Seluruh Indonesia</option>
+                        <option value="Jakarta">Jakarta</option>
+                        <option value="Bandung">Bandung</option>
+                        <option value="Surabaya">Surabaya</option>
+                        <option value="Medan">Medan</option>
                     </select>
                 </div>
             </div>
@@ -172,7 +172,7 @@
                     @endphp
                     @foreach($categories as $cat)
                     <label class="flex items-center group cursor-pointer">
-                        <input type="checkbox" class="hidden peer">
+                        <input type="checkbox" name="filter_category" value="{{ $cat['name'] }}" class="hidden peer category-checkbox">
                         <div class="w-6 h-6 border-2 border-slate-200 rounded-lg flex items-center justify-center peer-checked:bg-primary peer-checked:border-primary transition-all group-hover:border-primary">
                             <i data-lucide="check" class="w-4 h-4 text-white opacity-0 peer-checked:opacity-100"></i>
                         </div>
@@ -198,7 +198,7 @@
                         </div>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" class="sr-only peer">
+                        <input type="checkbox" id="urgentToggle" class="sr-only peer">
                         <div class="w-11 h-6 bg-red-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
                     </label>
                 </div>
@@ -206,8 +206,8 @@
         </div>
 
         <div class="absolute bottom-0 left-0 right-0 p-8 border-t border-slate-100 bg-white grid grid-cols-2 gap-4">
-            <button class="py-4 border border-slate-200 text-slate-600 font-bold rounded-2xl hover:bg-slate-50 transition-colors">Reset</button>
-            <button class="py-4 bg-primary text-white font-bold rounded-2xl hover:shadow-lg shadow-primary/20 transition-all">Terapkan</button>
+            <button onclick="resetFilters()" class="py-4 border border-slate-200 text-slate-600 font-bold rounded-2xl hover:bg-slate-50 transition-colors">Reset</button>
+            <button onclick="applyFilters()" class="py-4 bg-primary text-white font-bold rounded-2xl hover:shadow-lg shadow-primary/20 transition-all">Terapkan</button>
         </div>
     </aside>
 
@@ -237,148 +237,15 @@
             <!-- List Grid -->
             <div id="suaraContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-16">
                 @forelse($suaras as $m)
-                @php
-                    // Robust Image Loader
-                    if ($m->image) {
-                        if (str_starts_with($m->image, 'http')) {
-                            $img = $m->image;
-                        } else if (str_starts_with($m->image, 'images/')) {
-                            $img = asset($m->image);
-                        } else {
-                            $img = asset('storage/' . $m->image);
-                        }
-                    } else {
-                        $img = 'https://images.unsplash.com/photo-1545147986-a9d6f210df77?auto=format&fit=crop&q=80&w=800';
-                    }
-
-                    // Dynamic Progress Tracking
-                    $total = $m->supporter_count + $m->opponent_count;
-                    $proPct = $total > 0 ? round(($m->supporter_count / $total) * 100) : 0;
-                    $contraPct = $total > 0 ? (100 - $proPct) : 0;
-                @endphp
-                <div class="bg-white rounded-[40px] shadow-sm border border-slate-50 card-hover transition-all duration-300 group flex flex-col overflow-hidden relative animate-fade-in">
-                    <!-- Stretched Link for the entire card -->
-                    <a href="{{ url('/suara-detail/' . $m->id) }}" class="absolute inset-0 z-0" aria-label="Lihat Detail {{ $m->title }}"></a>
-                    
-                    <!-- Card Image -->
-                    <div class="relative w-full aspect-[5/4] overflow-hidden pointer-events-none">
-                        <img src="{{ $img }}" alt="{{ $m->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
-                        <div class="absolute top-6 left-6 flex gap-2">
-                            <span class="px-3 py-1 bg-white/90 backdrop-blur-md text-slate-800 text-[10px] font-black uppercase tracking-widest rounded-lg shadow-sm">{{ $m->category }}</span>
-                        </div>
-                        <div class="absolute bottom-6 left-6 flex items-center gap-2 text-white">
-                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brandAccent"></i>
-                            <span class="text-xs font-bold tracking-wide">{{ $m->location }}</span>
-                        </div>
-                    </div>
-
-                    <!-- Card Body -->
-                    <div class="p-8 flex flex-col flex-1 relative z-10">
-                        <div class="flex items-center justify-between mb-6">
-                            <div class="flex items-center gap-2 text-primary">
-                                <i data-lucide="megaphone" class="w-5 h-5"></i>
-                                <span class="text-xs font-bold uppercase tracking-widest">Suara Aktif</span>
-                            </div>
-                            <div class="flex items-center gap-1 relative z-20">
-                                <button onclick="event.preventDefault(); event.stopPropagation();" class="w-10 h-10 rounded-full flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all">
-                                    <i data-lucide="heart" class="w-5 h-5"></i>
-                                </button>
-                                <button onclick="event.preventDefault(); event.stopPropagation();" class="w-10 h-10 rounded-full flex items-center justify-center text-slate-300 hover:text-primary hover:bg-primary/5 transition-all">
-                                    <i data-lucide="bookmark" class="w-5 h-5"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <h3 class="text-xl font-outfit font-extrabold text-slate-800 mb-3 leading-snug group-hover:text-primary transition-colors line-clamp-2 uppercase  tracking-tighter">
-                            {{ $m->title }}
-                        </h3>
-                        
-                        <p class="text-slate-500 text-sm mb-8 line-clamp-2 font-medium leading-relaxed ">
-                            {{ $m->description }}
-                        </p>
-
-                        <!-- Pro vs Contra Progress Bar -->
-                        <div class="mt-auto pt-8 border-t border-slate-50">
-                            <div class="flex items-center justify-between mb-3 text-sm">
-                                <span class="text-xs font-black text-emerald-600 uppercase tracking-widest">Support Percentage</span>
-                                <div class="flex gap-4">
-                                    <span class="text-xs font-black text-emerald-600">{{ $proPct }}% Pro</span>
-                                    <span class="text-xs font-black text-rose-500">{{ $contraPct }}% Kontra</span>
-                                </div>
-                            </div>
-                            <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden flex mb-8">
-                                <div class="h-full bg-emerald-400 transition-all duration-1000 ease-out" style="width: {{ $proPct }}%"></div>
-                                <div class="h-full bg-rose-400 transition-all duration-1000 ease-out" style="width: {{ $contraPct }}%"></div>
-                            </div>
-                            
-                            <div class="flex items-center justify-between relative z-20">
-                                @php
-                                    $supporters = ($m && $m->votes) ? $m->votes->where('type', 'pro')->pluck('user')->filter()->unique('id') : collect();
-                                    $totalSupporters = (int) ($m->supporter_count ?? 0);
-                                @endphp
-                                <div class="flex items-center gap-3">
-                                    <div class="flex -space-x-2">
-                                        @if($supporters->isNotEmpty())
-                                            @foreach($supporters->take(2) as $sup)
-                                                @if($sup && $sup->avatar_url)
-                                                    <img class="w-8 h-8 rounded-full border-2 border-white shadow-sm object-cover" src="{{ $sup->avatar_url }}" alt="{{ $sup->name }}" title="{{ $sup->name }}">
-                                                @else
-                                                    <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-[10px] flex items-center justify-center shadow-sm uppercase" title="{{ $sup->name ?? 'Warga' }}">
-                                                        {{ substr($sup->name ?? 'W', 0, 2) }}
-                                                    </div>
-                                                @endif
-                                            @endforeach
-                                        @elseif($m->user)
-                                            @if($m->user->avatar_url)
-                                                <img class="w-8 h-8 rounded-full border-2 border-white shadow-sm object-cover" src="{{ $m->user->avatar_url }}" alt="{{ $m->user->name }}" title="Inisiator: {{ $m->user->name }}">
-                                            @else
-                                                <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-[10px] flex items-center justify-center shadow-sm uppercase" title="Inisiator: {{ $m->user->name }}">
-                                                    {{ substr($m->user->name ?? 'W', 0, 2) }}
-                                                </div>
-                                            @endif
-                                        @else
-                                            <div class="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-slate-400">
-                                                <i data-lucide="user" class="w-4 h-4"></i>
-                                            </div>
-                                        @endif
-
-                                        @if($totalSupporters > 2)
-                                            <div class="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-600 shadow-sm">
-                                                +{{ $totalSupporters - min(2, $supporters->count()) }}
-                                            </div>
-                                        @endif
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <span class="text-[10px] font-black text-slate-900 leading-none">{{ number_format($m->supporter_count, 0, ',', '.') }}</span>
-                                        <span class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter leading-none">Voices</span>
-                                    </div>
-                                </div>
-                                <button onclick="event.preventDefault(); event.stopPropagation(); copyShareLinkModal('{{ url('/suara-detail/' . $m->id) }}', '{{ addslashes($m->title) }}')" class="flex items-center gap-1.5 text-slate-400 hover:text-accent transition-colors uppercase text-[10px] font-black tracking-widest">
-                                    <i data-lucide="share-2" class="w-4 h-4"></i> Bagikan
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    @include('partials.suara_card', ['m' => $m])
                 @empty
-                    <div class="col-span-full py-20 flex flex-col items-center justify-center text-center">
+                    <div id="initialEmptyState" class="col-span-full py-20 flex flex-col items-center justify-center text-center">
                         <i data-lucide="inbox" class="w-20 h-20 text-slate-200 mb-6"></i>
-                        <h4 class="text-2xl font-black text-slate-400 uppercase ">Belum ada Suara aktif</h4>
-                        <p class="text-slate-400  mt-2">Jadilah yang pertama menyuarakan perubahan!</p>
+                        <h4 class="text-2xl font-black text-slate-400 uppercase">Belum ada Suara aktif</h4>
+                        <p class="text-slate-400 mt-2">Jadilah yang pertama menyuarakan perubahan!</p>
                         <a href="/create-suara" class="mt-8 px-10 py-4 bg-primary text-white rounded-3xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">Publikasikan Isu</a>
                     </div>
                 @endforelse
-
-                <!-- Skeleton Mockup for Load More -->
-                <div id="skeletonCard" class="bg-white rounded-[32px] p-8 border border-slate-50 shadow-sm animate-pulse hidden">
-                    <div class="w-14 h-14 bg-slate-100 rounded-2xl mb-8"></div>
-                    <div class="h-4 w-20 bg-slate-100 rounded-full mb-6"></div>
-                    <div class="h-7 w-full bg-slate-100 rounded-full mb-3"></div>
-                    <div class="h-7 w-3/4 bg-slate-100 rounded-full mb-8"></div>
-                    <div class="h-20 w-full bg-slate-100 rounded-2xl mb-8"></div>
-                    <div class="h-8 w-full bg-slate-100 rounded-full"></div>
-                </div>
             </div>
 
             <!-- Empty State Illustration -->
@@ -395,11 +262,17 @@
             </div>
 
             <!-- Loader / Scroll Trigger -->
-            <div id="scrollTrigger" class="flex justify-center py-12">
-                <button onclick="simulateSearch()" class="flex items-center gap-3 px-8 py-4 bg-white border border-slate-100 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-200 shadow-sm transition-all group active:scale-95">
-                    <div class="w-5 h-5 border-2 border-slate-200 border-t-primary rounded-full animate-spin"></div>
-                    Memuat Lebih Banyak Suara...
+            <div id="scrollTrigger" class="flex flex-col items-center justify-center py-8">
+                <button id="loadMoreBtn" onclick="loadMoreSuaras()" class="{{ $suaras->hasMorePages() ? 'flex' : 'hidden' }} items-center gap-3 px-8 py-4 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl hover:bg-slate-50 hover:border-slate-300 shadow-sm transition-all group active:scale-95">
+                    <span id="loadMoreSpinner" class="w-5 h-5 border-2 border-slate-300 border-t-accent rounded-full animate-spin hidden"></span>
+                    <span id="loadMoreText">Muat Lebih Banyak Suara</span>
+                    <i id="loadMoreIcon" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-transform group-hover:translate-y-0.5"></i>
                 </button>
+
+                <div id="endOfSuaras" class="{{ !$suaras->hasMorePages() && $suaras->count() > 0 ? 'flex' : 'hidden' }} items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest bg-slate-100/80 px-6 py-3 rounded-full">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i>
+                    <span>Semua Suara telah ditampilkan</span>
+                </div>
             </div>
         </div>
     </main>
@@ -730,6 +603,195 @@
 
     <script>
         lucide.createIcons();
+
+        // State for Pagination & Filtering
+        let currentPage = {{ $suaras->currentPage() }};
+        let hasMorePages = {{ $suaras->hasMorePages() ? 'true' : 'false' }};
+        let isLoadingSuara = false;
+        let activeSearch = '';
+        let activeLocation = '';
+        let activeCategories = [];
+
+        // Filter Sidebar Toggle
+        function toggleFilter() {
+            const panel = document.getElementById('filterPanel');
+            const overlay = document.getElementById('filterOverlay');
+            if (!panel || !overlay) return;
+
+            const isOpen = !panel.classList.contains('translate-x-full');
+            if (isOpen) {
+                panel.classList.add('translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            } else {
+                overlay.classList.remove('hidden');
+                setTimeout(() => {
+                    overlay.classList.remove('opacity-0');
+                    panel.classList.remove('translate-x-full');
+                }, 10);
+            }
+        }
+
+        // Apply filters from sidebar
+        function applyFilters() {
+            const locSelect = document.getElementById('filterLocation');
+            activeLocation = locSelect ? locSelect.value : '';
+
+            const catCheckboxes = document.querySelectorAll('input[name="filter_category"]:checked');
+            activeCategories = Array.from(catCheckboxes).map(cb => cb.value);
+
+            toggleFilter();
+            fetchSuaras(1, true);
+        }
+
+        // Reset all filters
+        function resetFilters() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) searchInput.value = '';
+            activeSearch = '';
+
+            const locSelect = document.getElementById('filterLocation');
+            if (locSelect) locSelect.value = '';
+            activeLocation = '';
+
+            const catCheckboxes = document.querySelectorAll('input[name="filter_category"]');
+            catCheckboxes.forEach(cb => cb.checked = false);
+            activeCategories = [];
+
+            const panel = document.getElementById('filterPanel');
+            if (panel && !panel.classList.contains('translate-x-full')) {
+                toggleFilter();
+            }
+
+            fetchSuaras(1, true);
+        }
+
+        // Fetch Suaras (page 1 or pagination append)
+        async function fetchSuaras(page = 1, isReset = false) {
+            if (isLoadingSuara) return;
+            isLoadingSuara = true;
+
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            const loadMoreSpinner = document.getElementById('loadMoreSpinner');
+            const loadMoreText = document.getElementById('loadMoreText');
+            const loadMoreIcon = document.getElementById('loadMoreIcon');
+            const endOfSuaras = document.getElementById('endOfSuaras');
+            const container = document.getElementById('suaraContainer');
+            const emptyState = document.getElementById('emptyState');
+            const initialEmpty = document.getElementById('initialEmptyState');
+
+            if (isReset) {
+                if (loadMoreBtn) loadMoreBtn.classList.add('hidden');
+                if (endOfSuaras) endOfSuaras.classList.add('hidden');
+            } else {
+                if (loadMoreSpinner) loadMoreSpinner.classList.remove('hidden');
+                if (loadMoreIcon) loadMoreIcon.classList.add('hidden');
+                if (loadMoreText) loadMoreText.innerText = 'Memuat...';
+            }
+
+            try {
+                const params = new URLSearchParams();
+                params.set('page', page);
+                if (activeSearch) params.set('search', activeSearch);
+                if (activeLocation) params.set('location', activeLocation);
+                if (activeCategories.length > 0) params.set('category', activeCategories.join(','));
+
+                const res = await fetch(`/suara?${params.toString()}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!res.ok) throw new Error('Network error');
+
+                const data = await res.json();
+                currentPage = page;
+                hasMorePages = data.hasMore;
+
+                if (isReset) {
+                    container.innerHTML = data.html;
+                    if (data.count === 0) {
+                        if (emptyState) emptyState.classList.remove('hidden');
+                    } else {
+                        if (emptyState) emptyState.classList.add('hidden');
+                        if (initialEmpty) initialEmpty.classList.add('hidden');
+                    }
+                } else {
+                    container.insertAdjacentHTML('beforeend', data.html);
+                }
+
+                lucide.createIcons();
+
+                // Update Load More Button & End text
+                if (hasMorePages) {
+                    if (loadMoreBtn) {
+                        loadMoreBtn.classList.remove('hidden');
+                        loadMoreBtn.classList.add('flex');
+                    }
+                    if (endOfSuaras) endOfSuaras.classList.add('hidden');
+                } else {
+                    if (loadMoreBtn) loadMoreBtn.classList.add('hidden');
+                    if (data.total > 0 && endOfSuaras) {
+                        endOfSuaras.classList.remove('hidden');
+                        endOfSuaras.classList.add('flex');
+                    } else {
+                        if (endOfSuaras) endOfSuaras.classList.add('hidden');
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load suaras:', err);
+            } finally {
+                isLoadingSuara = false;
+                if (loadMoreSpinner) loadMoreSpinner.classList.add('hidden');
+                if (loadMoreIcon) loadMoreIcon.classList.remove('hidden');
+                if (loadMoreText) loadMoreText.innerText = 'Muat Lebih Banyak Suara';
+            }
+        }
+
+        // Triggered by Load More button
+        function loadMoreSuaras() {
+            if (hasMorePages && !isLoadingSuara) {
+                fetchSuaras(currentPage + 1, false);
+            }
+        }
+
+        // Toggle Card Bookmark
+        async function toggleCardBookmark(suaraId, btn) {
+            @guest
+                toggleAuthModal('login');
+                return;
+            @endguest
+
+            try {
+                const response = await fetch(`/suara/${suaraId}/bookmark`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const isBookmarked = data.bookmarked;
+                    const icon = btn.querySelector('i');
+                    if (isBookmarked) {
+                        btn.className = `w-10 h-10 rounded-full flex items-center justify-center transition-all bookmark-btn-${suaraId} text-amber-500 bg-amber-50 shadow-sm`;
+                        if (icon) icon.className = 'w-5 h-5 fill-current text-amber-500';
+                        btn.title = 'Tersimpan (Klik untuk batal)';
+                    } else {
+                        btn.className = `w-10 h-10 rounded-full flex items-center justify-center transition-all bookmark-btn-${suaraId} text-slate-300 hover:text-amber-500 hover:bg-amber-50`;
+                        if (icon) icon.className = 'w-5 h-5';
+                        btn.title = 'Simpan / Pantau Isu';
+                    }
+                    lucide.createIcons();
+                    showShareToastSuara(data.message);
+                }
+            } catch (err) {
+                console.error('Error bookmarking card:', err);
+            }
+        }
 
         function togglePassword(inputId) {
             const input = document.getElementById(inputId);

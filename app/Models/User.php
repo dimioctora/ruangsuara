@@ -53,6 +53,16 @@ class User extends Authenticatable
         return $this->belongsToMany(Badge::class, 'user_badges')->withPivot('earned_at');
     }
 
+    public function bookmarks()
+    {
+        return $this->hasMany(SuaraBookmark::class);
+    }
+
+    public function bookmarkedSuaras()
+    {
+        return $this->belongsToMany(Suara::class, 'suara_bookmarks', 'user_id', 'suara_id')->withTimestamps();
+    }
+
     public function reputationLogs()
     {
         return $this->hasMany(ReputationLog::class);

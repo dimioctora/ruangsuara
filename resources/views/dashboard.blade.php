@@ -619,7 +619,7 @@
                     <!-- Tabs / Segmentation -->
                     <nav class="flex items-center gap-4 sm:gap-8 border-b border-slate-100 px-2 overflow-x-auto custom-scrollbar whitespace-nowrap">
                         <button onclick="filterSuaraList('all')" id="tab-filter-all" class="pb-4 text-sm font-black text-accent border-b-2 border-accent transition-all tracking-wide">
-                            Semua ({{ $suaras->count() }})
+                            Semua ({{ $suaras->count() + $savedSuaras->count() }})
                         </button>
                         <button onclick="filterSuaraList('published')" id="tab-filter-published" class="pb-4 text-sm font-bold text-slate-400 hover:text-slate-600 border-b-2 border-transparent transition-all tracking-wide flex items-center gap-2">
                             <span>Dipublikasikan</span>
@@ -629,17 +629,22 @@
                             <span>Draft Tersimpan</span>
                             <span class="px-2 py-0.5 bg-amber-50 text-amber-600 rounded-full text-[10px] font-black">{{ $suaras->where('status', 'draft')->count() }}</span>
                         </button>
+                        <button onclick="filterSuaraList('saved')" id="tab-filter-saved" class="pb-4 text-sm font-bold text-slate-400 hover:text-slate-600 border-b-2 border-transparent transition-all tracking-wide flex items-center gap-2">
+                            <i data-lucide="bookmark" class="w-3.5 h-3.5 text-amber-500"></i>
+                            <span>Isu Dipantau</span>
+                            <span class="px-2 py-0.5 bg-amber-50 text-amber-600 rounded-full text-[10px] font-black">{{ $savedSuaras->count() }}</span>
+                        </button>
                     </nav>
 
                     <!-- Movement List (Card-Based UI) -->
                     <div class="grid grid-cols-1 gap-6" id="suara-list-container">
-                        @if($suaras->isEmpty())
+                        @if($suaras->isEmpty() && $savedSuaras->isEmpty())
                             <div class="bg-white rounded-[40px] p-12 card-shadow border border-slate-100 text-center space-y-4">
                                 <div class="w-16 h-16 bg-slate-50 text-slate-200 rounded-full flex items-center justify-center mx-auto">
                                     <i data-lucide="folder-open" class="w-8 h-8"></i>
                                 </div>
                                 <h4 class="text-xl font-outfit font-black text-slate-900">Belum Ada Suara atau Draft</h4>
-                                <p class="text-sm text-slate-400 font-medium max-w-sm mx-auto ">Anda belum memiliki suara atau draft isu. Mulai tulis aspirasimu sekarang!</p>
+                                <p class="text-sm text-slate-400 font-medium max-w-sm mx-auto">Anda belum memiliki suara atau draft isu. Mulai tulis aspirasimu sekarang!</p>
                                 <div class="pt-4">
                                      <a href="/create-suara" class="inline-flex items-center gap-3 px-8 py-3 bg-accent text-white font-black rounded-2xl text-[10px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all">
                                          Buat Suara Sekarang
@@ -696,7 +701,7 @@
                                             </div>
                                         </div>
 
-                                        <p class="text-sm text-slate-500 font-medium line-clamp-2 ">{{ $suara->description ?? 'Belum ada deskripsi detail.' }}</p>
+                                        <p class="text-sm text-slate-500 font-medium line-clamp-2">{{ $suara->description ?? 'Belum ada deskripsi detail.' }}</p>
 
                                         <!-- Mini Timeline -->
                                         @if(!$isDraft)
@@ -733,7 +738,7 @@
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm" title="Hapus Draft">
-                                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                                                         </button>
                                                     </form>
                                                     <a href="/create-suara?draft_id={{ $suara->id }}" class="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-amber-500/20 flex items-center gap-2">
@@ -748,6 +753,70 @@
                                                         Kelola
                                                     </button>
                                                 @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+
+                        <!-- Saved / Monitored Suaras -->
+                        @foreach($savedSuaras as $saved)
+                            <div class="suara-item bg-white rounded-[40px] p-8 card-shadow border border-amber-100/80 hover:border-amber-400/50 transition-all group relative bg-amber-50/10" data-status="saved">
+                                <div class="flex flex-col md:flex-row gap-8">
+                                    <!-- Thumbnail -->
+                                    <div class="w-full md:w-48 h-48 md:h-auto rounded-[32px] overflow-hidden flex-shrink-0 relative bg-slate-100 group">
+                                        @php
+                                            if ($saved->image) {
+                                                $sImg = str_starts_with($saved->image, 'http') ? $saved->image : (str_starts_with($saved->image, 'images/') ? asset($saved->image) : asset('storage/' . $saved->image));
+                                            } else {
+                                                $sImg = 'https://images.unsplash.com/photo-1545147986-a9d6f210df77?auto=format&fit=crop&q=80&w=800';
+                                            }
+                                        @endphp
+                                        <img src="{{ $sImg }}" alt="{{ $saved->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                                        <div class="absolute bottom-4 left-4">
+                                            <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-lg text-[8px] font-black text-white uppercase tracking-widest border border-white/20">{{ $saved->category ?? 'Umum' }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex-1 space-y-4">
+                                        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+                                            <div class="space-y-1">
+                                                <h4 class="text-xl font-outfit font-black text-slate-900 leading-tight group-hover:text-accent transition-colors">
+                                                    <a href="{{ url('/suara-detail/' . $saved->id) }}">{{ $saved->title }}</a>
+                                                </h4>
+                                                <div class="flex items-center gap-2 text-slate-400">
+                                                    <i data-lucide="map-pin" class="w-3 h-3 text-amber-500"></i>
+                                                    <span class="text-[10px] font-bold uppercase tracking-widest">{{ $saved->location ?? 'Indonesia' }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-2 flex-shrink-0">
+                                                <span class="px-3 py-1 bg-amber-50 text-amber-700 text-[9px] font-black uppercase tracking-widest rounded-full ring-1 ring-amber-200 flex items-center gap-1.5">
+                                                    <i data-lucide="bookmark" class="w-3 h-3 text-amber-500 fill-current"></i>
+                                                    Sedang Dipantau
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <p class="text-sm text-slate-500 font-medium line-clamp-2">{{ $saved->description ?? 'Tidak ada deskripsi.' }}</p>
+
+                                        <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                                            <div class="flex items-center gap-6">
+                                                <div class="flex items-center gap-2 text-slate-400">
+                                                    <i data-lucide="megaphone" class="w-4 h-4 text-accent"></i>
+                                                    <span class="text-xs font-bold">{{ $saved->supporter_count ?? 0 }} Dukungan</span>
+                                                </div>
+                                                <div class="flex items-center gap-2 text-slate-400">
+                                                    <i data-lucide="user" class="w-4 h-4"></i>
+                                                    <span class="text-[10px] font-bold text-slate-400">Inisiator: {{ $saved->user->name ?? 'Warga' }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <a href="{{ url('/suara-detail/' . $saved->id) }}" class="px-6 py-2.5 bg-accent text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-accent/20 flex items-center gap-2">
+                                                    <span>Pantau Detail</span>
+                                                    <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -1524,7 +1593,7 @@
         }
 
         function filterSuaraList(status) {
-            const tabs = ['all', 'published', 'draft'];
+            const tabs = ['all', 'published', 'draft', 'saved'];
             tabs.forEach(t => {
                 const btn = document.getElementById('tab-filter-' + t);
                 if (btn) {
@@ -1544,7 +1613,9 @@
                 } else if (status === 'draft') {
                     item.style.display = (itemStatus === 'draft') ? '' : 'none';
                 } else if (status === 'published') {
-                    item.style.display = (itemStatus !== 'draft') ? '' : 'none';
+                    item.style.display = (itemStatus !== 'draft' && itemStatus !== 'saved') ? '' : 'none';
+                } else if (status === 'saved') {
+                    item.style.display = (itemStatus === 'saved') ? '' : 'none';
                 }
             });
         }

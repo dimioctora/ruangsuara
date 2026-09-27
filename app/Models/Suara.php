@@ -49,4 +49,16 @@ class Suara extends Model
     {
         return $this->hasMany(SuaraComment::class);
     }
+
+    public function bookmarks()
+    {
+        return $this->hasMany(SuaraBookmark::class);
+    }
+
+    public function isBookmarkedBy($user = null)
+    {
+        $userId = $user ? (is_object($user) ? $user->id : $user) : \Illuminate\Support\Facades\Auth::id();
+        if (!$userId) return false;
+        return $this->bookmarks()->where('user_id', $userId)->exists();
+    }
 }

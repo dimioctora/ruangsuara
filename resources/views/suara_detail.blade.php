@@ -175,9 +175,16 @@
                 <img src="{{ $img }}" alt="{{ $suara->title }}" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
                 
-                <!-- Quick Share on Hero -->
-                <div class="absolute top-6 right-6 z-20">
-                    <button type="button" onclick="shareNative('{{ addslashes($suara->title) }}', '{{ url()->current() }}')" class="px-4 py-2.5 bg-slate-900/50 hover:bg-slate-900/80 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-xl transition-all active:scale-95 flex items-center gap-2 font-outfit text-xs font-bold">
+                <!-- Quick Actions on Hero (Bookmark & Share) -->
+                <div class="absolute top-6 right-6 z-20 flex items-center gap-3">
+                    @php
+                        $isBookmarked = auth()->check() ? $suara->isBookmarkedBy(auth()->user()) : false;
+                    @endphp
+                    <button type="button" id="heroBookmarkBtn" onclick="toggleBookmarkIssue({{ $suara->id }})" class="px-4 py-2.5 backdrop-blur-md rounded-2xl border shadow-xl transition-all active:scale-95 flex items-center gap-2 font-outfit text-xs font-bold {{ $isBookmarked ? 'bg-amber-500 text-white border-amber-400 shadow-amber-500/30 ring-2 ring-amber-400/40' : 'bg-slate-900/60 hover:bg-slate-900/90 text-white border-white/20' }}" title="Pantau / Simpan Isu">
+                        <i data-lucide="bookmark" id="heroBookmarkIcon" class="w-4 h-4 {{ $isBookmarked ? 'fill-current text-white' : 'text-amber-400' }}"></i>
+                        <span id="heroBookmarkText">{{ $isBookmarked ? 'Tersimpan' : 'Pantau Isu' }}</span>
+                    </button>
+                    <button type="button" onclick="shareNative('{{ addslashes($suara->title) }}', '{{ url()->current() }}')" class="px-4 py-2.5 bg-slate-900/60 hover:bg-slate-900/90 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-xl transition-all active:scale-95 flex items-center gap-2 font-outfit text-xs font-bold">
                         <i data-lucide="share-2" class="w-4 h-4 text-emerald-400"></i>
                         <span>Bagikan</span>
                     </button>
@@ -239,71 +246,69 @@
                         <i data-lucide="activity" class="text-accent w-6 h-6"></i>
                         Heat Index Timeline
                     </h3>
+                    @php
+                        $stageNames = [
+                            1 => 'Issue Dibuat',
+                            2 => 'Penggalangan Aspirasi',
+                            3 => 'Pembaruan & Bukti',
+                            4 => 'Kajian & Keputusan',
+                            5 => 'Aksi Nyata Selesai'
+                        ];
+                        $curStage = (int) ($suara->current_stage ?? 3);
+                        if ($curStage < 1) $curStage = 1;
+                        if ($curStage > 5) $curStage = 5;
+                    @endphp
                     <div class="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full text-xs font-bold ring-1 ring-emerald-100">
                         <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
-                        Status: Sedang Berlangsung
+                        Status: {{ $stageNames[$curStage] ?? 'Sedang Berlangsung' }}
                     </div>
                 </div>
 
-                <!-- Horizontal Scrollable / Full Width Responsive Timeline -->
+                <!-- Horizontal Scrollable / Full Width Responsive Timeline (issue > aspiration > update > decision > action taken) -->
                 <div class="overflow-x-auto pb-4 custom-scrollbar">
-                    <div class="flex items-start justify-between min-w-[750px] lg:min-w-full relative px-2 sm:px-6">
-                        <!-- Step 1 (Done) -->
-                        <div class="flex flex-col items-center text-center flex-1 relative z-10">
-                            <div class="w-12 h-12 rounded-full bg-accent text-white flex items-center justify-center mb-4 shadow-lg shadow-accent/30 ring-4 ring-white">
-                                <i data-lucide="alert-circle" class="w-6 h-6"></i>
-                            </div>
-                            <span class="text-xs font-black uppercase tracking-widest text-accent mb-1">Issue</span>
-                            <span class="text-[10px] font-bold text-slate-400">12 Jan 2026</span>
-                            <div class="absolute top-6 left-1/2 w-full h-1 bg-accent -z-10"></div>
-                        </div>
+                    <div class="flex items-start justify-between min-w-[680px] lg:min-w-full relative px-2 sm:px-6">
+                        @php
+                            $steps = [
+                                1 => ['name' => 'Issue', 'icon' => 'alert-circle', 'date' => $suara->created_at ? $suara->created_at->format('d M Y') : '12 Jan 2026'],
+                                2 => ['name' => 'Aspiration', 'icon' => 'megaphone', 'date' => ($curStage >= 2 ? ($suara->created_at ? $suara->created_at->addDays(3)->format('d M Y') : '1 Feb 2026') : 'Mendatang')],
+                                3 => ['name' => 'Update', 'icon' => 'refresh-cw', 'date' => ($curStage == 3 ? 'Sedang Proses' : ($curStage > 3 ? 'Selesai' : 'Mendatang'))],
+                                4 => ['name' => 'Decision', 'icon' => 'scale', 'date' => ($curStage == 4 ? 'Sedang Proses' : ($curStage > 4 ? 'Disetujui' : 'Mendatang'))],
+                                5 => ['name' => 'Action Taken', 'icon' => 'zap', 'date' => ($curStage == 5 ? 'Aksi Berjalan' : 'Mendatang')],
+                            ];
+                        @endphp
 
-                        <!-- Step 2 (Done) -->
-                        <div class="flex flex-col items-center text-center flex-1 relative z-10">
-                            <div class="w-12 h-12 rounded-full bg-accent text-white flex items-center justify-center mb-4 shadow-lg shadow-accent/30 ring-4 ring-white animate-subtle">
-                                <i data-lucide="megaphone" class="w-6 h-6"></i>
-                            </div>
-                            <span class="text-xs font-black uppercase tracking-widest text-accent mb-1">Aspiration</span>
-                            <span class="text-[10px] font-bold text-slate-400">1 Feb 2026</span>
-                            <div class="absolute top-6 left-1/2 w-full h-1 bg-accent -z-10"></div>
-                        </div>
+                        @foreach($steps as $idx => $step)
+                            @php
+                                $isDone = $idx < $curStage;
+                                $isActive = $idx == $curStage;
+                                $isFuture = $idx > $curStage;
+                            @endphp
+                            <div class="flex flex-col items-center text-center flex-1 relative z-10">
+                                @if($isDone)
+                                    <div class="w-12 h-12 rounded-full bg-accent text-white flex items-center justify-center mb-4 shadow-lg shadow-accent/30 ring-4 ring-white">
+                                        <i data-lucide="{{ $step['icon'] }}" class="w-6 h-6"></i>
+                                    </div>
+                                    <span class="text-xs font-black uppercase tracking-widest text-accent mb-1">{{ $step['name'] }}</span>
+                                    <span class="text-[10px] font-bold text-slate-400">{{ $step['date'] }}</span>
+                                @elseif($isActive)
+                                    <div class="w-14 h-14 rounded-full bg-white border-4 border-accent text-accent flex items-center justify-center mb-4 shadow-xl shadow-accent/20 ring-4 ring-white scale-110">
+                                        <i data-lucide="{{ $step['icon'] }}" class="w-7 h-7"></i>
+                                    </div>
+                                    <span class="text-xs font-black uppercase tracking-widest text-slate-900 mb-1">{{ $step['name'] }}</span>
+                                    <span class="text-[10px] font-black text-accent bg-accent/10 px-2.5 py-0.5 rounded-full">{{ $step['date'] }}</span>
+                                @else
+                                    <div class="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 text-slate-300 flex items-center justify-center mb-4 ring-4 ring-white">
+                                        <i data-lucide="{{ $step['icon'] }}" class="w-6 h-6"></i>
+                                    </div>
+                                    <span class="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">{{ $step['name'] }}</span>
+                                    <span class="text-[10px] font-bold text-slate-300">{{ $step['date'] }}</span>
+                                @endif
 
-                        <!-- Step 3 (Active) -->
-                        <div class="flex flex-col items-center text-center flex-1 relative z-10">
-                            <div class="w-14 h-14 rounded-full bg-white border-4 border-accent text-accent flex items-center justify-center mb-4 shadow-xl shadow-accent/10 ring-4 ring-white scale-110">
-                                <i data-lucide="scale" class="w-7 h-7"></i>
+                                @if($idx < 5)
+                                    <div class="absolute {{ $isActive ? 'top-7' : 'top-6' }} left-1/2 w-full h-1 {{ $idx < $curStage ? 'bg-accent' : 'bg-slate-100' }} -z-10"></div>
+                                @endif
                             </div>
-                            <span class="text-xs font-black uppercase tracking-widest text-slate-900 mb-1">Decision</span>
-                            <span class="text-[10px] font-bold text-accent">Sedang Proses</span>
-                            <div class="absolute top-7 left-1/2 w-full h-1 bg-slate-100 -z-10"></div>
-                        </div>
-
-                        <!-- Step 4 (Future) -->
-                        <div class="flex flex-col items-center text-center flex-1 relative z-10">
-                            <div class="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 text-slate-300 flex items-center justify-center mb-4 ring-4 ring-white">
-                                <i data-lucide="check-circle" class="w-6 h-6"></i>
-                            </div>
-                            <span class="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Realized</span>
-                            <span class="text-[10px] font-bold text-slate-300">Mendatang</span>
-                            <div class="absolute top-6 left-1/2 w-full h-1 bg-slate-100 -z-10"></div>
-                        </div>
-
-                        <!-- Step 5 (Future) -->
-                        <div class="flex flex-col items-center text-center flex-1 relative z-10">
-                            <div class="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 text-slate-300 flex items-center justify-center mb-4 ring-4 ring-white">
-                                <i data-lucide="fast-forward" class="w-6 h-6"></i>
-                            </div>
-                            <span class="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Next Steps</span>
-                            <div class="absolute top-6 left-1/2 w-full h-1 bg-slate-100 -z-10"></div>
-                        </div>
-
-                        <!-- Step 6 (Future) -->
-                        <div class="flex flex-col items-center text-center flex-1 relative z-10">
-                            <div class="w-12 h-12 rounded-full bg-slate-50 border border-slate-200 text-slate-300 flex items-center justify-center mb-4 ring-4 ring-white">
-                                <i data-lucide="zap" class="w-6 h-6"></i>
-                            </div>
-                            <span class="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Action Taken</span>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -319,56 +324,112 @@
                         </p>
                         
                         <div class="grid md:grid-cols-2 gap-8 mb-10">
-                            <!-- Poin Kritis -->
-                            <div class="p-8 bg-red-50/50 rounded-3xl border border-red-100/80">
-                                <h4 class="font-bold text-slate-900 mb-4 flex items-center gap-2 font-outfit text-base">
-                                    <i data-lucide="shield-alert" class="w-5 h-5 text-red-500"></i>
-                                    Poin Kritis & Kondisi Lapangan
-                                </h4>
-                                <ul class="space-y-4 text-sm font-medium text-slate-600 list-none p-0">
-                                    <li class="flex gap-3 items-start">
-                                        <span class="w-2 h-2 rounded-full bg-red-500 mt-1.5 flex-shrink-0"></span>
-                                        <span>Lokasi Masalah: <strong class="text-slate-900">{{ $suara->location ?? 'Tidak ditentukan' }}</strong></span>
-                                    </li>
-                                    <li class="flex gap-3 items-start">
-                                        <span class="w-2 h-2 rounded-full bg-red-500 mt-1.5 flex-shrink-0"></span>
-                                        <span>Kategori Isu: <strong class="text-slate-900">{{ $suara->category ?? 'Laporan Warga' }}</strong></span>
-                                    </li>
-                                    @if($suara->reference_link)
-                                        <li class="flex gap-3 items-start">
-                                            <span class="w-2 h-2 rounded-full bg-red-500 mt-1.5 flex-shrink-0"></span>
-                                            <span class="break-all">Dokumen / Bukti: <a href="{{ $suara->reference_link }}" target="_blank" class="text-accent font-bold hover:underline inline-flex items-center gap-1">Cek Referensi Validasi <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a></span>
-                                        </li>
-                                    @else
-                                        <li class="flex gap-3 items-start">
-                                            <span class="w-2 h-2 rounded-full bg-red-500 mt-1.5 flex-shrink-0"></span>
-                                            <span>Membutuhkan keterlibatan publik untuk mempercepat penanganan otoritas terkait.</span>
-                                        </li>
-                                    @endif
-                                </ul>
+                            <!-- Poin Kritis & Bukti Terlampir -->
+                            <div class="p-8 bg-red-50/40 rounded-3xl border border-red-100/80 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between mb-5">
+                                        <h4 class="font-bold text-slate-900 flex items-center gap-2 font-outfit text-base">
+                                            <i data-lucide="shield-alert" class="w-5 h-5 text-red-500"></i>
+                                            Poin Kritis
+                                        </h4>
+                                        <span class="text-[9px] font-black uppercase tracking-wider text-red-600 bg-red-100/80 px-2.5 py-1 rounded-full">Bukti Terlampir</span>
+                                    </div>
+                                    
+                                    <div class="space-y-4 text-sm font-medium text-slate-700">
+                                        <!-- Bukti Foto Lapangan -->
+                                        <div class="p-4 bg-white/90 rounded-2xl border border-red-100 shadow-sm space-y-2">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                                                    <i data-lucide="image" class="w-4 h-4 text-red-500"></i>
+                                                    Foto Bukti Terlampir
+                                                </span>
+                                                <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">Terverifikasi</span>
+                                            </div>
+                                            <div class="flex items-center gap-3 pt-1">
+                                                <div class="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-slate-200 bg-slate-100">
+                                                    <img src="{{ $img }}" alt="Bukti {{ $suara->title }}" class="w-full h-full object-cover">
+                                                </div>
+                                                <div class="min-w-0 flex-1">
+                                                    <p class="text-xs font-bold text-slate-900 truncate">{{ $suara->title }}</p>
+                                                    <p class="text-[10px] text-slate-400">Diunggah oleh {{ $suara->user->name ?? 'Inisiator Warga' }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Bukti Dokumen / Referensi -->
+                                        <div class="p-4 bg-white/90 rounded-2xl border border-red-100 shadow-sm space-y-2">
+                                            <span class="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                                                <i data-lucide="file-text" class="w-4 h-4 text-red-500"></i>
+                                                Dokumen / Tautan Validasi
+                                            </span>
+                                            @if($suara->reference_link)
+                                                <div class="pt-1">
+                                                    <a href="{{ $suara->reference_link }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs font-bold text-accent hover:text-blue-700 hover:underline break-all bg-accent/5 hover:bg-accent/10 px-3 py-2.5 rounded-xl transition-colors border border-accent/10 w-full">
+                                                        <i data-lucide="external-link" class="w-3.5 h-3.5 flex-shrink-0"></i>
+                                                        <span class="truncate">Buka Tautan Rujukan & Dokumen Validasi</span>
+                                                    </a>
+                                                </div>
+                                            @else
+                                                <p class="text-xs text-slate-400 italic pt-0.5">Dokumen pelengkap sedang dalam proses pengumpulan bersama tim pendukung.</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <!-- Target Solusi -->
-                            <div class="p-8 bg-accent/5 rounded-3xl border border-accent/10">
-                                <h4 class="font-bold text-accent mb-4 flex items-center gap-2 font-outfit text-base">
-                                    <i data-lucide="target" class="w-5 h-5"></i>
-                                    Target Solusi & Harapan
-                                </h4>
-                                <div class="space-y-4 text-sm font-medium text-slate-700 leading-relaxed">
-                                    @if(!empty($suara->expected_impact))
-                                        <div class="p-4 bg-white rounded-2xl border border-accent/10 shadow-sm text-slate-900 font-semibold">
-                                            "{{ $suara->expected_impact }}"
-                                        </div>
-                                    @else
-                                        <p class="text-slate-500 italic">Mendorong kolaborasi warga dan pemangku kebijakan untuk menyelesaikan isu ini secara tuntas.</p>
-                                    @endif
+                            <!-- Target Solusi & Harapan -->
+                            <div class="p-8 bg-accent/5 rounded-3xl border border-accent/10 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between mb-5">
+                                        <h4 class="font-bold text-accent flex items-center gap-2 font-outfit text-base">
+                                            <i data-lucide="target" class="w-5 h-5"></i>
+                                            Target Solusi & Harapan
+                                        </h4>
+                                        <span class="text-[9px] font-black uppercase tracking-wider text-accent bg-accent/10 px-2.5 py-1 rounded-full">Aspirasi Warga</span>
+                                    </div>
 
-                                    @if($suara->is_fundraising)
-                                        <div class="flex items-center gap-2 text-xs font-black text-emerald-600 bg-emerald-50 p-3 rounded-xl ring-1 ring-emerald-100">
-                                            <i data-lucide="banknote" class="w-4 h-4"></i>
-                                            <span>Target Pendanaan: Rp {{ number_format($suara->fund_target, 0, ',', '.') }}</span>
-                                        </div>
-                                    @endif
+                                    @php
+                                        $impactText = $suara->expected_impact ?? '';
+                                        $points = [];
+                                        if (!empty($impactText)) {
+                                            $rawParts = preg_split('/(\r\n|\n|\r|(?<=\.)\s+)/', $impactText, -1, PREG_SPLIT_NO_EMPTY);
+                                            foreach ($rawParts as $part) {
+                                                $trimmed = trim($part, " \t\n\r\0\x0B\"'");
+                                                if (!empty($trimmed)) {
+                                                    $points[] = $trimmed;
+                                                }
+                                            }
+                                        }
+                                    @endphp
+
+                                    <div class="space-y-3">
+                                        @if(!empty($points))
+                                            @foreach($points as $idx => $pt)
+                                                <div class="p-4 bg-white/95 rounded-2xl border border-accent/10 shadow-sm flex items-start gap-3.5 transition-all hover:border-accent/30">
+                                                    <div class="w-6 h-6 rounded-full bg-accent/10 text-accent flex items-center justify-center flex-shrink-0 mt-0.5 font-bold text-xs">
+                                                        {{ $idx + 1 }}
+                                                    </div>
+                                                    <p class="text-xs sm:text-sm font-medium text-slate-800 leading-relaxed">
+                                                        {{ $pt }}
+                                                    </p>
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <div class="p-4 bg-white/95 rounded-2xl border border-accent/10 shadow-sm text-slate-500 text-xs sm:text-sm italic">
+                                                Mendorong kolaborasi warga, pengambil kebijakan, dan lembaga terkait untuk menyelesaikan isu ini secara adil dan berkelanjutan.
+                                            </div>
+                                        @endif
+
+                                        @if($suara->is_fundraising)
+                                            <div class="flex items-center justify-between text-xs font-black text-emerald-700 bg-emerald-50/90 p-4 rounded-2xl border border-emerald-200/80 shadow-sm mt-3">
+                                                <span class="flex items-center gap-2">
+                                                    <i data-lucide="banknote" class="w-4 h-4 text-emerald-600"></i>
+                                                    Target Pendanaan Gerakan
+                                                </span>
+                                                <span class="font-outfit text-sm font-extrabold text-emerald-600">Rp {{ number_format($suara->fund_target, 0, ',', '.') }}</span>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -550,6 +611,28 @@
                                 <p id="sidebarKontraCount" class="text-xl font-black text-rose-500">{{ number_format($suara->opponent_count, 0, ',', '.') }}</p>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Monitor / Bookmark Card -->
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-[32px] p-8 shadow-xl text-white space-y-4 relative overflow-hidden">
+                        <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400 flex items-center gap-1.5">
+                                <i data-lucide="bell-ring" class="w-3.5 h-3.5"></i>
+                                Monitoring Isu
+                            </span>
+                            <span id="sidebarBookmarkBadge" class="text-[10px] font-black px-2.5 py-1 rounded-full {{ $isBookmarked ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40' : 'bg-slate-800 text-slate-400' }}">
+                                {{ $isBookmarked ? 'Aktif Dipantau' : 'Belum Dipantau' }}
+                            </span>
+                        </div>
+                        <h4 class="text-lg font-outfit font-black leading-snug">Pantau Perkembangan Isu</h4>
+                        <p class="text-xs text-slate-300 leading-relaxed font-medium">
+                            Simpan isu ini untuk memantau setiap langkah penyelesaian dan respon pihak berwenang secara berkala.
+                        </p>
+                        <button type="button" id="sidebarBookmarkBtn" onclick="toggleBookmarkIssue({{ $suara->id }})" class="w-full py-3.5 rounded-2xl font-bold font-outfit text-xs uppercase tracking-wider flex items-center justify-center gap-2.5 transition-all shadow-lg active:scale-95 {{ $isBookmarked ? 'bg-amber-500 hover:bg-amber-600 text-white shadow-amber-500/20' : 'bg-white hover:bg-slate-100 text-slate-900' }}">
+                            <i data-lucide="bookmark" id="sidebarBookmarkIcon" class="w-4 h-4 {{ $isBookmarked ? 'fill-current' : 'text-amber-500' }}"></i>
+                            <span id="sidebarBookmarkText">{{ $isBookmarked ? 'Hapus Dari Pantauan' : 'Pantau & Simpan Isu' }}</span>
+                        </button>
                     </div>
 
                     <!-- Sebarkan Aspirasi (Sidebar Share Widget) -->
@@ -1080,6 +1163,75 @@
                 toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
                 toast.classList.remove('translate-y-0', 'opacity-100');
             }, 3000);
+        }
+
+        async function toggleBookmarkIssue(suaraId) {
+            @guest
+                toggleAuthModal('login');
+                return;
+            @endguest
+
+            try {
+                const response = await fetch(`/suara/${suaraId}/bookmark`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const isBookmarked = data.bookmarked;
+
+                    // Update Hero Button
+                    const heroBtn = document.getElementById('heroBookmarkBtn');
+                    const heroIcon = document.getElementById('heroBookmarkIcon');
+                    const heroText = document.getElementById('heroBookmarkText');
+                    if (heroBtn && heroIcon && heroText) {
+                        if (isBookmarked) {
+                            heroBtn.className = 'px-4 py-2.5 backdrop-blur-md rounded-2xl border shadow-xl transition-all active:scale-95 flex items-center gap-2 font-outfit text-xs font-bold bg-amber-500 text-white border-amber-400 shadow-amber-500/30 ring-2 ring-amber-400/40';
+                            heroIcon.className = 'w-4 h-4 fill-current text-white';
+                            heroText.innerText = 'Tersimpan';
+                        } else {
+                            heroBtn.className = 'px-4 py-2.5 bg-slate-900/60 hover:bg-slate-900/90 text-white border-white/20 backdrop-blur-md rounded-2xl border shadow-xl transition-all active:scale-95 flex items-center gap-2 font-outfit text-xs font-bold';
+                            heroIcon.className = 'w-4 h-4 text-amber-400';
+                            heroText.innerText = 'Pantau Isu';
+                        }
+                    }
+
+                    // Update Sidebar Widget
+                    const sideBadge = document.getElementById('sidebarBookmarkBadge');
+                    const sideBtn = document.getElementById('sidebarBookmarkBtn');
+                    const sideIcon = document.getElementById('sidebarBookmarkIcon');
+                    const sideText = document.getElementById('sidebarBookmarkText');
+                    if (sideBtn) {
+                        if (isBookmarked) {
+                            if (sideBadge) {
+                                sideBadge.className = 'text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40';
+                                sideBadge.innerText = 'Aktif Dipantau';
+                            }
+                            sideBtn.className = 'w-full py-3.5 rounded-2xl font-bold font-outfit text-xs uppercase tracking-wider flex items-center justify-center gap-2.5 transition-all shadow-lg active:scale-95 bg-amber-500 hover:bg-amber-600 text-white shadow-amber-500/20';
+                            if (sideIcon) sideIcon.className = 'w-4 h-4 fill-current';
+                            if (sideText) sideText.innerText = 'Hapus Dari Pantauan';
+                        } else {
+                            if (sideBadge) {
+                                sideBadge.className = 'text-[10px] font-black px-2.5 py-1 rounded-full bg-slate-800 text-slate-400';
+                                sideBadge.innerText = 'Belum Dipantau';
+                            }
+                            sideBtn.className = 'w-full py-3.5 rounded-2xl font-bold font-outfit text-xs uppercase tracking-wider flex items-center justify-center gap-2.5 transition-all shadow-lg active:scale-95 bg-white hover:bg-slate-100 text-slate-900';
+                            if (sideIcon) sideIcon.className = 'w-4 h-4 text-amber-500';
+                            if (sideText) sideText.innerText = 'Pantau & Simpan Isu';
+                        }
+                    }
+
+                    lucide.createIcons();
+                    showShareToast(data.message);
+                }
+            } catch (err) {
+                console.error('Error toggling bookmark:', err);
+                showShareToast('Gagal memproses simpan isu.');
+            }
         }
     </script>
     
