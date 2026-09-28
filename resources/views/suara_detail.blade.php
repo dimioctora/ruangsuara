@@ -56,6 +56,12 @@
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
+        .prose, .prose p, .prose span, .prose div, .prose li, .prose strong, .prose em, .prose h1, .prose h2, .prose h3 {
+            color: #1E293B !important;
+        }
+        .prose a, .prose a * {
+            color: #2563EB !important;
+        }
         .timeline-step::after {
             content: '';
             position: absolute;

@@ -64,6 +64,24 @@
             color: #1E293B !important;
             padding: 1.25rem !important;
         }
+        .ql-editor, 
+        .ql-editor *, 
+        .ql-editor p, 
+        .ql-editor span, 
+        .ql-editor strong, 
+        .ql-editor em, 
+        .ql-editor u, 
+        .ql-editor s, 
+        .ql-editor li, 
+        .ql-editor h1, 
+        .ql-editor h2, 
+        .ql-editor h3 {
+            color: #1E293B !important;
+            background-color: transparent !important;
+        }
+        .ql-editor a, .ql-editor a * {
+            color: #2563EB !important;
+        }
         .ql-editor.ql-blank::before {
             color: #94A3B8 !important;
             font-style: normal !important;
@@ -81,6 +99,14 @@
             font-weight: 800 !important;
             margin-top: 1rem !important;
             margin-bottom: 0.5rem !important;
+        }
+
+        /* Rendered Prose Content */
+        .prose, .prose p, .prose span, .prose div, .prose li, .prose strong, .prose em, .prose h1, .prose h2, .prose h3 {
+            color: #1E293B !important;
+        }
+        .prose a, .prose a * {
+            color: #2563EB !important;
         }
     </style>
 </head>
@@ -237,6 +263,16 @@
         let impactQuill = null;
         let updateQuill = null;
 
+        function sanitizePastedDelta(delta) {
+            delta.ops.forEach(op => {
+                if (op.attributes) {
+                    delete op.attributes.color;
+                    delete op.attributes.background;
+                }
+            });
+            return delta;
+        }
+
         function initQuillEditors() {
             // 1. Issue Description Editor
             const issueElem = document.getElementById('issueDescriptionEditor');
@@ -253,6 +289,10 @@
                             ['clean']
                         ]
                     }
+                });
+
+                issueQuill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+                    return sanitizePastedDelta(delta);
                 });
 
                 const initialContent = {!! json_encode($suara->description) !!};
@@ -280,6 +320,10 @@
                     }
                 });
 
+                impactQuill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+                    return sanitizePastedDelta(delta);
+                });
+
                 const initialImpact = {!! json_encode($suara->expected_impact) !!};
                 if (initialImpact) {
                     if (initialImpact.includes('<p>') || initialImpact.includes('<ul>') || initialImpact.includes('<ol>') || initialImpact.includes('<br>')) {
@@ -305,6 +349,10 @@
                             ['clean']
                         ]
                     }
+                });
+
+                updateQuill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+                    return sanitizePastedDelta(delta);
                 });
             }
         }
