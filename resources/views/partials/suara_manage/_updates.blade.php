@@ -15,7 +15,7 @@
             </span>
         </div>
 
-        <form action="/suara-manage/{{ $suara->id }}/post-update" method="POST" enctype="multipart/form-data" class="space-y-6">
+        <form id="postUpdateForm" action="/suara-manage/{{ $suara->id }}/post-update" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             <div class="grid md:grid-cols-3 gap-6">
                 <div class="md:col-span-2 space-y-2">
@@ -39,10 +39,14 @@
                 </div>
             </div>
 
+            <!-- WYSIWYG EDITOR FOR UPDATE CONTENT -->
             <div class="space-y-2">
-                <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Rincian Perkembangan / Kronologi Terbaru</label>
-                <textarea name="content" rows="4" required placeholder="Tuliskan perkembangan terbaru, hasil pertemuan, tindak lanjut di lapangan, atau respon pihak terkait secara transparan..." 
-                    class="w-full p-5 bg-slate-50 border border-slate-100 rounded-3xl font-medium text-slate-800 focus:bg-white focus:border-accent focus:ring-4 focus:ring-accent/5 outline-none transition-all text-sm leading-relaxed"></textarea>
+                <div class="flex items-center justify-between ml-1">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Rincian Perkembangan / Kronologi Terbaru (WYSIWYG)</label>
+                    <span class="text-[10px] text-slate-400 font-bold">Gunakan toolbar untuk membuat paragraf & poin-poin</span>
+                </div>
+                <div id="updateContentEditor"></div>
+                <input type="hidden" name="content" id="updateContentInput">
             </div>
 
             <div class="grid md:grid-cols-2 gap-6">
@@ -127,7 +131,13 @@
                         </div>
 
                         <h5 class="text-lg font-bold text-slate-900 font-outfit">{{ $update->title }}</h5>
-                        <p class="text-slate-700 text-sm leading-relaxed whitespace-pre-line">{{ $update->content }}</p>
+                        <div class="text-slate-700 text-sm leading-relaxed prose prose-slate max-w-none prose-p:mb-2 prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5">
+                            @if(strip_tags($update->content) !== $update->content)
+                                {!! $update->content !!}
+                            @else
+                                {!! nl2br(e($update->content)) !!}
+                            @endif
+                        </div>
 
                         @if($update->image)
                             <div class="mt-4 rounded-2xl overflow-hidden border border-slate-200/80 max-w-xl">

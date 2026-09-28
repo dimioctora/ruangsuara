@@ -11,7 +11,7 @@
             </div>
             
             <div class="flex items-center gap-3">
-                <button @click="isEditing = !isEditing" 
+                <button @click="isEditing = !isEditing; if (isEditing) { $nextTick(() => { initQuillEditors(); }); }" 
                     class="px-6 py-3 rounded-2xl border border-slate-200 text-slate-700 text-xs font-bold hover:border-accent hover:text-accent transition-all shadow-sm active:scale-95 flex items-center gap-2 bg-white"
                     :class="isEditing ? 'border-amber-500 text-amber-600 bg-amber-50/50' : ''">
                     <i data-lucide="edit-3" class="w-4 h-4" x-show="!isEditing"></i>
@@ -44,13 +44,19 @@
                 </div>
             </div>
 
-            <!-- Description Box -->
+            <!-- Description Box with Rich HTML / WYSIWYG Support -->
             <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100 space-y-4">
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
                     <i data-lucide="align-left" class="w-4 h-4 text-accent"></i>
                     Deskripsi Lengkap
                 </p>
-                <p class="text-base text-slate-700 leading-relaxed whitespace-pre-line font-medium">{{ $suara->description }}</p>
+                <div class="text-base text-slate-700 leading-relaxed font-medium prose prose-slate max-w-none prose-p:mb-3 prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:my-1 prose-strong:font-bold prose-headings:font-bold">
+                    @if(strip_tags($suara->description) !== $suara->description)
+                        {!! $suara->description !!}
+                    @else
+                        {!! nl2br(e($suara->description)) !!}
+                    @endif
+                </div>
             </div>
 
             <!-- Expected Impact & Reference Link -->
@@ -79,9 +85,9 @@
             </div>
         </div>
 
-        <!-- EDIT FORM MODE -->
+        <!-- EDIT FORM MODE (WYSIWYG FORMAT) -->
         <div x-show="isEditing" x-cloak class="animate-fade-in">
-            <form action="/suara-manage/{{ $suara->id }}/update-issue" method="POST" enctype="multipart/form-data" class="space-y-8">
+            <form id="editIssueForm" action="/suara-manage/{{ $suara->id }}/update-issue" method="POST" enctype="multipart/form-data" class="space-y-8">
                 @csrf
                 <div class="grid md:grid-cols-2 gap-8">
                     <div class="space-y-2">
@@ -115,10 +121,14 @@
                     </div>
                 </div>
 
+                <!-- WYSIWYG EDITOR FOR DESCRIPTION -->
                 <div class="space-y-2">
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Deskripsi Lengkap Masalah</label>
-                    <textarea name="description" rows="6" required
-                        class="w-full p-6 bg-slate-50 border border-slate-200 rounded-3xl font-medium text-sm text-slate-900 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/5 outline-none transition-all leading-relaxed">{{ old('description', $suara->description) }}</textarea>
+                    <div class="flex items-center justify-between ml-1">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Deskripsi Lengkap Masalah (Format WYSIWYG)</label>
+                        <span class="text-[10px] text-slate-400 font-bold">Gunakan toolbar untuk membuat paragraf & poin-poin</span>
+                    </div>
+                    <div id="issueDescriptionEditor"></div>
+                    <input type="hidden" name="description" id="issueDescriptionInput" value="{{ old('description', $suara->description) }}">
                 </div>
 
                 <div class="space-y-2">

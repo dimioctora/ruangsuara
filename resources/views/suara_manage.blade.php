@@ -28,6 +28,9 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Quill.js WYSIWYG -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -37,6 +40,48 @@
         body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
         .font-outfit { font-family: 'Outfit', sans-serif; }
         .card-shadow { box-shadow: 0 10px 40px -10px rgba(15, 23, 42, 0.05); }
+
+        /* Custom Quill Styling */
+        .ql-toolbar.ql-snow {
+            border: 1px solid #E2E8F0 !important;
+            border-top-left-radius: 1.25rem !important;
+            border-top-right-radius: 1.25rem !important;
+            background-color: #F8FAFC !important;
+            padding: 0.75rem 1rem !important;
+        }
+        .ql-container.ql-snow {
+            border: 1px solid #E2E8F0 !important;
+            border-top: none !important;
+            border-bottom-left-radius: 1.25rem !important;
+            border-bottom-right-radius: 1.25rem !important;
+            background-color: #FFFFFF !important;
+            font-family: inherit !important;
+            font-size: 0.925rem !important;
+        }
+        .ql-editor {
+            min-height: 220px !important;
+            line-height: 1.75 !important;
+            color: #1E293B !important;
+            padding: 1.25rem !important;
+        }
+        .ql-editor.ql-blank::before {
+            color: #94A3B8 !important;
+            font-style: normal !important;
+        }
+        .ql-editor p {
+            margin-bottom: 0.75rem !important;
+        }
+        .ql-editor ul, .ql-editor ol {
+            padding-left: 1.5rem !important;
+            margin-bottom: 0.75rem !important;
+        }
+        .ql-editor ul { list-style-type: disc !important; }
+        .ql-editor ol { list-style-type: decimal !important; }
+        .ql-editor h2, .ql-editor h3 {
+            font-weight: 800 !important;
+            margin-top: 1rem !important;
+            margin-bottom: 0.5rem !important;
+        }
     </style>
 </head>
 <body class="text-slate-900 selection:bg-accent/10 selection:text-accent font-sans bg-slate-50 min-h-screen" 
@@ -188,8 +233,80 @@
     </main>
 
     <script>
+        let issueQuill = null;
+        let updateQuill = null;
+
+        function initQuillEditors() {
+            // 1. Issue Description Editor
+            const issueElem = document.getElementById('issueDescriptionEditor');
+            if (issueElem && !issueQuill) {
+                issueQuill = new Quill('#issueDescriptionEditor', {
+                    theme: 'snow',
+                    placeholder: 'Tuliskan deskripsi permasalahan secara mendalam, kronologi, dan poin-poin penting...',
+                    modules: {
+                        toolbar: [
+                            [{ 'header': [2, 3, false] }],
+                            ['bold', 'italic', 'underline', 'strike'],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            ['blockquote', 'link'],
+                            ['clean']
+                        ]
+                    }
+                });
+
+                const initialContent = {!! json_encode($suara->description) !!};
+                if (initialContent) {
+                    if (initialContent.includes('<p>') || initialContent.includes('<ul>') || initialContent.includes('<ol>') || initialContent.includes('<br>')) {
+                        issueQuill.root.innerHTML = initialContent;
+                    } else {
+                        issueQuill.setText(initialContent);
+                    }
+                }
+            }
+
+            // 2. Post Update Content Editor
+            const updateElem = document.getElementById('updateContentEditor');
+            if (updateElem && !updateQuill) {
+                updateQuill = new Quill('#updateContentEditor', {
+                    theme: 'snow',
+                    placeholder: 'Tuliskan perkembangan terbaru, hasil pertemuan, tindak lanjut di lapangan, atau respon pihak terkait secara transparan...',
+                    modules: {
+                        toolbar: [
+                            [{ 'header': [2, 3, false] }],
+                            ['bold', 'italic', 'underline'],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            ['blockquote', 'link'],
+                            ['clean']
+                        ]
+                    }
+                });
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
+            initQuillEditors();
+
+            // Sync on submit
+            const editForm = document.getElementById('editIssueForm');
+            if (editForm) {
+                editForm.addEventListener('submit', function(e) {
+                    const hiddenInput = document.getElementById('issueDescriptionInput');
+                    if (issueQuill && hiddenInput) {
+                        hiddenInput.value = issueQuill.root.innerHTML;
+                    }
+                });
+            }
+
+            const postUpdateForm = document.getElementById('postUpdateForm');
+            if (postUpdateForm) {
+                postUpdateForm.addEventListener('submit', function(e) {
+                    const hiddenInput = document.getElementById('updateContentInput');
+                    if (updateQuill && hiddenInput) {
+                        hiddenInput.value = updateQuill.root.innerHTML;
+                    }
+                });
+            }
         });
     </script>
 </body>

@@ -319,9 +319,13 @@
                     <!-- Issue Description -->
                     <article class="bg-white rounded-[32px] md:rounded-[40px] p-6 sm:p-8 md:p-12 shadow-sm border border-slate-100 prose prose-slate max-w-none">
                         <h2 class="text-3xl font-outfit font-extrabold text-slate-900 mb-8">Deskripsi Masalah</h2>
-                        <p class="text-slate-600 leading-relaxed text-lg mb-8 whitespace-pre-line">
-                            {{ $suara->description }}
-                        </p>
+                        <div class="text-slate-700 leading-relaxed text-base sm:text-lg mb-8 prose prose-slate max-w-none prose-p:mb-4 prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:my-1 prose-strong:font-bold prose-headings:font-bold">
+                            @if(strip_tags($suara->description) !== $suara->description)
+                                {!! $suara->description !!}
+                            @else
+                                {!! nl2br(e($suara->description)) !!}
+                            @endif
+                        </div>
                         
                         <div class="grid md:grid-cols-2 gap-8 mb-10">
                             <!-- Poin Kritis & Bukti Terlampir -->
@@ -519,7 +523,13 @@
 
                                             <div>
                                                 <h4 class="text-lg sm:text-xl font-bold font-outfit text-slate-900 mb-2">{{ $update->title }}</h4>
-                                                <p class="text-slate-700 text-sm sm:text-base leading-relaxed whitespace-pre-line">{{ $update->content }}</p>
+                                                <div class="text-slate-700 text-sm sm:text-base leading-relaxed prose prose-slate max-w-none prose-p:mb-2 prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5 prose-li:my-0.5">
+                                                    @if(strip_tags($update->content) !== $update->content)
+                                                        {!! $update->content !!}
+                                                    @else
+                                                        {!! nl2br(e($update->content)) !!}
+                                                    @endif
+                                                </div>
                                             </div>
 
                                             @if($update->image)
