@@ -845,7 +845,19 @@
                 <form id="loginView" method="POST" action="/login" class="space-y-6">
                     @csrf
                     @if($errors->has('auth') && session('auth') == 'login')
-                        <div class="bg-red-50 text-red-500 text-xs p-3 rounded-xl font-bold">{{ $errors->first('auth') }}</div>
+                        <div class="bg-red-50 border border-red-200 text-red-600 text-xs p-3.5 rounded-2xl font-bold flex items-center gap-2">
+                            <i data-lucide="alert-circle" class="w-4 h-4 text-red-500 shrink-0"></i>
+                            <span>{{ $errors->first('auth') }}</span>
+                        </div>
+                    @elseif($errors->any() && session('auth') == 'login')
+                        <div class="bg-red-50 border border-red-200 text-red-600 text-xs p-3.5 rounded-2xl font-medium space-y-1.5">
+                            @foreach($errors->all() as $error)
+                                <div class="flex items-start gap-2">
+                                    <i data-lucide="alert-circle" class="w-4 h-4 text-red-500 mt-0.5 shrink-0"></i>
+                                    <span>{{ $error }}</span>
+                                </div>
+                            @endforeach
+                        </div>
                     @endif
                     <div class="space-y-2">
                         <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Email</label>
@@ -893,8 +905,15 @@
                 <!-- Signup View -->
                 <form id="signupView" method="POST" action="/signup" class="hidden space-y-6">
                     @csrf
-                    @if($errors->any() && (!session('auth') || session('auth') != 'login'))
-                        <div class="bg-red-50 text-red-500 text-xs p-3 rounded-xl font-bold">Terdapat kesalahan pada input Anda. Silakan periksa kembali.</div>
+                    @if($errors->any() && (!session('auth') || session('auth') == 'signup'))
+                        <div class="bg-red-50 border border-red-200 text-red-600 text-xs p-3.5 rounded-2xl font-medium space-y-1.5">
+                            @foreach($errors->all() as $error)
+                                <div class="flex items-start gap-2">
+                                    <i data-lucide="alert-circle" class="w-4 h-4 text-red-500 mt-0.5 shrink-0"></i>
+                                    <span>{{ $error }}</span>
+                                </div>
+                            @endforeach
+                        </div>
                     @endif
                     <div class="space-y-2">
                         <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Nama Lengkap</label>
@@ -1008,13 +1027,18 @@
             }
         }
 
-        // Auto-open modal based on query parameter
+        // Auto-open modal based on query parameter or session errors
         window.addEventListener('load', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const authType = urlParams.get('auth');
             if (authType === 'login' || authType === 'signup') {
                 toggleAuthModal(authType);
             }
+            @if(session('auth') === 'signup' || ($errors->any() && session('auth') !== 'login' && !$errors->has('auth')))
+                toggleAuthModal('signup');
+            @elseif(session('auth') === 'login' || $errors->has('auth'))
+                toggleAuthModal('login');
+            @endif
         });
 
         // Intersection Observer for scroll reveal
