@@ -972,7 +972,7 @@
                                 </div>
                                 <div class="p-6">
                                     <h4 class="font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-accent transition-colors font-outfit text-base">{{ $relSuara->title }}</h4>
-                                    <p class="text-xs text-slate-400 font-medium line-clamp-2">{{ $relSuara->description }}</p>
+                                    <p class="text-xs text-slate-400 font-medium line-clamp-2">{{ strip_tags($relSuara->description) }}</p>
                                 </div>
                             </div>
                             <div class="p-6 pt-0 flex items-center justify-between text-xs font-bold border-t border-slate-50 mt-4">

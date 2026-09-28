@@ -701,7 +701,7 @@
                                             </div>
                                         </div>
 
-                                        <p class="text-sm text-slate-500 font-medium line-clamp-2">{{ $suara->description ?? 'Belum ada deskripsi detail.' }}</p>
+                                        <p class="text-sm text-slate-500 font-medium line-clamp-2">{{ strip_tags($suara->description ?? 'Belum ada deskripsi detail.') }}</p>
 
                                         <!-- Mini Timeline -->
                                         @if(!$isDraft)
@@ -799,7 +799,7 @@
                                             </div>
                                         </div>
 
-                                        <p class="text-sm text-slate-500 font-medium line-clamp-2">{{ $saved->description ?? 'Tidak ada deskripsi.' }}</p>
+                                        <p class="text-sm text-slate-500 font-medium line-clamp-2">{{ strip_tags($saved->description ?? 'Tidak ada deskripsi.') }}</p>
 
                                         <div class="flex items-center justify-between pt-4 border-t border-slate-50">
                                             <div class="flex items-center gap-6">

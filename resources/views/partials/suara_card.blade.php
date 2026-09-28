@@ -59,7 +59,7 @@
         </h3>
         
         <p class="text-slate-500 text-sm mb-8 line-clamp-2 font-medium leading-relaxed">
-            {{ $m->description }}
+            {{ strip_tags($m->description) }}
         </p>
 
         <!-- Pro vs Contra Progress Bar -->
