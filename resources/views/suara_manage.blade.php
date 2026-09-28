@@ -234,6 +234,7 @@
 
     <script>
         let issueQuill = null;
+        let impactQuill = null;
         let updateQuill = null;
 
         function initQuillEditors() {
@@ -264,7 +265,32 @@
                 }
             }
 
-            // 2. Post Update Content Editor
+            // 2. Expected Impact Editor
+            const impactElem = document.getElementById('issueImpactEditor');
+            if (impactElem && !impactQuill) {
+                impactQuill = new Quill('#issueImpactEditor', {
+                    theme: 'snow',
+                    placeholder: 'Tuliskan poin-poin target dan dampak yang diharapkan...',
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline'],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            ['clean']
+                        ]
+                    }
+                });
+
+                const initialImpact = {!! json_encode($suara->expected_impact) !!};
+                if (initialImpact) {
+                    if (initialImpact.includes('<p>') || initialImpact.includes('<ul>') || initialImpact.includes('<ol>') || initialImpact.includes('<br>')) {
+                        impactQuill.root.innerHTML = initialImpact;
+                    } else {
+                        impactQuill.setText(initialImpact);
+                    }
+                }
+            }
+
+            // 3. Post Update Content Editor
             const updateElem = document.getElementById('updateContentEditor');
             if (updateElem && !updateQuill) {
                 updateQuill = new Quill('#updateContentEditor', {
@@ -291,9 +317,13 @@
             const editForm = document.getElementById('editIssueForm');
             if (editForm) {
                 editForm.addEventListener('submit', function(e) {
-                    const hiddenInput = document.getElementById('issueDescriptionInput');
-                    if (issueQuill && hiddenInput) {
-                        hiddenInput.value = issueQuill.root.innerHTML;
+                    const hiddenDesc = document.getElementById('issueDescriptionInput');
+                    if (issueQuill && hiddenDesc) {
+                        hiddenDesc.value = issueQuill.root.innerHTML;
+                    }
+                    const hiddenImpact = document.getElementById('issueImpactInput');
+                    if (impactQuill && hiddenImpact) {
+                        hiddenImpact.value = impactQuill.root.innerHTML;
                     }
                 });
             }

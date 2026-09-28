@@ -407,7 +407,11 @@
                                     @endphp
 
                                     <div class="space-y-3">
-                                        @if(!empty($points))
+                                        @if(strip_tags($impactText) !== $impactText)
+                                            <div class="p-5 bg-white/95 rounded-2xl border border-accent/10 shadow-sm text-xs sm:text-sm font-medium text-slate-800 leading-relaxed prose prose-slate max-w-none prose-p:mb-2 prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5 prose-li:my-1">
+                                                {!! $impactText !!}
+                                            </div>
+                                        @elseif(!empty($points))
                                             @foreach($points as $idx => $pt)
                                                 <div class="p-4 bg-white/95 rounded-2xl border border-accent/10 shadow-sm flex items-start gap-3.5 transition-all hover:border-accent/30">
                                                     <div class="w-6 h-6 rounded-full bg-accent/10 text-accent flex items-center justify-center flex-shrink-0 mt-0.5 font-bold text-xs">

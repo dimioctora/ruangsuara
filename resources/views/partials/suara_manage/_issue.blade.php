@@ -67,7 +67,13 @@
                             <i data-lucide="target" class="w-4 h-4"></i>
                             Dampak yang Diharapkan
                         </p>
-                        <p class="text-sm font-medium text-slate-800">{{ $suara->expected_impact }}</p>
+                        <div class="text-sm font-medium text-slate-800 leading-relaxed prose prose-slate max-w-none prose-p:mb-2 prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5">
+                            @if(strip_tags($suara->expected_impact) !== $suara->expected_impact)
+                                {!! $suara->expected_impact !!}
+                            @else
+                                {!! nl2br(e($suara->expected_impact)) !!}
+                            @endif
+                        </div>
                     </div>
                 @endif
 
@@ -131,10 +137,14 @@
                     <input type="hidden" name="description" id="issueDescriptionInput" value="{{ old('description', $suara->description) }}">
                 </div>
 
+                <!-- WYSIWYG EDITOR FOR EXPECTED IMPACT -->
                 <div class="space-y-2">
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Dampak yang Diharapkan (Opsional)</label>
-                    <input type="text" name="expected_impact" value="{{ old('expected_impact', $suara->expected_impact) }}" placeholder="Contoh: Perbaikan jalan selesai dalam 30 hari..."
-                        class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-medium text-sm text-slate-900 focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/5 outline-none transition-all">
+                    <div class="flex items-center justify-between ml-1">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Dampak yang Diharapkan / Target Solusi (Format WYSIWYG)</label>
+                        <span class="text-[10px] text-slate-400 font-bold">Gunakan poin-poin atau paragraf target</span>
+                    </div>
+                    <div id="issueImpactEditor"></div>
+                    <input type="hidden" name="expected_impact" id="issueImpactInput" value="{{ old('expected_impact', $suara->expected_impact) }}">
                 </div>
 
                 <div class="space-y-2">
