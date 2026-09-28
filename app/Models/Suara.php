@@ -35,6 +35,11 @@ class Suara extends Model
         return $this->hasMany(FieldMission::class);
     }
 
+    public function updates()
+    {
+        return $this->hasMany(SuaraUpdate::class)->latest();
+    }
+
     public function financeTransactions()
     {
         return $this->hasMany(FinanceTransaction::class);

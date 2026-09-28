@@ -1,145 +1,100 @@
-<!-- VIEW: KEUANGAN (FINANCIAL DASHBOARD) -->
-<div x-show="activeTab === 'keuangan'" x-transition:enter="transition ease-out duration-500" class="space-y-12">
-    <div class="flex items-center justify-between">
-        <div class="flex items-center gap-4">
-            <div class="w-2 h-10 bg-success rounded-full"></div>
-            <h2 class="text-4xl font-outfit font-black text-slate-900  uppercase tracking-tighter">Movement Capital Center</h2>
+<!-- VIEW: KEUANGAN & TRANSPARANSI DANA -->
+<div x-show="activeTab === 'keuangan'" x-transition:enter="transition ease-out duration-500" class="space-y-10">
+    <div class="bg-white p-8 md:p-12 rounded-[40px] border border-slate-100 card-shadow">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-100">
+            <div class="flex items-center gap-4">
+                <div class="w-3 h-10 bg-emerald-500 rounded-full"></div>
+                <div>
+                    <h3 class="text-xl md:text-2xl font-black font-outfit text-slate-900 tracking-tight">Transparansi Dana & Logistik</h3>
+                    <p class="text-xs text-slate-400 font-medium">Laporan penerimaan dan penggunaan dana secara terbuka dan akuntabel.</p>
+                </div>
+            </div>
         </div>
-        <div class="flex items-center gap-4">
-            @if($suara->is_fundraising)
-                <button class="px-8 py-4 bg-success text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-success/20">+ Allocate Resources</button>
-            @endif
-        </div>
-    </div>
-    
-    @if($suara->is_fundraising)
-        @php
-            $totalIn = $suara->financeTransactions->where('type', 'inbound')->sum('amount');
-            $totalOut = $suara->financeTransactions->where('type', 'outbound')->sum('amount');
-            $liquidity = $totalIn - $totalOut;
-            $txs = $suara->financeTransactions()->latest()->take(5)->get();
-        @endphp
-        <div class="animate-fade-in space-y-12">
-            <!-- Summary Command Markers -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="bg-white p-10 rounded-[48px] border border-slate-100 card-shadow text-center space-y-2 relative overflow-hidden group">
-                    <div class="absolute top-0 left-0 w-2 h-full bg-success"></div>
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest  leading-none">Total Inbound Donasi</p>
-                    <p class="text-3xl font-outfit font-black text-slate-900  tracking-tighter">Rp {{ number_format($totalIn, 0, ',', '.') }}</p>
-                    <p class="text-[9px] font-bold text-success uppercase ">Verified Assets</p>
+
+        @if($suara->is_fundraising)
+            @php
+                $totalIn = $suara->financeTransactions->where('type', 'inbound')->sum('amount');
+                $totalOut = $suara->financeTransactions->where('type', 'outbound')->sum('amount');
+                $balance = $totalIn - $totalOut;
+                $txs = $suara->financeTransactions()->latest()->get();
+            @endphp
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="p-6 bg-emerald-50/70 border border-emerald-100 rounded-3xl">
+                    <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1">Total Dana Terkumpul</p>
+                    <p class="text-2xl font-black font-outfit text-slate-900">Rp {{ number_format($totalIn, 0, ',', '.') }}</p>
                 </div>
-                <div class="bg-white p-10 rounded-[48px] border border-slate-100 card-shadow text-center space-y-2 relative">
-                    <div class="absolute top-0 left-0 w-2 h-full bg-heat"></div>
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest  leading-none">Operational Usage</p>
-                    <p class="text-3xl font-outfit font-black text-slate-900  tracking-tighter">Rp {{ number_format($totalOut, 0, ',', '.') }}</p>
-                    <p class="text-[9px] font-bold text-heat uppercase ">Expenditure Log</p>
+
+                <div class="p-6 bg-red-50/70 border border-red-100 rounded-3xl">
+                    <p class="text-[10px] font-black text-red-600 uppercase tracking-widest mb-1">Total Pengeluaran / Aksi</p>
+                    <p class="text-2xl font-black font-outfit text-slate-900">Rp {{ number_format($totalOut, 0, ',', '.') }}</p>
                 </div>
-                <div class="bg-slate-900 p-10 rounded-[48px] text-white text-center space-y-4 shadow-2xl shadow-primary/30 group">
-                    <p class="text-[10px] font-black text-success uppercase tracking-widest  leading-none border-b border-white/10 pb-4">Net Liquidity</p>
-                    <p class="text-4xl font-outfit font-black text-white  tracking-tighter">Rp {{ number_format($liquidity, 0, ',', '.') }}</p>
-                    <button class="w-full py-4 bg-success text-white rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white hover:text-slate-900 transition-all ">
-                        <i data-lucide="arrow-down-right" class="w-4 h-4"></i> Withdraw Funds
-                    </button>
-                </div>
-                <div class="bg-white p-10 rounded-[48px] border border-slate-100 card-shadow flex flex-col items-center justify-center space-y-3 group hover:bg-accent hover:text-white transition-all cursor-pointer">
-                    <i data-lucide="file-text" class="w-8 h-8 text-accent group-hover:text-white transition-colors"></i>
-                    <span class="text-[10px] font-black uppercase tracking-widest ">Fiscal Blueprint</span>
+
+                <div class="p-6 bg-slate-900 text-white rounded-3xl shadow-xl">
+                    <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Sisa Saldo Transparan</p>
+                    <p class="text-2xl font-black font-outfit text-white">Rp {{ number_format($balance, 0, ',', '.') }}</p>
                 </div>
             </div>
 
-            <!-- Secondary Tactical Grid -->
-            <div class="grid lg:grid-cols-3 gap-12">
-                <!-- Transactions History -->
-                <div class="lg:col-span-2 space-y-6">
-                    <h4 class="text-[12px] font-black text-slate-900 uppercase tracking-[0.3em]  px-6">Tactical Ledger History</h4>
-                    <div class="bg-white rounded-[56px] border border-slate-100 card-shadow overflow-hidden">
-                         <table class="w-full text-left border-collapse">
-                             <thead>
-                                 <tr class="bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ">
-                                     <th class="px-10 py-6">Transaction</th>
-                                     <th class="px-10 py-6">Sector</th>
-                                     <th class="px-10 py-6">Magnitude</th>
-                                     <th class="px-10 py-6">Status</th>
-                                 </tr>
-                             </thead>
-                             <tbody class="text-slate-700 font-medium text-xs divide-y divide-slate-50">
-                                 @forelse($txs as $tx)
-                                     <tr class="hover:bg-slate-50/50 transition-colors group">
-                                         <td class="px-10 py-8  uppercase font-bold text-slate-900 relative">
-                                             <div class="flex items-center gap-4">
-                                                 <div class="w-8 h-8 rounded-lg {{ $tx->type == 'inbound' ? 'bg-success/10 text-success' : 'bg-heat/10 text-heat' }} flex items-center justify-center">
-                                                     <i data-lucide="{{ $tx->type == 'inbound' ? 'arrow-up-right' : 'arrow-down-left' }}" class="w-4 h-4"></i>
-                                                 </div>
-                                                 {{ $tx->description }}
-                                             </div>
-                                         </td>
-                                         <td class="px-10 py-8  font-bold uppercase">{{ $tx->sector ?: 'GENERAL' }}</td>
-                                         <td class="px-10 py-8  font-black {{ $tx->type == 'inbound' ? 'text-success' : 'text-heat' }}">
-                                             {{ $tx->type == 'inbound' ? '+' : '-' }}Rp {{ number_format($tx->amount, 0, ',', '.') }}
-                                         </td>
-                                         <td class="px-10 py-8">
-                                             <span class="px-4 py-1.5 {{ $tx->status == 'secured' ? 'bg-success/5 text-success border-success/10' : 'bg-warning/5 text-warning border-warning/10' }} rounded-full text-[9px] font-black uppercase border ">
-                                                 {{ $tx->status }}
-                                             </span>
-                                         </td>
-                                     </tr>
-                                 @empty
-                                     <tr>
-                                         <td colspan="4" class="px-10 py-16 text-center text-slate-400  font-black uppercase tracking-widest">No Intelligence Data Recorded</td>
-                                     </tr>
-                                 @endforelse
-                             </tbody>
-                         </table>
+            <!-- ADD TRANSACTION FORM -->
+            <div class="p-6 md:p-8 bg-slate-50 rounded-3xl border border-slate-200/80 mb-10 space-y-4">
+                <h5 class="text-xs font-black uppercase tracking-wider text-slate-700">Catat Transaksi Dana Baru</h5>
+                <form action="/suara-manage/{{ $suara->id }}/add-finance" method="POST" class="grid sm:grid-cols-12 gap-4">
+                    @csrf
+                    <div class="sm:col-span-3">
+                        <select name="type" required class="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl font-bold text-xs text-slate-800 outline-none">
+                            <option value="inbound">Pemasukan / Donasi (+)</option>
+                            <option value="outbound">Pengeluaran / Biaya (-)</option>
+                        </select>
                     </div>
-                </div>
-
-                <!-- Resource Allocation Brief -->
-                <div class="space-y-6">
-                    <h4 class="text-[12px] font-black text-slate-900 uppercase tracking-[0.3em]  px-6">Tactical Allocation</h4>
-                    <div class="bg-slate-900 p-10 rounded-[56px] text-white space-y-8 relative overflow-hidden group shadow-2xl shadow-primary/20 h-full">
-                        <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-accent via-success to-heat"></div>
-                        <div class="space-y-2">
-                            <p class="text-[9px] font-black text-accent uppercase tracking-widest ">Budget Intel</p>
-                            <h5 class="text-xl font-black uppercase  tracking-tighter">Current Deployment Blueprint</h5>
-                        </div>
-                        <div class="space-y-8">
-                            @php
-                                $sectors = ['LOGISTICS', 'COMMUNICATION', 'FIELD OPS', 'MEDICAL'];
-                            @endphp
-                            @foreach($sectors as $sec)
-                                @php $sPercent = rand(10, 40); @endphp
-                                <div class="space-y-3">
-                                    <div class="flex justify-between text-[10px] font-black uppercase tracking-widest  leading-none">
-                                        <span>{{ $sec }}</span>
-                                        <span class="text-accent">{{ $sPercent }}%</span>
-                                    </div>
-                                    <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                        <div class="h-full bg-accent" style="width: {{ $sPercent }}%"></div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                        <button class="w-full py-5 bg-white text-slate-900 rounded-[32px] text-[10px] font-black uppercase tracking-widest hover:bg-accent hover:text-white transition-all shadow-xl  flex items-center justify-center gap-3">
-                            <i data-lucide="pie-chart" class="w-4 h-4"></i> Optimize Expenditures
+                    <div class="sm:col-span-3">
+                        <input type="number" name="amount" required min="1" placeholder="Nominal (Rp)" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl font-bold text-xs text-slate-800 outline-none">
+                    </div>
+                    <div class="sm:col-span-4">
+                        <input type="text" name="description" required placeholder="Keterangan transaksi..." class="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl font-medium text-xs text-slate-800 outline-none">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <button type="submit" class="w-full py-3 bg-accent text-white font-black text-xs uppercase tracking-wider rounded-2xl hover:bg-accent/90 transition-all">
+                            Simpan
                         </button>
                     </div>
-                </div>
+                </form>
             </div>
-        </div>
-    @else
-        <!-- No Fundraising View -->
-        <div class="bg-slate-50 border-4 border-dashed border-slate-200 rounded-[64px] p-24 flex flex-col items-center justify-center text-center space-y-8 group hover:border-success/40 transition-all">
-            <div class="w-32 h-32 bg-slate-200 rounded-[48px] flex items-center justify-center text-slate-400 group-hover:scale-110 group-hover:bg-success/10 group-hover:text-success transition-all duration-700">
-                <i data-lucide="heart-off" class="w-16 h-16"></i>
-            </div>
-            <div>
-                <h4 class="text-3xl font-outfit font-black text-slate-400 uppercase tracking-tighter ">Capital Stream Offline</h4>
-                <p class="text-slate-400 font-medium  mt-2">Fundraising features are not activated for this mission. Contact command to enable fiscal support.</p>
-            </div>
-            <button class="px-12 py-6 bg-white border border-slate-200 rounded-[32px] text-slate-500 font-black text-[10px] uppercase tracking-widest hover:border-success hover:text-success transition-all  flex items-center gap-4 shadow-sm">
-                <i data-lucide="plus" class="w-5 h-5"></i> Activate Fundraising Profile
-            </button>
-        </div>
-    @endif
 
+            <!-- TRANSACTIONS LIST -->
+            <div class="space-y-3">
+                <h5 class="text-xs font-black uppercase tracking-wider text-slate-400 px-1">Riwayat Aliran Dana</h5>
+                @if($txs->isEmpty())
+                    <p class="text-xs text-slate-400 py-6 text-center">Belum ada catatan transaksi keuangan.</p>
+                @else
+                    <div class="divide-y divide-slate-100 bg-slate-50/50 rounded-3xl border border-slate-100 overflow-hidden">
+                        @foreach($txs as $tx)
+                            <div class="p-4 sm:p-5 flex items-center justify-between gap-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-xl {{ $tx->type == 'inbound' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600' }} flex items-center justify-center shrink-0">
+                                        <i data-lucide="{{ $tx->type == 'inbound' ? 'arrow-down-left' : 'arrow-up-right' }}" class="w-4 h-4"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-slate-900">{{ $tx->description }}</p>
+                                        <p class="text-[10px] text-slate-400">{{ $tx->created_at ? $tx->created_at->format('d M Y, H:i') : '' }}</p>
+                                    </div>
+                                </div>
+                                <span class="text-sm font-black font-outfit {{ $tx->type == 'inbound' ? 'text-emerald-600' : 'text-red-500' }}">
+                                    {{ $tx->type == 'inbound' ? '+' : '-' }}Rp {{ number_format($tx->amount, 0, ',', '.') }}
+                                </span>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        @else
+            <div class="text-center py-16 px-6 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                <div class="w-16 h-16 rounded-2xl bg-white border border-slate-100 shadow-sm flex items-center justify-center mx-auto mb-4 text-slate-400">
+                    <i data-lucide="wallet" class="w-8 h-8"></i>
+                </div>
+                <h5 class="text-base font-bold text-slate-700 mb-1">Penggalangan Dana Tidak Diaktifkan</h5>
+                <p class="text-xs text-slate-400 max-w-md mx-auto">Isu ini berjalan secara sukarela tanpa penggalangan dana publik.</p>
+            </div>
+        @endif
+    </div>
 </div>

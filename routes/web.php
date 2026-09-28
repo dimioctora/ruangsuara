@@ -69,7 +69,7 @@ Route::get('/tentang', function () {
 
 
 Route::get('/suara-detail/{id}', function ($id) {
-    $suara = \App\Models\Suara::with(['user.badges', 'missions', 'financeTransactions', 'votes.user', 'comments.user'])->findOrFail($id);
+    $suara = \App\Models\Suara::with(['user.badges', 'missions.user', 'updates.user', 'financeTransactions', 'votes.user', 'comments.user'])->findOrFail($id);
 
     // 1. Comments
     $comments = \App\Models\SuaraComment::where('suara_id', $suara->id)->with('user.badges')->latest()->get();
@@ -338,46 +338,193 @@ Route::delete('/suara/{id}', function ($id) {
 
 
 Route::get('/suara-manage/{id}', function ($id) {
-    $suara = \App\Models\Suara::findOrFail($id);
+    $suara = \App\Models\Suara::with(['user', 'updates.user', 'missions.user', 'financeTransactions', 'votes', 'comments'])->findOrFail($id);
     $user = auth()->user();
-    $userIssues = \App\Models\Suara::where('user_id', $user->id)->get();
-    $missions = \App\Models\FieldMission::where('suara_id', $id)->latest()->get();
-    return view('suara_manage', compact('suara', 'user', 'userIssues', 'missions'));
+
+    // Authorization: only the creator or admin can manage this suara
+    $isOwner = $suara->user_id === $user->id;
+    $isAdmin = in_array($user->role, ['admin', 'Super Admin']) || $user->id == 10;
+    if (!$isOwner && !$isAdmin) {
+        return redirect('/suara-detail/' . $id)->with('error', 'Anda tidak memiliki hak akses untuk mengelola Suara ini.');
+    }
+
+    $userIssues = \App\Models\Suara::where('user_id', $user->id)->latest()->get();
+    $missions = $suara->missions;
+    $updates = $suara->updates;
+
+    return view('suara_manage', compact('suara', 'user', 'userIssues', 'missions', 'updates', 'isOwner', 'isAdmin'));
 })->middleware('auth');
 
 Route::post('/suara-manage/{id}/update-stage', function (Request $request, $id) {
-    $suara = \App\Models\Suara::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
-    $suara->update(['current_stage' => $request->stage]);
-    return redirect()->back()->with('success', 'Timeline Suara berhasil diupdate!');
+    $suara = \App\Models\Suara::findOrFail($id);
+    $user = auth()->user();
+    if ($suara->user_id !== $user->id && !in_array($user->role, ['admin', 'Super Admin']) && $user->id != 10) {
+        abort(403);
+    }
+
+    $request->validate([
+        'stage' => 'required|integer|min:1|max:5',
+    ]);
+
+    $suara->update(['current_stage' => (int) $request->stage]);
+    return redirect()->back()->with('success', 'Tahapan Heat Index Suara berhasil diperbarui!');
+})->middleware('auth');
+
+Route::post('/suara-manage/{id}/update-issue', function (Illuminate\Http\Request $request, $id) {
+    $suara = \App\Models\Suara::findOrFail($id);
+    $user = auth()->user();
+    if ($suara->user_id !== $user->id && !in_array($user->role, ['admin', 'Super Admin']) && $user->id != 10) {
+        abort(403);
+    }
+
+    $data = $request->validate([
+        'title' => 'required|string|max:255',
+        'category' => 'required|string|max:100',
+        'location' => 'required|string|max:255',
+        'description' => 'required|string',
+        'reference_link' => 'nullable|string|max:500',
+        'expected_impact' => 'nullable|string|max:500',
+        'image' => 'nullable|image|max:5120',
+    ]);
+
+    if ($request->hasFile('image')) {
+        $path = $request->file('image')->store('suara_images', 'public');
+        $data['image'] = $path;
+    }
+
+    $suara->update($data);
+    return redirect()->back()->with('success', 'Detail informasi Suara berhasil diperbarui!');
+})->middleware('auth');
+
+Route::post('/suara-manage/{id}/post-update', function (Illuminate\Http\Request $request, $id) {
+    $suara = \App\Models\Suara::findOrFail($id);
+    $user = auth()->user();
+    if ($suara->user_id !== $user->id && !in_array($user->role, ['admin', 'Super Admin']) && $user->id != 10) {
+        abort(403);
+    }
+
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string',
+        'stage' => 'nullable|integer|min:1|max:5',
+        'reference_link' => 'nullable|string|max:500',
+        'image' => 'nullable|image|max:5120',
+    ]);
+
+    $imagePath = null;
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('updates', 'public');
+    }
+
+    $stage = $request->filled('stage') ? (int) $request->stage : ($suara->current_stage ?? 3);
+
+    \App\Models\SuaraUpdate::create([
+        'suara_id' => $suara->id,
+        'user_id' => $user->id,
+        'title' => $request->title,
+        'content' => $request->content,
+        'stage' => $stage,
+        'image' => $imagePath,
+        'reference_link' => $request->reference_link,
+        'is_official' => true,
+    ]);
+
+    // If stage was set, sync to current_stage
+    if ($request->filled('stage') && $request->stage > ($suara->current_stage ?? 1)) {
+        $suara->update(['current_stage' => (int) $request->stage]);
+    }
+
+    return redirect('/suara-manage/' . $id . '?tab=updates')->with('success', 'Pembaruan resmi berhasil dipublikasikan untuk publik!');
+})->middleware('auth');
+
+Route::post('/suara-manage/{id}/delete-update/{updateId}', function ($id, $updateId) {
+    $suara = \App\Models\Suara::findOrFail($id);
+    $user = auth()->user();
+    if ($suara->user_id !== $user->id && !in_array($user->role, ['admin', 'Super Admin']) && $user->id != 10) {
+        abort(403);
+    }
+
+    $update = \App\Models\SuaraUpdate::where('id', $updateId)->where('suara_id', $id)->firstOrFail();
+    $update->delete();
+
+    return redirect()->back()->with('success', 'Pembaruan berhasil dihapus!');
 })->middleware('auth');
 
 Route::post('/suara-manage/{id}/deploy-mission', function (Illuminate\Http\Request $request, $id) {
+    $suara = \App\Models\Suara::findOrFail($id);
+    $user = auth()->user();
+    if ($suara->user_id !== $user->id && !in_array($user->role, ['admin', 'Super Admin']) && $user->id != 10) {
+        abort(403);
+    }
+
     $request->validate([
-        'objective' => 'required',
-        'location' => 'required',
+        'objective' => 'required|string|max:255',
+        'location' => 'required|string|max:255',
         'date' => 'required',
         'time' => 'required',
-        'target_personnel' => 'required|min:1',
+        'target_personnel' => 'required|integer|min:1',
+        'instructions' => 'nullable|string',
     ]);
 
+    try {
+        $scheduledAt = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $request->date . ' ' . $request->time);
+    } catch (\Exception $e) {
+        try {
+            $scheduledAt = \Carbon\Carbon::parse($request->date . ' ' . $request->time);
+        } catch (\Exception $e) {
+            $scheduledAt = now()->addDays(2);
+        }
+    }
+
     \App\Models\FieldMission::create([
-        'user_id' => auth()->id(),
+        'user_id' => $user->id,
         'suara_id' => $id,
         'objective' => $request->objective,
         'location' => $request->location,
-        'scheduled_at' => \Carbon\Carbon::createFromFormat('d/m/Y H:i', $request->date . ' ' . $request->time),
+        'scheduled_at' => $scheduledAt,
         'target_personnel' => $request->target_personnel,
         'instructions' => $request->instructions,
         'status' => 'active',
     ]);
 
-    return redirect()->back()->with('success', 'MISSION ACTIVATED: Unit lapangan telah dideploy!');
+    return redirect('/suara-manage/' . $id . '?tab=aksi')->with('success', 'Aksi Lapangan / Panggilan Relawan berhasil dibuka!');
 })->middleware('auth');
 
-Route::post('/suara-manage/{id}/update-issue', function (Illuminate\Http\Request $request, $id) {
-    $suara = \App\Models\Suara::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
-    $suara->update($request->only(['title', 'category', 'location', 'description', 'reference_link', 'expected_impact']));
-    return redirect()->back()->with('success', 'Detail Suara berhasil diperbarui!');
+Route::post('/suara-manage/{id}/delete-mission/{missionId}', function ($id, $missionId) {
+    $suara = \App\Models\Suara::findOrFail($id);
+    $user = auth()->user();
+    if ($suara->user_id !== $user->id && !in_array($user->role, ['admin', 'Super Admin']) && $user->id != 10) {
+        abort(403);
+    }
+
+    $mission = \App\Models\FieldMission::where('id', $missionId)->where('suara_id', $id)->firstOrFail();
+    $mission->delete();
+
+    return redirect()->back()->with('success', 'Aksi lapangan berhasil dihapus!');
+})->middleware('auth');
+
+Route::post('/suara-manage/{id}/add-finance', function (Illuminate\Http\Request $request, $id) {
+    $suara = \App\Models\Suara::findOrFail($id);
+    $user = auth()->user();
+    if ($suara->user_id !== $user->id && !in_array($user->role, ['admin', 'Super Admin']) && $user->id != 10) {
+        abort(403);
+    }
+
+    $request->validate([
+        'description' => 'required|string|max:255',
+        'amount' => 'required|numeric|min:1',
+        'type' => 'required|in:inbound,outbound',
+    ]);
+
+    \App\Models\FinanceTransaction::create([
+        'suara_id' => $id,
+        'user_id' => $user->id,
+        'description' => $request->description,
+        'amount' => $request->amount,
+        'type' => $request->type,
+    ]);
+
+    return redirect('/suara-manage/' . $id . '?tab=keuangan')->with('success', 'Catatan keuangan berhasil ditambahkan!');
 })->middleware('auth');
 
 Route::get('/create-suara', function (Request $request) {

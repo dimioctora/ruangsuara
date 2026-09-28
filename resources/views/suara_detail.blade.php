@@ -439,6 +439,162 @@
                         </p>
                     </article>
 
+                    <!-- Official Issue Updates (Pembaruan & Kronologi Terkini) -->
+                    <section class="bg-white rounded-[32px] md:rounded-[40px] p-6 sm:p-8 md:p-12 shadow-sm border border-slate-100 space-y-8" id="pembaruan-isu-section">
+                        <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-2xl bg-accent/10 text-accent flex items-center justify-center">
+                                    <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-outfit font-extrabold text-slate-900">Pembaruan & Kronologi Terkini</h3>
+                                    <p class="text-xs text-slate-400 font-medium">Laporan resmi dan bukti perkembangan dari inisiator isu.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <span class="px-3.5 py-1.5 bg-accent/10 text-accent font-black text-xs uppercase tracking-wider rounded-xl">
+                                    {{ $suara->updates->count() }} Pembaruan
+                                </span>
+                                @if(auth()->check() && (auth()->id() == $suara->user_id || in_array(auth()->user()->role, ['admin', 'Super Admin']) || auth()->id() == 10))
+                                    <a href="/suara-manage/{{ $suara->id }}?tab=updates" class="px-4 py-2 bg-accent hover:bg-blue-600 text-white text-xs font-bold rounded-xl shadow-md shadow-accent/20 transition-all flex items-center gap-1.5">
+                                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                        Tambah Pembaruan
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+
+                        @if($suara->updates->isEmpty())
+                            <div class="text-center py-12 px-6 bg-slate-50/70 rounded-3xl border border-dashed border-slate-200">
+                                <div class="w-14 h-14 rounded-2xl bg-white border border-slate-100 shadow-sm flex items-center justify-center mx-auto mb-3 text-slate-400">
+                                    <i data-lucide="clock" class="w-7 h-7"></i>
+                                </div>
+                                <h4 class="text-base font-bold text-slate-700 mb-1">Belum Ada Pembaruan Resmi</h4>
+                                <p class="text-xs text-slate-400 max-w-md mx-auto">
+                                    Inisiator belum mempublikasikan catatan pembaruan lanjutan. Pantau terus halaman ini untuk mengikuti perkembangan kasus.
+                                </p>
+                                @if(auth()->check() && (auth()->id() == $suara->user_id || in_array(auth()->user()->role, ['admin', 'Super Admin']) || auth()->id() == 10))
+                                    <div class="mt-4">
+                                        <a href="/suara-manage/{{ $suara->id }}?tab=updates" class="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-white font-bold text-xs rounded-xl shadow-md">
+                                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                                            Tulis Pembaruan Pertama
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+                        @else
+                            <div class="space-y-6">
+                                @php
+                                    $stageNamesList = [
+                                        1 => 'Tahap 1: Issue Dibuat',
+                                        2 => 'Tahap 2: Penggalangan Aspirasi',
+                                        3 => 'Tahap 3: Pembaruan & Bukti',
+                                        4 => 'Tahap 4: Kajian & Keputusan',
+                                        5 => 'Tahap 5: Aksi Nyata Selesai'
+                                    ];
+                                @endphp
+                                @foreach($suara->updates as $idx => $update)
+                                    <div class="relative pl-6 sm:pl-8 pb-8 border-l-2 border-accent/20 last:border-transparent last:pb-0 group">
+                                        <!-- Timeline Dot -->
+                                        <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-accent border-4 border-white shadow-md"></div>
+
+                                        <div class="bg-slate-50/80 border border-slate-100 rounded-3xl p-6 sm:p-8 space-y-4 hover:border-slate-200 transition-all">
+                                            <div class="flex flex-wrap items-center justify-between gap-3">
+                                                <div class="flex items-center gap-2.5">
+                                                    <span class="px-3 py-1 bg-accent text-white font-black text-[10px] uppercase tracking-wider rounded-xl">
+                                                        {{ $stageNamesList[$update->stage ?? 3] ?? 'Pembaruan Isu' }}
+                                                    </span>
+                                                    <span class="text-xs font-bold text-slate-400 flex items-center gap-1">
+                                                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                                                        {{ $update->created_at->format('d M Y, H:i') }} WIB
+                                                    </span>
+                                                </div>
+
+                                                <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-full flex items-center gap-1">
+                                                    <i data-lucide="check-circle" class="w-3 h-3"></i>
+                                                    Laporan Resmi Inisiator
+                                                </span>
+                                            </div>
+
+                                            <div>
+                                                <h4 class="text-lg sm:text-xl font-bold font-outfit text-slate-900 mb-2">{{ $update->title }}</h4>
+                                                <p class="text-slate-700 text-sm sm:text-base leading-relaxed whitespace-pre-line">{{ $update->content }}</p>
+                                            </div>
+
+                                            @if($update->image)
+                                                <div class="mt-4 rounded-2xl overflow-hidden border border-slate-200 max-w-xl shadow-sm">
+                                                    <img src="{{ $update->image_url }}" alt="{{ $update->title }}" class="w-full h-auto object-cover max-h-96">
+                                                </div>
+                                            @endif
+
+                                            @if($update->reference_link)
+                                                <div class="pt-2">
+                                                    <a href="{{ $update->reference_link }}" target="_blank" rel="noopener noreferrer" 
+                                                        class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-accent hover:bg-slate-50 transition-all shadow-sm">
+                                                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                                        Lihat Dokumen / Berita Rujukan
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </section>
+
+                    @if($suara->missions->isNotEmpty())
+                        <!-- Active Field Missions (Aksi Lapangan & Relawan) -->
+                        <section class="bg-white rounded-[32px] md:rounded-[40px] p-6 sm:p-8 md:p-12 shadow-sm border border-slate-100 space-y-6">
+                            <div class="flex items-center justify-between pb-6 border-b border-slate-100">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                                        <i data-lucide="users" class="w-5 h-5"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-2xl font-outfit font-extrabold text-slate-900">Aksi Lapangan & Panggilan Relawan</h3>
+                                        <p class="text-xs text-slate-400 font-medium">Gerakan nyata dan kegiatan lapangan bersama warga pendukung.</p>
+                                    </div>
+                                </div>
+                                <span class="px-3.5 py-1.5 bg-amber-50 text-amber-600 font-black text-xs uppercase tracking-wider rounded-xl border border-amber-100">
+                                    {{ $suara->missions->count() }} Kegiatan
+                                </span>
+                            </div>
+
+                            <div class="grid gap-4">
+                                @foreach($suara->missions as $mission)
+                                    <div class="p-6 bg-slate-50/80 border border-slate-100 rounded-3xl flex flex-wrap items-center justify-between gap-6 hover:border-slate-200 transition-all">
+                                        <div class="space-y-2 flex-1 min-w-[260px]">
+                                            <div class="flex items-center gap-3">
+                                                <span class="px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl text-[10px] font-black uppercase">
+                                                    {{ $mission->status == 'active' ? 'Misi Berjalan' : 'Selesai' }}
+                                                </span>
+                                                <span class="text-xs font-bold text-slate-500 flex items-center gap-1.5">
+                                                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-400"></i>
+                                                    {{ $mission->scheduled_at ? $mission->scheduled_at->format('d M Y, H:i') : '-' }} WIB
+                                                </span>
+                                            </div>
+                                            <h4 class="text-lg font-bold text-slate-900 font-outfit">{{ $mission->objective }}</h4>
+                                            <p class="text-xs text-slate-600 flex items-center gap-1.5">
+                                                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-accent shrink-0"></i>
+                                                {{ $mission->location }}
+                                            </p>
+                                            @if($mission->instructions)
+                                                <p class="text-xs text-slate-600 bg-white p-3.5 rounded-2xl border border-slate-100 mt-2">{{ $mission->instructions }}</p>
+                                            @endif
+                                        </div>
+
+                                        <div class="text-center px-5 py-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Kebutuhan</p>
+                                            <p class="text-base font-black font-outfit text-slate-900">{{ $mission->target_personnel }} Relawan</p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </section>
+                    @endif
+
                     @php
                         $hasVoted = false;
                         if (auth()->check()) {
