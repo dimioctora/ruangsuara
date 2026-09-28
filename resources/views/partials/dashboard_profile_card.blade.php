@@ -61,7 +61,7 @@
             </div>
 
 
-            <div class="space-y-4 max-w-xl">
+            <div class="space-y-4 max-w-xl xl:max-w-2xl 2xl:max-w-3xl">
                 <div class="flex items-center justify-between text-xs font-black uppercase tracking-widest">
                     <span class="text-slate-400">Level {{ $levelInfo['current']['index'] }}</span>
                     <span class="text-accent">{{ number_format($user->xp) }} / {{ number_format($nextXp) }} XP</span>

@@ -166,7 +166,7 @@
 
     <!-- Header / Navbar (Fixed on Top) -->
     <header class="fixed top-0 left-0 right-0 z-[100] bg-white/85 backdrop-blur-xl border-b border-slate-200/60 shadow-sm transition-all duration-300">
-        <nav class="container mx-auto px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between">
+        <nav class="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-3.5 sm:py-4 flex items-center justify-between">
             <!-- Left: Mobile Burger Button + Logo -->
             <div class="flex items-center gap-3 sm:gap-4">
                 <button type="button" 
@@ -384,9 +384,9 @@
         </div>
     </div>
 
-    <div class="container mx-auto px-4 sm:px-6 pt-24 pb-12 md:pt-28 md:pb-16">
+    <div class="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 pt-24 pb-12 md:pt-28 md:pb-16">
         @if(session('error'))
-            <div id="error-alert" class="mb-8 p-6 bg-orange-50 border border-orange-100 rounded-[32px] flex items-center justify-between animate-fade-in max-w-7xl mx-auto shadow-sm">
+            <div id="error-alert" class="mb-8 p-6 bg-orange-50 border border-orange-100 rounded-[32px] flex items-center justify-between animate-fade-in w-full mx-auto shadow-sm">
                 <div class="flex items-center gap-4 text-warning">
                     <div class="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-sm">
                         <i data-lucide="lock" class="w-6 h-6 text-orange-500"></i>
@@ -403,7 +403,7 @@
         @endif
 
         @if(session('success'))
-            <div id="success-alert" class="mb-8 p-6 bg-green-50 border border-green-100 rounded-[32px] flex items-center justify-between animate-fade-in max-w-7xl mx-auto shadow-sm">
+            <div id="success-alert" class="mb-8 p-6 bg-green-50 border border-green-100 rounded-[32px] flex items-center justify-between animate-fade-in w-full mx-auto shadow-sm">
                 <div class="flex items-center gap-4 text-success">
                     <div class="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-sm">
                         <i data-lucide="check-circle" class="w-6 h-6 text-success"></i>
@@ -419,9 +419,9 @@
             </div>
         @endif
 
-        <div class="flex flex-col lg:flex-row gap-10">
+        <div class="flex flex-col lg:flex-row gap-8 xl:gap-10">
             <!-- Sidebar (Desktop Only) -->
-            <aside class="hidden lg:block lg:w-72 flex-shrink-0 space-y-6 animate-fade-in" style="animation-delay: 0.1s">
+            <aside class="hidden lg:block lg:w-80 xl:w-88 flex-shrink-0 space-y-6 animate-fade-in" style="animation-delay: 0.1s">
                 <div class="sticky top-32 space-y-6">
                     <!-- 1. Reputation Summary Card (Premium Dark) -->
                     <div class="bg-[#0F172A] rounded-[40px] p-8 shadow-2xl shadow-slate-900/20 relative overflow-hidden group">
