@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+require_once __DIR__ . '/KarhutlaSeeder.php';
+
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
