@@ -12,8 +12,77 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        // Global Alpine init guarantee
+        const initDashboardAlpine = () => {
+            if (window.Alpine && !window.__alpineDashboardRegistered) {
+                window.__alpineDashboardRegistered = true;
+                window.Alpine.data('dashboard', () => ({
+                    notifications: [],
+                    userOpen: false,
+                    mobileMenuOpen: false,
+                    showLevelUp: false,
+                    showBadgeUnlock: false,
+                    currentBadge: { name: '', icon: '' },
+                    currentLevelName: '{{ $user->level }}',
+                    levels: @json(\App\Services\ReputationService::getAllLevels()),
+                    getLevelData(name) {
+                        return this.levels.find(l => l.name === name) || this.levels[0];
+                    },
+                    getShapeClass(name) {
+                        const idx = this.levels.findIndex(l => l.name === name) + 1;
+                        if (idx <= 3) return 'rounded-full';
+                        if (idx <= 6) return 'badge-hexagon';
+                        if (idx <= 8) return 'badge-shield';
+                        return 'badge-diamond';
+                    },
+                    getEffectClass(name) {
+                        const idx = this.levels.findIndex(l => l.name === name) + 1;
+                        let cls = '';
+                        if (idx >= 7) cls += ' animate-pulse-badge';
+                        if (idx == 9) cls += ' glow-soft';
+                        if (idx == 10) cls += ' glow-heavy shimmer-gold';
+                        return cls;
+                    },
+                    addNotification(val, type = 'xp') {
+                        const id = Date.now();
+                        this.notifications.push({ id, val, type });
+                        setTimeout(() => {
+                            this.notifications = this.notifications.filter(n => n.id !== id);
+                        }, 1200);
+                    },
+                    triggerLevelUp(name) {
+                        this.currentLevelName = name;
+                        this.showLevelUp = true;
+                        if (window.confetti) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#2563EB', '#10B981', '#F59E0B'] });
+                    },
+                    triggerBadge(name, icon) {
+                        this.currentBadge = { name, icon };
+                        this.showBadgeUnlock = true;
+                        if (window.confetti) confetti({ particleCount: 80, spread: 50, origin: { y: 0.7 } });
+                    }
+                }));
+            }
+        };
+        document.addEventListener('alpine:init', initDashboardAlpine);
+        if (window.Alpine) initDashboardAlpine();
+
+        // Mobile drawer toggle helper (works even before/without Alpine)
+        window.__toggleDashboardMobileMenu = function(open) {
+            const drawer = document.getElementById('mobileDashboardDrawer');
+            if (window.Alpine) {
+                const el = document.querySelector('[x-data]');
+                if (el && el.__x && el.__x.$data) {
+                    el.__x.$data.mobileMenuOpen = open;
+                }
+            }
+            if (drawer) {
+                drawer.style.display = open ? 'block' : 'none';
+            }
+        };
+    </script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -33,6 +102,16 @@
         }
     </script>
     <style>
+        [x-cloak] { display: none !important; }
+        html, body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+        h1, h2, h3, h4, h5, h6, p, span, a, label, li {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
         .glass {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(16px);
@@ -69,7 +148,8 @@
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #E2E8F0;
             border-radius: 10px;
-            @keyframes float-up {
+        }
+        @keyframes float-up {
             0% { opacity: 0; transform: translateY(0) scale(0.9); }
             20% { opacity: 1; transform: translateY(-10px) scale(1.1); }
             80% { opacity: 1; transform: translateY(-25px) scale(1); }
@@ -171,9 +251,14 @@
             <div class="flex items-center gap-3 sm:gap-4">
                 <button type="button" 
                         @click="mobileMenuOpen = true" 
-                        class="lg:hidden p-2.5 rounded-2xl bg-slate-100/90 hover:bg-slate-200/80 text-slate-700 hover:text-accent active:scale-95 transition-all flex items-center justify-center border border-slate-200/70 shadow-sm group" 
+                        onclick="if(window.__toggleDashboardMobileMenu) window.__toggleDashboardMobileMenu(true);"
+                        class="lg:hidden p-2 sm:p-2.5 rounded-2xl bg-slate-100/90 hover:bg-slate-200/80 text-slate-700 hover:text-accent active:scale-95 transition-all flex items-center justify-center border border-slate-200/70 shadow-sm group" 
                         aria-label="Buka Menu Navigasi">
-                    <i data-lucide="menu" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    <svg class="w-5 h-5 text-slate-700 group-hover:text-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
                 </button>
                 <a href="/" class="flex items-center group flex-shrink-0">
                     <img src="{{ asset('images/suara-logo-transparent.png') }}" alt="Suara Logo" class="h-8 sm:h-9 w-auto group-hover:scale-105 transition-transform drop-shadow-md">
@@ -196,7 +281,7 @@
                             <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Selamat Datang,</p>
                             <p class="text-sm font-bold text-slate-900">{{ $user->name ?? 'Dimi Octora' }}</p>
                         </div>
-                        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-accent to-success p-0.5 shadow-lg shadow-accent/20 group-hover:scale-110 transition-transform overflow-hidden relative">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-accent to-success p-0.5 shadow-lg shadow-accent/20 group-hover:scale-110 transition-transform overflow-hidden relative">
                              <div class="relative w-full h-full rounded-[14px] bg-white flex items-center justify-center overflow-hidden">
                                 @if($user->avatar_url)
                                     <img id="navbarAvatarImg" src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="w-full h-full object-cover global-user-avatar">
@@ -247,7 +332,8 @@
     </header>
 
     <!-- Mobile Burger Navigation Drawer (Overlay & Slide Panel) -->
-    <div x-show="mobileMenuOpen" 
+    <div id="mobileDashboardDrawer"
+         x-show="mobileMenuOpen" 
          x-cloak
          class="fixed inset-0 z-[150] lg:hidden"
          style="display: none;">
@@ -260,6 +346,7 @@
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
              @click="mobileMenuOpen = false" 
+             onclick="if(window.__toggleDashboardMobileMenu) window.__toggleDashboardMobileMenu(false);"
              class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm"></div>
 
         <!-- Drawer Content Panel -->
@@ -278,8 +365,11 @@
                     <a href="/" class="flex items-center">
                         <img src="{{ asset('images/suara-logo-transparent.png') }}" alt="Suara Logo" class="h-8 w-auto">
                     </a>
-                    <button type="button" @click="mobileMenuOpen = false" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors">
-                        <i data-lucide="x" class="w-5 h-5"></i>
+                    <button type="button" @click="mobileMenuOpen = false" onclick="if(window.__toggleDashboardMobileMenu) window.__toggleDashboardMobileMenu(false);" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors" aria-label="Tutup Menu">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
                     </button>
                 </div>
 
@@ -324,15 +414,15 @@
                 <div class="space-y-2">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-2">Layanan Utama</p>
                     <div class="space-y-1.5">
-                        <button type="button" onclick="setDashboardView('dashboard'); document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-dashboard" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all text-left group">
+                        <button type="button" onclick="setDashboardView('dashboard'); if(window.__toggleDashboardMobileMenu) window.__toggleDashboardMobileMenu(false); else if(window.Alpine) document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-dashboard" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all text-left group">
                             <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
                             <span>Dashboard</span>
                         </button>
-                        <button type="button" onclick="setDashboardView('monitoring'); document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-monitoring" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 hover:bg-slate-50 hover:text-accent text-sm font-bold transition-all text-left group">
+                        <button type="button" onclick="setDashboardView('monitoring'); if(window.__toggleDashboardMobileMenu) window.__toggleDashboardMobileMenu(false); else if(window.Alpine) document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-monitoring" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 hover:bg-slate-50 hover:text-accent text-sm font-bold transition-all text-left group">
                             <i data-lucide="eye" class="w-5 h-5"></i>
                             <span>Monitoring</span>
                         </button>
-                        <button type="button" onclick="setDashboardView('suara'); document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-suara" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 hover:bg-slate-50 hover:text-accent text-sm font-bold transition-all text-left group">
+                        <button type="button" onclick="setDashboardView('suara'); if(window.__toggleDashboardMobileMenu) window.__toggleDashboardMobileMenu(false); else if(window.Alpine) document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-suara" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 hover:bg-slate-50 hover:text-accent text-sm font-bold transition-all text-left group">
                             <i data-lucide="compass" class="w-5 h-5"></i>
                             <span>Suara Saya</span>
                         </button>
@@ -343,11 +433,11 @@
                 <div class="space-y-2">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-2">Reputasi & Akun</p>
                     <div class="space-y-1.5">
-                        <button type="button" onclick="setDashboardView('reputasi'); document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-reputasi" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 hover:bg-slate-50 hover:text-accent text-sm font-bold transition-all text-left group">
+                        <button type="button" onclick="setDashboardView('reputasi'); if(window.__toggleDashboardMobileMenu) window.__toggleDashboardMobileMenu(false); else if(window.Alpine) document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-reputasi" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 hover:bg-slate-50 hover:text-accent text-sm font-bold transition-all text-left group">
                             <i data-lucide="medal" class="w-5 h-5 text-amber-500"></i>
                             <span>Sistem Reputasi</span>
                         </button>
-                        <button type="button" onclick="setDashboardView('pengaturan'); document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-pengaturan" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 hover:bg-slate-50 hover:text-accent text-sm font-bold transition-all text-left group">
+                        <button type="button" onclick="setDashboardView('pengaturan'); if(window.__toggleDashboardMobileMenu) window.__toggleDashboardMobileMenu(false); else if(window.Alpine) document.querySelector('[x-data]').__x.$data.mobileMenuOpen = false;" id="drawer-pengaturan" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-slate-600 hover:bg-slate-50 hover:text-accent text-sm font-bold transition-all text-left group">
                             <i data-lucide="settings" class="w-5 h-5"></i>
                             <span>Pengaturan Profil</span>
                         </button>
@@ -384,36 +474,62 @@
         </div>
     </div>
 
-    <div class="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 pt-24 pb-12 md:pt-28 md:pb-16">
+    <div class="w-full max-w-[1720px] mx-auto px-3 sm:px-6 lg:px-10 xl:px-12 pt-20 sm:pt-24 pb-8 sm:pb-12 md:pt-28 md:pb-16">
+        <!-- Mobile View Navigation Tabs (Visible on mobile/tablet) -->
+        <div class="lg:hidden mb-6 -mx-3 px-3 overflow-x-auto no-scrollbar">
+            <div class="flex items-center gap-2 min-w-max pb-1">
+                <button type="button" onclick="setDashboardView('dashboard')" id="carousel-dashboard" class="px-3.5 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 border bg-accent text-white shadow-lg shadow-accent/20 border-accent">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                    <span>Dashboard</span>
+                </button>
+                <button type="button" onclick="setDashboardView('monitoring')" id="carousel-monitoring" class="px-3.5 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 border bg-white text-slate-600 border-slate-200/80 hover:bg-slate-50">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span>Monitoring</span>
+                </button>
+                <button type="button" onclick="setDashboardView('suara')" id="carousel-suara" class="px-3.5 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 border bg-white text-slate-600 border-slate-200/80 hover:bg-slate-50">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                    <span>Suara Saya</span>
+                </button>
+                <button type="button" onclick="setDashboardView('reputasi')" id="carousel-reputasi" class="px-3.5 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 border bg-white text-slate-600 border-slate-200/80 hover:bg-slate-50">
+                    <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.734.505l-7.258-3.82-7.258 3.82a.5.5 0 0 1-.734-.505l1.515-8.526"/><circle cx="12" cy="8" r="6"/></svg>
+                    <span>Reputasi</span>
+                </button>
+                <button type="button" onclick="setDashboardView('pengaturan')" id="carousel-pengaturan" class="px-3.5 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 border bg-white text-slate-600 border-slate-200/80 hover:bg-slate-50">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span>Pengaturan</span>
+                </button>
+            </div>
+        </div>
+
         @if(session('error'))
-            <div id="error-alert" class="mb-8 p-6 bg-orange-50 border border-orange-100 rounded-[32px] flex items-center justify-between animate-fade-in w-full mx-auto shadow-sm">
-                <div class="flex items-center gap-4 text-warning">
-                    <div class="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-                        <i data-lucide="lock" class="w-6 h-6 text-orange-500"></i>
+            <div id="error-alert" class="mb-8 p-4 sm:p-6 bg-orange-50 border border-orange-100 rounded-2xl sm:rounded-[32px] flex items-center justify-between animate-fade-in w-full mx-auto shadow-sm">
+                <div class="flex items-center gap-3 sm:gap-4 text-warning">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-xl sm:rounded-2xl flex items-center justify-center shadow-sm shrink-0">
+                        <i data-lucide="lock" class="w-5 h-5 sm:w-6 sm:h-6 text-orange-500"></i>
                     </div>
                     <div>
-                        <p class="text-sm font-black uppercase tracking-widest leading-none mb-1 text-orange-600">Fitur Terkunci</p>
+                        <p class="text-xs sm:text-sm font-black uppercase tracking-widest leading-none mb-1 text-orange-600">Fitur Terkunci</p>
                         <p class="text-xs font-medium text-slate-600">{{ session('error') }}</p>
                     </div>
                 </div>
-                <button onclick="document.getElementById('error-alert').remove()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                <button onclick="document.getElementById('error-alert').remove()" class="text-slate-400 hover:text-slate-600 transition-colors p-1">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
         @endif
 
         @if(session('success'))
-            <div id="success-alert" class="mb-8 p-6 bg-green-50 border border-green-100 rounded-[32px] flex items-center justify-between animate-fade-in w-full mx-auto shadow-sm">
-                <div class="flex items-center gap-4 text-success">
-                    <div class="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-                        <i data-lucide="check-circle" class="w-6 h-6 text-success"></i>
+            <div id="success-alert" class="mb-8 p-4 sm:p-6 bg-green-50 border border-green-100 rounded-2xl sm:rounded-[32px] flex items-center justify-between animate-fade-in w-full mx-auto shadow-sm">
+                <div class="flex items-center gap-3 sm:gap-4 text-success">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-xl sm:rounded-2xl flex items-center justify-center shadow-sm shrink-0">
+                        <i data-lucide="check-circle" class="w-5 h-5 sm:w-6 sm:h-6 text-success"></i>
                     </div>
                     <div>
-                        <p class="text-sm font-black uppercase tracking-widest leading-none mb-1">Berhasil!</p>
+                        <p class="text-xs sm:text-sm font-black uppercase tracking-widest leading-none mb-1">Berhasil!</p>
                         <p class="text-xs font-medium text-slate-600">{{ session('success') }}</p>
                     </div>
                 </div>
-                <button onclick="document.getElementById('success-alert').remove()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                <button onclick="document.getElementById('success-alert').remove()" class="text-slate-400 hover:text-slate-600 transition-colors p-1">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -1446,53 +1562,7 @@
 
     <!-- Script to trigger animations and initialize icons -->
     <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('dashboard', () => ({
-                notifications: [],
-                userOpen: false,
-                mobileMenuOpen: false,
-                showLevelUp: false,
-                showBadgeUnlock: false,
-                currentBadge: { name: '', icon: '' },
-                currentLevelName: '{{ $user->level }}',
-                levels: @json(\App\Services\ReputationService::getAllLevels()),
-                getLevelData(name) {
-                    return this.levels.find(l => l.name === name) || this.levels[0];
-                },
-                getShapeClass(name) {
-                    const idx = this.levels.findIndex(l => l.name === name) + 1;
-                    if (idx <= 3) return 'rounded-full';
-                    if (idx <= 6) return 'badge-hexagon';
-                    if (idx <= 8) return 'badge-shield';
-                    return 'badge-diamond';
-                },
-                getEffectClass(name) {
-                    const idx = this.levels.findIndex(l => l.name === name) + 1;
-                    let cls = '';
-                    if (idx >= 7) cls += ' animate-pulse-badge';
-                    if (idx == 9) cls += ' glow-soft';
-                    if (idx == 10) cls += ' glow-heavy shimmer-gold';
-                    return cls;
-                },
-                addNotification(val, type = 'xp') {
-                    const id = Date.now();
-                    this.notifications.push({ id, val, type });
-                    setTimeout(() => {
-                        this.notifications = this.notifications.filter(n => n.id !== id);
-                    }, 1200);
-                },
-                triggerLevelUp(name) {
-                    this.currentLevelName = name;
-                    this.showLevelUp = true;
-                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#2563EB', '#10B981', '#F59E0B'] });
-                },
-                triggerBadge(name, icon) {
-                    this.currentBadge = { name, icon };
-                    this.showBadgeUnlock = true;
-                    confetti({ particleCount: 80, spread: 50, origin: { y: 0.7 } });
-                }
-            }));
-        });
+        initDashboardAlpine();
 
         lucide.createIcons();
         setDashboardView('dashboard');

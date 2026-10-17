@@ -86,6 +86,20 @@
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans selection:bg-accent/20 grid-bg relative overflow-x-hidden">
+    <!-- Apply global overflow and wrap fix -->
+    <style>
+        html, body {
+            max-width: 100vw;
+            overflow-x: hidden !important;
+            margin: 0;
+            padding: 0;
+        }
+        h1, h2, h3, h4, h5, h6, p, span, a, label, li {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+    </style>
 
     <!-- Background Decoration -->
     <div class="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none -z-10"></div>
@@ -93,11 +107,23 @@
 
     <!-- Header / Navbar -->
     <header class="sticky top-0 z-[100] bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm transition-all duration-300">
-        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
-            <!-- Logo -->
-            <a href="/" class="flex items-center group flex-shrink-0">
-                <img src="{{ asset('images/suara-logo-transparent.png') }}" alt="Suara Logo" class="h-8 w-auto group-hover:scale-110 transition-transform drop-shadow-xl">
-            </a>
+        <nav class="container mx-auto px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between">
+            <!-- Left: Burger & Logo -->
+            <div class="flex items-center gap-3 sm:gap-4">
+                <button type="button" 
+                        onclick="toggleTentangMobileMenu(true)"
+                        class="md:hidden p-2 sm:p-2.5 rounded-2xl bg-slate-100/90 hover:bg-slate-200/80 text-slate-700 hover:text-accent active:scale-95 transition-all flex items-center justify-center border border-slate-200/70 shadow-sm" 
+                        aria-label="Buka Menu Navigasi">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <a href="/" class="flex items-center group flex-shrink-0">
+                    <img src="{{ asset('images/suara-logo-transparent.png') }}" alt="Suara Logo" class="h-7 sm:h-8 w-auto group-hover:scale-110 transition-transform drop-shadow-xl">
+                </a>
+            </div>
 
             <!-- Menu -->
             <div class="hidden md:flex items-center gap-10 text-sm font-black text-slate-500 uppercase tracking-widest">
@@ -110,12 +136,12 @@
             <!-- Auth -->
             <div class="flex items-center gap-4">
                 @auth
-                    <a href="/dashboard" class="flex items-center gap-3 bg-slate-50 border border-slate-200 py-2.5 px-5 rounded-xl hover:bg-white hover:shadow-md transition-all">
+                    <a href="/dashboard" class="flex items-center gap-2 sm:gap-3 bg-slate-50 border border-slate-200 py-2 sm:py-2.5 px-3 sm:px-5 rounded-xl hover:bg-white hover:shadow-md transition-all">
                         <div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-                        <span class="text-xs font-black uppercase text-slate-700">{{ auth()->user()->name ?? 'Dimi Octora' }}</span>
+                        <span class="text-xs font-black uppercase text-slate-700 truncate max-w-[120px]">{{ auth()->user()->name ?? 'Dimi Octora' }}</span>
                     </a>
                 @else
-                    <button onclick="window.location.href='/?auth=login'" class="bg-gradient-to-r from-accent to-success text-white text-sm font-black px-8 py-3 rounded-xl shadow-lg shadow-accent/30 hover:shadow-accent/50 hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                    <button onclick="window.location.href='/?auth=login'" class="bg-gradient-to-r from-accent to-success text-white text-xs sm:text-sm font-black px-5 sm:px-8 py-2.5 sm:py-3 rounded-xl shadow-lg shadow-accent/30 hover:shadow-accent/50 hover:-translate-y-0.5 transition-all flex items-center gap-2">
                         <i data-lucide="user" class="w-4 h-4"></i> Masuk
                     </button>
                 @endauth
@@ -123,19 +149,105 @@
         </nav>
     </header>
 
-    <main class="relative z-10 w-full pt-16 pb-32">
+    <!-- Mobile Navigation Drawer -->
+    <div id="tentangMobileDrawer" class="fixed inset-0 z-[150] md:hidden hidden">
+        <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity" onclick="toggleTentangMobileMenu(false)"></div>
+        <div class="fixed inset-y-0 left-0 max-w-xs w-full bg-white shadow-2xl flex flex-col justify-between overflow-y-auto z-[160] border-r border-slate-100 p-6">
+            <div class="space-y-6">
+                <!-- Header Drawer -->
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <a href="/" class="flex items-center">
+                        <img src="{{ asset('images/suara-logo-transparent.png') }}" alt="Suara Logo" class="h-8 w-auto">
+                    </a>
+                    <button type="button" onclick="toggleTentangMobileMenu(false)" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors" aria-label="Tutup Menu">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                @auth
+                <!-- User Profile Card -->
+                <div class="bg-slate-900 rounded-3xl p-5 text-white space-y-3 shadow-xl">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-accent to-success p-0.5 shadow-md flex-shrink-0">
+                            <div class="w-full h-full rounded-[14px] bg-white flex items-center justify-center overflow-hidden">
+                                @if(auth()->user()->avatar_url)
+                                    <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center text-accent font-black text-sm">
+                                        {{ substr(auth()->user()->name ?? 'U', 0, 2) }}
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h4 class="font-outfit font-black text-sm text-white truncate">{{ auth()->user()->name }}</h4>
+                            <p class="text-[10px] text-slate-400 truncate">{{ auth()->user()->email }}</p>
+                        </div>
+                    </div>
+                    <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
+                        <a href="/dashboard" class="text-accent font-bold hover:underline flex items-center gap-1.5">
+                            <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+                            Dashboard
+                        </a>
+                        <a href="/logout" class="text-red-400 font-bold hover:underline flex items-center gap-1.5">
+                            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                            Signout
+                        </a>
+                    </div>
+                </div>
+                @else
+                <!-- Guest Login Banner -->
+                <div class="bg-gradient-to-br from-accent/10 to-success/10 border border-accent/20 rounded-3xl p-5 space-y-3">
+                    <p class="text-xs font-bold text-slate-700">Masuk untuk mengawal isu sosial dan memberikan suara Anda.</p>
+                    <a href="/?auth=login" class="block text-center w-full py-3 bg-gradient-to-r from-accent to-success text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-accent/20">
+                        Masuk / Daftar
+                    </a>
+                </div>
+                @endauth
+
+                <!-- Navigation Links -->
+                <div class="space-y-1">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-2 mb-2">Navigasi</p>
+                    <a href="/suara" class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-slate-700 hover:bg-slate-50 hover:text-accent font-bold text-sm transition-all">
+                        <i data-lucide="compass" class="w-5 h-5 text-slate-400"></i>
+                        <span>Suara Aspirasi</span>
+                    </a>
+                    <a href="/cara-kerja" class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-slate-700 hover:bg-slate-50 hover:text-accent font-bold text-sm transition-all">
+                        <i data-lucide="help-circle" class="w-5 h-5 text-slate-400"></i>
+                        <span>Cara Kerja</span>
+                    </a>
+                    <a href="/tentang" class="flex items-center gap-3.5 px-4 py-3 rounded-2xl text-accent bg-accent/5 font-bold text-sm transition-all">
+                        <i data-lucide="info" class="w-5 h-5 text-accent"></i>
+                        <span>Tentang Ruang Suara</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100">
+                <a href="/create-suara" class="w-full flex items-center justify-center gap-2 px-4 py-3.5 bg-accent text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-accent/20 active:scale-95 transition-all">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>Buat Suara Baru</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <main class="relative z-10 w-full pt-12 sm:pt-16 pb-32">
         <!-- Hero Section -->
-        <section class="container mx-auto px-6 mb-16 relative text-center">
-            <div class="max-w-4xl mx-auto py-12">
-                <div class="inline-flex items-center gap-2 bg-blue-50 px-5 py-2 rounded-full text-xs font-black uppercase tracking-[0.2em] text-accent border border-blue-100 mb-8 font-mono shadow-sm">
+        <section class="container mx-auto px-4 sm:px-6 mb-12 sm:mb-16 relative text-center">
+            <div class="max-w-4xl mx-auto py-8 sm:py-12">
+                <div class="inline-flex items-center gap-2 bg-blue-50 px-4 sm:px-5 py-2 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-accent border border-blue-100 mb-6 sm:mb-8 font-mono shadow-sm">
                     <i data-lucide="book-open" class="w-4 h-4"></i> Manifesto Platform
                 </div>
                 
-                <h1 class="text-5xl md:text-7xl font-outfit font-black text-slate-900 mb-6 tracking-tighter leading-tight drop-shadow-sm">
-                    Membangun Ekosistem <span class="bg-clip-text text-transparent bg-gradient-to-r from-accent via-indigo-600 to-purple-600  pr-6">Transparansi Publik</span>
+                <h1 class="text-3xl sm:text-5xl md:text-7xl font-outfit font-black text-slate-900 mb-4 sm:mb-6 tracking-tight leading-tight drop-shadow-sm break-words">
+                    Membangun Ekosistem <span class="bg-clip-text text-transparent bg-gradient-to-r from-accent via-indigo-600 to-purple-600 sm:pr-6">Transparansi Publik</span>
                 </h1>
                 
-                <p class="text-slate-600 text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed mt-8">
+                <p class="text-slate-600 text-sm sm:text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed mt-4 sm:mt-8 break-words">
                     Mengubah akses informasi dan kebebasan berpendapat menjadi pilar utama sebuah ekosistem sosial digital yang sehat dan bertanggung jawab.
                 </p>
             </div>
@@ -362,7 +474,7 @@
                 </div>
             </div>
 
-            <div class="border-t border-slate-200 pt-8 flex flex-col md:row items-center justify-between gap-6 text-[10px] uppercase tracking-widest font-black text-slate-400 font-mono">
+            <div class="border-t border-slate-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] uppercase tracking-widest font-black text-slate-400 font-mono">
                 <div class="flex items-center gap-4">
                     <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
                     <span>System Normal</span>
@@ -375,6 +487,21 @@
     </footer>
 
     <script>
+        function toggleTentangMobileMenu(open) {
+            const drawer = document.getElementById('tentangMobileDrawer');
+            if (!drawer) return;
+            if (open) {
+                drawer.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            } else {
+                drawer.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
         lucide.createIcons();
 
         // Simple TOC highlight logic

@@ -35,6 +35,16 @@
         body { 
             font-family: 'Inter', sans-serif;
             background-color: #F8FAFC;
+            max-width: 100vw;
+            overflow-x: hidden !important;
+            margin: 0;
+            padding: 0;
+        }
+        
+        h1, h2, h3, h4, h5, h6, p, span, a, label, li {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
         }
         
         .font-outfit { font-family: 'Outfit', sans-serif; }
@@ -161,48 +171,48 @@
         </nav>
     </header>
 
-    <main class="container mx-auto px-4 sm:px-6 py-10 min-h-[calc(100vh-80px)]">
-        <div class="max-w-7xl mx-auto flex flex-col lg:row lg:flex-row gap-12">
+    <main class="container mx-auto px-4 sm:px-6 py-6 sm:py-10 min-h-[calc(100vh-80px)]">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-12">
             
             <!-- Left Side: Form Container -->
             <div class="flex-1 w-full lg:max-w-3xl">
                 
                 <!-- Horizontal Stepper - Modern Version -->
-                <div class="relative flex items-center justify-between px-4 sm:px-10 mb-12">
+                <div class="relative flex items-center justify-between px-2 sm:px-10 mb-8 sm:mb-12">
                     <!-- Progress Line Background -->
-                    <div class="absolute left-10 right-10 top-6 h-0.5 bg-slate-100 -z-10"></div>
-                    <div id="step-progress-line" class="absolute left-10 top-6 h-0.5 bg-accent transition-all duration-700 -z-10" style="width: 0%"></div>
+                    <div class="absolute left-6 right-6 sm:left-10 sm:right-10 top-5 sm:top-6 h-0.5 bg-slate-100 -z-10"></div>
+                    <div id="step-progress-line" class="absolute left-6 sm:left-10 top-5 sm:top-6 h-0.5 bg-accent transition-all duration-700 -z-10" style="width: 0%"></div>
                     
                     <!-- Step 1 -->
-                    <div class="flex flex-col items-center gap-4 group cursor-pointer" onclick="goToStep(1)">
-                        <div id="step-1-circle" class="w-12 h-12 rounded-2xl flex items-center justify-center border-2 step-circle shadow-inner step-active">
-                            <i data-lucide="info" class="w-5 h-5"></i>
+                    <div class="flex flex-col items-center gap-2 sm:gap-4 group cursor-pointer" onclick="goToStep(1)">
+                        <div id="step-1-circle" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center border-2 step-circle shadow-inner step-active">
+                            <i data-lucide="info" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
-                        <span id="step-1-label" class="text-[10px] font-black uppercase tracking-widest text-accent whitespace-nowrap">Informasi</span>
+                        <span id="step-1-label" class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider sm:tracking-widest text-accent whitespace-nowrap">Informasi</span>
                     </div>
 
                     <!-- Step 2 -->
-                    <div class="flex flex-col items-center gap-4 group cursor-pointer" onclick="goToStep(2)">
-                        <div id="step-2-circle" class="w-12 h-12 rounded-2xl flex items-center justify-center border-2 step-circle shadow-inner step-inactive">
-                            <i data-lucide="align-left" class="w-5 h-5"></i>
+                    <div class="flex flex-col items-center gap-2 sm:gap-4 group cursor-pointer" onclick="goToStep(2)">
+                        <div id="step-2-circle" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center border-2 step-circle shadow-inner step-inactive">
+                            <i data-lucide="align-left" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
-                        <span id="step-2-label" class="text-[10px] font-black uppercase tracking-widest text-slate-400 whitespace-nowrap">Deskripsi</span>
+                        <span id="step-2-label" class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider sm:tracking-widest text-slate-400 whitespace-nowrap">Deskripsi</span>
                     </div>
 
                     <!-- Step 3 -->
-                    <div class="flex flex-col items-center gap-4 group cursor-pointer" onclick="goToStep(3)">
-                        <div id="step-3-circle" class="w-12 h-12 rounded-2xl flex items-center justify-center border-2 step-circle shadow-inner step-inactive">
-                            <i data-lucide="target" class="w-5 h-5"></i>
+                    <div class="flex flex-col items-center gap-2 sm:gap-4 group cursor-pointer" onclick="goToStep(3)">
+                        <div id="step-3-circle" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center border-2 step-circle shadow-inner step-inactive">
+                            <i data-lucide="target" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
-                        <span id="step-3-label" class="text-[10px] font-black uppercase tracking-widest text-slate-400 whitespace-nowrap">Target</span>
+                        <span id="step-3-label" class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider sm:tracking-widest text-slate-400 whitespace-nowrap">Target</span>
                     </div>
 
                     <!-- Step 4 -->
-                    <div class="flex flex-col items-center gap-4 group cursor-pointer" onclick="goToStep(4)">
-                        <div id="step-4-circle" class="w-12 h-12 rounded-2xl flex items-center justify-center border-2 step-circle shadow-inner step-inactive">
-                            <i data-lucide="users" class="w-5 h-5"></i>
+                    <div class="flex flex-col items-center gap-2 sm:gap-4 group cursor-pointer" onclick="goToStep(4)">
+                        <div id="step-4-circle" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center border-2 step-circle shadow-inner step-inactive">
+                            <i data-lucide="users" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
-                        <span id="step-4-label" class="text-[10px] font-black uppercase tracking-widest text-slate-400 whitespace-nowrap">Tim</span>
+                        <span id="step-4-label" class="text-[9px] sm:text-[10px] font-black uppercase tracking-wider sm:tracking-widest text-slate-400 whitespace-nowrap">Tim</span>
                     </div>
                 </div>
 
@@ -224,14 +234,14 @@
                 @endif
 
                 <!-- Main Card Dashboard -->
-                <form id="createSuaraForm" action="/create-suara" method="POST" enctype="multipart/form-data" novalidate onsubmit="return validateAndSubmit(event)" class="bg-white rounded-[40px] border border-slate-100 card-shadow overflow-hidden relative">
+                <form id="createSuaraForm" action="/create-suara" method="POST" enctype="multipart/form-data" novalidate onsubmit="return validateAndSubmit(event)" class="bg-white rounded-3xl sm:rounded-[40px] border border-slate-100 card-shadow overflow-hidden relative">
                     @csrf
                     <input type="hidden" name="action_type" id="hidden-action-type" value="publish">
                     <input type="hidden" name="draft_id" id="hidden-draft-id" value="{{ old('draft_id', $draft->id ?? '') }}">
                     <input type="hidden" name="contribution_type" id="hidden-contribution-type" value="{{ old('contribution_type', $draft->contribution_type ?? 'voice') }}">
                     
                     <!-- Section A: Basic Info -->
-                    <div id="section-1" class="form-section active p-8 md:p-14 section-animate">
+                    <div id="section-1" class="form-section active p-5 sm:p-8 md:p-14 section-animate">
                         @if ($errors->any())
                             <div class="mb-8 p-6 bg-red-50 border border-red-100 rounded-[32px] animate-fade-in shadow-sm">
                                 <div class="flex items-center gap-4 text-red-500 mb-2">
@@ -342,14 +352,14 @@
                     </div>
 
                     <!-- Section B: Description & Media -->
-                    <div id="section-2" class="form-section p-8 md:p-14 section-animate">
-                         <div class="space-y-2 mb-10">
+                    <div id="section-2" class="form-section p-5 sm:p-8 md:p-14 section-animate">
+                         <div class="space-y-2 mb-8 sm:mb-10">
                             <div class="flex items-center gap-3 mb-2">
                                 <span class="px-3 py-1 bg-accent/10 text-accent text-[9px] font-black uppercase tracking-widest rounded-lg">Langkah 2</span>
                                 <div class="h-px flex-1 bg-slate-50"></div>
                             </div>
-                            <h2 class="text-3xl font-outfit font-black text-primary">Deskripsi Isu</h2>
-                            <p class="text-sm text-slate-400 font-medium">Beri tahu dunia secara detail mengapa isu ini penting untuk diselesaikan.</p>
+                            <h2 class="text-2xl sm:text-3xl font-outfit font-black text-primary break-words">Deskripsi Isu</h2>
+                            <p class="text-xs sm:text-sm text-slate-400 font-medium">Beri tahu dunia secara detail mengapa isu ini penting untuk diselesaikan.</p>
                         </div>
 
                         <div class="space-y-10">
@@ -405,14 +415,14 @@
                     </div>
 
                     <!-- Section C: Targets & Goals -->
-                    <div id="section-3" class="form-section p-8 md:p-14 section-animate">
-                         <div class="space-y-2 mb-10">
+                    <div id="section-3" class="form-section p-5 sm:p-8 md:p-14 section-animate">
+                         <div class="space-y-2 mb-8 sm:mb-10">
                             <div class="flex items-center gap-3 mb-2">
                                 <span class="px-3 py-1 bg-accent/10 text-accent text-[9px] font-black uppercase tracking-widest rounded-lg">Langkah 3</span>
                                 <div class="h-px flex-1 bg-slate-50"></div>
                             </div>
-                            <h2 class="text-3xl font-outfit font-black text-primary">Target & Goals</h2>
-                            <p class="text-sm text-slate-400 font-medium">Tetapkan target capaian untuk Suara Anda.</p>
+                            <h2 class="text-2xl sm:text-3xl font-outfit font-black text-primary break-words">Target & Goals</h2>
+                            <p class="text-xs sm:text-sm text-slate-400 font-medium">Tetapkan target capaian untuk Suara Anda.</p>
                         </div>
 
                         <div class="space-y-10">
@@ -502,14 +512,14 @@
                     </div>
 
                     <!-- Section D: Team & Review -->
-                    <div id="section-4" class="form-section p-8 md:p-14 section-animate">
-                         <div class="space-y-2 mb-10">
+                    <div id="section-4" class="form-section p-5 sm:p-8 md:p-14 section-animate">
+                         <div class="space-y-2 mb-8 sm:mb-10">
                             <div class="flex items-center gap-3 mb-2">
                                 <span class="px-3 py-1 bg-accent/10 text-accent text-[9px] font-black uppercase tracking-widest rounded-lg">Langkah 4</span>
                                 <div class="h-px flex-1 bg-slate-50"></div>
                             </div>
-                            <h2 class="text-3xl font-outfit font-black text-primary">Tim Kolaborator</h2>
-                            <p class="text-sm text-slate-400 font-medium">Selesaikan pendaftaran dan undang tim pembantu jika ada.</p>
+                            <h2 class="text-2xl sm:text-3xl font-outfit font-black text-primary break-words">Tim Kolaborator</h2>
+                            <p class="text-xs sm:text-sm text-slate-400 font-medium">Selesaikan pendaftaran dan undang tim pembantu jika ada.</p>
                         </div>
 
                         <div class="space-y-10">
