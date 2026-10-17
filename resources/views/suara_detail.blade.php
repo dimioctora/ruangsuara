@@ -97,16 +97,33 @@
 <body class="bg-slate-50 font-sans text-slate-900 selection:bg-accent/10">
     <!-- Apply global overflow and wrap fix -->
     <style>
+        *, ::before, ::after {
+            box-sizing: border-box;
+        }
         html, body {
+            width: 100%;
             max-width: 100vw;
             overflow-x: hidden !important;
             margin: 0;
             padding: 0;
         }
+        article, .prose, .prose-content, .prose-body {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            overflow-wrap: anywhere !important;
+            word-break: normal !important;
+            word-wrap: break-word !important;
+        }
+        .prose p, .prose div, .prose span, .prose li, article p, article div, .prose-body p, .prose-body div {
+            overflow-wrap: anywhere !important;
+            word-break: normal !important;
+            white-space: normal !important;
+            max-width: 100% !important;
+        }
         h1, h2, h3, h4, h5, h6, p, span, a, label, li, blockquote {
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-            word-break: break-word;
+            overflow-wrap: anywhere !important;
+            word-wrap: break-word !important;
         }
     </style>
 
@@ -264,9 +281,9 @@
         </div>
     </div>
 
-    <main class="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-12 pt-20 md:pt-24 pb-24">
+    <main class="w-full max-w-[1720px] mx-auto px-3 sm:px-6 lg:px-12 pt-20 md:pt-24 pb-24 min-w-0 overflow-x-hidden">
         <!-- Hero Section -->
-        <section class="w-full">
+        <section class="w-full min-w-0 max-w-full">
             <div class="relative w-full aspect-[16/10] sm:aspect-[16/8] lg:aspect-[21/8] xl:aspect-[24/8] min-h-[360px] md:min-h-[460px] rounded-[32px] md:rounded-[40px] overflow-hidden shadow-2xl mb-8 md:mb-12">
                 @php
                     if ($suara->image) {
@@ -349,10 +366,10 @@
             </div>
 
             <!-- Heat Index Timeline -->
-            <div class="bg-white rounded-[32px] md:rounded-[40px] p-6 sm:p-8 md:p-10 shadow-sm border border-slate-100 mb-8 md:mb-12 overflow-hidden">
-                <div class="flex items-center justify-between mb-8 md:mb-10">
-                    <h3 class="text-lg sm:text-xl font-outfit font-bold text-slate-800 flex items-center gap-3">
-                        <i data-lucide="activity" class="text-accent w-6 h-6"></i>
+            <div class="bg-white rounded-3xl md:rounded-[40px] p-4 sm:p-8 md:p-10 shadow-sm border border-slate-100 mb-6 sm:mb-8 md:mb-12 w-full min-w-0 max-w-full overflow-hidden">
+                <div class="flex items-center justify-between mb-6 sm:mb-8 md:mb-10">
+                    <h3 class="text-base sm:text-xl font-outfit font-bold text-slate-800 flex items-center gap-2 sm:gap-3">
+                        <i data-lucide="activity" class="text-accent w-5 h-5 sm:w-6 sm:h-6"></i>
                         Heat Index Timeline
                     </h3>
                     @php
@@ -367,15 +384,15 @@
                         if ($curStage < 1) $curStage = 1;
                         if ($curStage > 5) $curStage = 5;
                     @endphp
-                    <div class="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full text-xs font-bold ring-1 ring-emerald-100">
+                    <div class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-emerald-50 text-emerald-600 rounded-full text-[11px] sm:text-xs font-bold ring-1 ring-emerald-100">
                         <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
                         Status: {{ $stageNames[$curStage] ?? 'Sedang Berlangsung' }}
                     </div>
                 </div>
 
                 <!-- Horizontal Scrollable / Full Width Responsive Timeline (issue > aspiration > update > decision > action taken) -->
-                <div class="overflow-x-auto pb-4 custom-scrollbar">
-                    <div class="flex items-start justify-between min-w-[680px] lg:min-w-full relative px-2 sm:px-6">
+                <div class="w-full min-w-0 max-w-full overflow-x-auto pb-4 custom-scrollbar">
+                    <div class="flex items-start justify-between min-w-[640px] lg:min-w-full relative px-2 sm:px-6">
                         @php
                             $steps = [
                                 1 => ['name' => 'Issue', 'icon' => 'alert-circle', 'date' => $suara->created_at ? $suara->created_at->format('d M Y') : '12 Jan 2026'],
@@ -422,13 +439,13 @@
                 </div>
             </div>
 
-            <div class="grid lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 xl:gap-12 w-full min-w-0 max-w-full">
                 <!-- Main Content (Left) -->
-                <div class="lg:col-span-8 space-y-8 md:space-y-12">
+                <div class="w-full min-w-0 max-w-full lg:col-span-8 space-y-6 sm:space-y-8 md:space-y-12">
                     <!-- Issue Description -->
-                    <article class="bg-white rounded-[32px] md:rounded-[40px] p-6 sm:p-8 md:p-12 shadow-sm border border-slate-100 prose prose-slate max-w-none">
-                        <h2 class="text-3xl font-outfit font-extrabold text-slate-900 mb-8">Deskripsi Masalah</h2>
-                        <div class="text-slate-700 leading-relaxed text-base sm:text-lg mb-8 prose prose-slate max-w-none prose-p:mb-4 prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:my-1 prose-strong:font-bold prose-headings:font-bold">
+                    <article class="bg-white rounded-3xl md:rounded-[40px] p-4 sm:p-8 md:p-12 shadow-sm border border-slate-100 w-full min-w-0 max-w-full overflow-hidden">
+                        <h2 class="text-2xl sm:text-3xl font-outfit font-extrabold text-slate-900 mb-6 sm:mb-8 break-words">Deskripsi Masalah</h2>
+                        <div class="text-slate-700 leading-relaxed text-sm sm:text-base md:text-lg mb-6 sm:mb-8 prose-body w-full min-w-0 max-w-full prose-p:mb-4 prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:my-1 prose-strong:font-bold prose-headings:font-bold">
                             @if(strip_tags($suara->description) !== $suara->description)
                                 {!! $suara->description !!}
                             @else
@@ -436,9 +453,9 @@
                             @endif
                         </div>
                         
-                        <div class="grid md:grid-cols-2 gap-8 mb-10">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 mb-6 sm:mb-10 w-full min-w-0 max-w-full">
                             <!-- Poin Kritis & Bukti Terlampir -->
-                            <div class="p-8 bg-red-50/40 rounded-3xl border border-red-100/80 flex flex-col justify-between">
+                            <div class="p-4 sm:p-6 md:p-8 bg-red-50/40 rounded-2xl sm:rounded-3xl border border-red-100/80 flex flex-col justify-between w-full min-w-0 max-w-full">
                                 <div>
                                     <div class="flex items-center justify-between mb-5">
                                         <h4 class="font-bold text-slate-900 flex items-center gap-2 font-outfit text-base">
@@ -491,7 +508,7 @@
                             </div>
 
                             <!-- Target Solusi & Harapan -->
-                            <div class="p-8 bg-accent/5 rounded-3xl border border-accent/10 flex flex-col justify-between">
+                            <div class="p-4 sm:p-6 md:p-8 bg-accent/5 rounded-2xl sm:rounded-3xl border border-accent/10 flex flex-col justify-between w-full min-w-0 max-w-full">
                                 <div>
                                     <div class="flex items-center justify-between mb-5">
                                         <h4 class="font-bold text-accent flex items-center gap-2 font-outfit text-base">
@@ -557,7 +574,7 @@
                     </article>
 
                     <!-- Official Issue Updates (Pembaruan & Kronologi Terkini) -->
-                    <section class="bg-white rounded-[32px] md:rounded-[40px] p-6 sm:p-8 md:p-12 shadow-sm border border-slate-100 space-y-8" id="pembaruan-isu-section">
+                    <section class="bg-white rounded-3xl md:rounded-[40px] p-4 sm:p-8 md:p-12 shadow-sm border border-slate-100 space-y-6 sm:space-y-8 w-full min-w-0 max-w-full overflow-hidden" id="pembaruan-isu-section">
                         <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-100">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-2xl bg-accent/10 text-accent flex items-center justify-center">
@@ -616,7 +633,7 @@
                                         <!-- Timeline Dot -->
                                         <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-accent border-4 border-white shadow-md"></div>
 
-                                        <div class="bg-slate-50/80 border border-slate-100 rounded-3xl p-6 sm:p-8 space-y-4 hover:border-slate-200 transition-all">
+                                        <div class="bg-slate-50/80 border border-slate-100 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 space-y-3 sm:space-y-4 hover:border-slate-200 transition-all w-full min-w-0 max-w-full overflow-hidden">
                                             <div class="flex flex-wrap items-center justify-between gap-3">
                                                 <div class="flex items-center gap-2.5">
                                                     <span class="px-3 py-1 bg-accent text-white font-black text-[10px] uppercase tracking-wider rounded-xl">
@@ -669,14 +686,14 @@
 
                     @if($suara->missions->isNotEmpty())
                         <!-- Active Field Missions (Aksi Lapangan & Relawan) -->
-                        <section class="bg-white rounded-[32px] md:rounded-[40px] p-6 sm:p-8 md:p-12 shadow-sm border border-slate-100 space-y-6">
-                            <div class="flex items-center justify-between pb-6 border-b border-slate-100">
+                        <section class="bg-white rounded-3xl md:rounded-[40px] p-4 sm:p-8 md:p-12 shadow-sm border border-slate-100 space-y-4 sm:space-y-6 w-full min-w-0 max-w-full overflow-hidden">
+                            <div class="flex items-center justify-between pb-4 sm:pb-6 border-b border-slate-100">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
                                         <i data-lucide="users" class="w-5 h-5"></i>
                                     </div>
                                     <div>
-                                        <h3 class="text-2xl font-outfit font-extrabold text-slate-900">Aksi Lapangan & Panggilan Relawan</h3>
+                                        <h3 class="text-xl sm:text-2xl font-outfit font-extrabold text-slate-900">Aksi Lapangan & Panggilan Relawan</h3>
                                         <p class="text-xs text-slate-400 font-medium">Gerakan nyata dan kegiatan lapangan bersama warga pendukung.</p>
                                     </div>
                                 </div>
@@ -685,10 +702,10 @@
                                 </span>
                             </div>
 
-                            <div class="grid gap-4">
+                            <div class="grid gap-4 w-full min-w-0 max-w-full">
                                 @foreach($suara->missions as $mission)
-                                    <div class="p-6 bg-slate-50/80 border border-slate-100 rounded-3xl flex flex-wrap items-center justify-between gap-6 hover:border-slate-200 transition-all">
-                                        <div class="space-y-2 flex-1 min-w-[260px]">
+                                    <div class="p-4 sm:p-6 bg-slate-50/80 border border-slate-100 rounded-2xl sm:rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 hover:border-slate-200 transition-all w-full min-w-0 max-w-full">
+                                        <div class="space-y-2 flex-1 w-full min-w-0 max-w-full">
                                             <div class="flex items-center gap-3">
                                                 <span class="px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl text-[10px] font-black uppercase">
                                                     {{ $mission->status == 'active' ? 'Misi Berjalan' : 'Selesai' }}
@@ -726,64 +743,64 @@
                     @endphp
 
                     <!-- Interaction Options (Kontribusi Bersama) -->
-                    <div class="space-y-6">
+                    <div class="space-y-4 sm:space-y-6 w-full min-w-0 max-w-full">
                         <div class="flex items-center justify-between px-2">
-                            <h3 class="text-2xl font-outfit font-extrabold text-slate-900">Kontribusi Bersama</h3>
+                            <h3 class="text-xl sm:text-2xl font-outfit font-extrabold text-slate-900">Kontribusi Bersama</h3>
                             <span class="text-xs font-bold text-slate-400">Pilih bentuk kontribusi Anda</span>
                         </div>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-outfit">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 font-outfit w-full min-w-0 max-w-full">
                             <!-- Support by Voice -->
                             <button onclick="handleVote('vote')" id="proVoteBtn" 
-                                class="group p-6 md:p-8 bg-white rounded-[32px] border border-slate-100 shadow-sm transition-all text-center relative overflow-hidden {{ $hasVoted ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-xl hover:shadow-accent/10 hover:-translate-y-2' }}"
+                                class="group p-3.5 sm:p-6 md:p-8 bg-white rounded-2xl sm:rounded-[32px] border border-slate-100 shadow-sm transition-all text-center relative overflow-hidden {{ $hasVoted ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-xl hover:shadow-accent/10 hover:-translate-y-2' }}"
                                 {{ $hasVoted ? 'disabled' : '' }}>
-                                <div class="w-16 h-16 md:w-20 md:h-20 {{ $hasVoted ? 'bg-slate-100 text-slate-400' : 'bg-accent/5 flex items-center justify-center mx-auto mb-4 md:mb-6 group-hover:bg-accent group-hover:text-white transition-all' }} rounded-[24px] flex items-center justify-center mx-auto mb-4 md:mb-6">
-                                     <i data-lucide="{{ $hasVoted ? 'check-circle' : 'megaphone' }}" class="w-8 h-8 md:w-10 md:h-10"></i>
+                                <div class="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 {{ $hasVoted ? 'bg-slate-100 text-slate-400' : 'bg-accent/5 flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6 group-hover:bg-accent group-hover:text-white transition-all' }} rounded-xl sm:rounded-[24px] flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6">
+                                     <i data-lucide="{{ $hasVoted ? 'check-circle' : 'megaphone' }}" class="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10"></i>
                                 </div>
-                                <h4 class="font-bold text-base md:text-lg text-slate-900 mb-1">{{ $hasVoted ? 'Didukung' : 'Dukung' }}</h4>
-                                <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-3 leading-none">Support by Voice</p>
-                                <span id="proCountDisplay" class="text-accent font-black text-2xl md:text-3xl tracking-tighter block text-center w-full">{{ number_format($suara->supporter_count, 0, ',', '.') }}</span>
+                                <h4 class="font-bold text-sm sm:text-base md:text-lg text-slate-900 mb-1">{{ $hasVoted ? 'Didukung' : 'Dukung' }}</h4>
+                                <p class="text-[8px] sm:text-[9px] text-slate-400 font-black uppercase tracking-widest mb-2 sm:mb-3 leading-none">Support by Voice</p>
+                                <span id="proCountDisplay" class="text-accent font-black text-xl sm:text-2xl md:text-3xl tracking-tighter block text-center w-full">{{ number_format($suara->supporter_count, 0, ',', '.') }}</span>
                             </button>
 
                             <!-- Support by Voice (KONTRA) -->
                             <button onclick="handleVote('oppose')" id="kontraVoteBtn" 
-                                class="group p-6 md:p-8 bg-white rounded-[32px] border border-slate-100 shadow-sm transition-all text-center relative overflow-hidden {{ $hasVoted ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-xl hover:shadow-rose-500/10 hover:-translate-y-2' }}"
+                                class="group p-3.5 sm:p-6 md:p-8 bg-white rounded-2xl sm:rounded-[32px] border border-slate-100 shadow-sm transition-all text-center relative overflow-hidden {{ $hasVoted ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-xl hover:shadow-rose-500/10 hover:-translate-y-2' }}"
                                 {{ $hasVoted ? 'disabled' : '' }}>
-                                <div class="w-16 h-16 md:w-20 md:h-20 {{ $hasVoted ? 'bg-slate-100 text-slate-400' : 'bg-rose-50 flex items-center justify-center mx-auto mb-4 md:mb-6 group-hover:bg-rose-500 group-hover:text-white transition-all' }} rounded-[24px] flex items-center justify-center mx-auto mb-4 md:mb-6">
-                                     <i data-lucide="{{ $hasVoted ? 'check-circle' : 'thumbs-down' }}" class="w-8 h-8 md:w-10 md:h-10"></i>
+                                <div class="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 {{ $hasVoted ? 'bg-slate-100 text-slate-400' : 'bg-rose-50 flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6 group-hover:bg-rose-500 group-hover:text-white transition-all' }} rounded-xl sm:rounded-[24px] flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6">
+                                     <i data-lucide="{{ $hasVoted ? 'check-circle' : 'thumbs-down' }}" class="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10"></i>
                                 </div>
-                                <h4 class="font-bold text-base md:text-lg text-slate-900 mb-1">{{ $hasVoted ? 'Sanggahan' : 'Sanggah' }}</h4>
-                                <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-3 leading-none">Support by Kontra</p>
-                                <span id="kontraCountDisplay" class="text-rose-500 font-black text-2xl md:text-3xl tracking-tighter block text-center w-full">{{ number_format($suara->opponent_count, 0, ',', '.') }}</span>
+                                <h4 class="font-bold text-sm sm:text-base md:text-lg text-slate-900 mb-1">{{ $hasVoted ? 'Sanggahan' : 'Sanggah' }}</h4>
+                                <p class="text-[8px] sm:text-[9px] text-slate-400 font-black uppercase tracking-widest mb-2 sm:mb-3 leading-none">Support by Kontra</p>
+                                <span id="kontraCountDisplay" class="text-rose-500 font-black text-xl sm:text-2xl md:text-3xl tracking-tighter block text-center w-full">{{ number_format($suara->opponent_count, 0, ',', '.') }}</span>
                             </button>
 
                             <!-- Support by Fund -->
-                            <div class="p-6 md:p-8 bg-white rounded-[32px] border border-slate-100 shadow-sm text-center">
-                                <div class="w-16 h-16 md:w-20 md:h-20 bg-emerald-50 text-emerald-600 rounded-[24px] flex items-center justify-center mx-auto mb-4 md:mb-6">
-                                     <i data-lucide="wallet" class="w-8 h-8 md:w-10 md:h-10"></i>
+                            <div class="p-3.5 sm:p-6 md:p-8 bg-white rounded-2xl sm:rounded-[32px] border border-slate-100 shadow-sm text-center">
+                                <div class="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-emerald-50 text-emerald-600 rounded-xl sm:rounded-[24px] flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6">
+                                     <i data-lucide="wallet" class="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10"></i>
                                 </div>
-                                <h4 class="font-bold text-base md:text-lg text-slate-900 mb-1">Donasi</h4>
-                                <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-3 leading-none">Support by Fund</p>
-                                <span class="text-emerald-500 font-black text-xl md:text-2xl tracking-tighter block">
+                                <h4 class="font-bold text-sm sm:text-base md:text-lg text-slate-900 mb-1">Donasi</h4>
+                                <p class="text-[8px] sm:text-[9px] text-slate-400 font-black uppercase tracking-widest mb-2 sm:mb-3 leading-none">Support by Fund</p>
+                                <span class="text-emerald-500 font-black text-base sm:text-xl md:text-2xl tracking-tighter block">
                                     Rp {{ number_format($totalDonation, 0, ',', '.') }}
                                 </span>
                             </div>
 
                             <!-- Support by Action -->
-                            <div class="p-6 md:p-8 bg-white rounded-[32px] border border-slate-100 shadow-sm text-center">
-                                <div class="w-16 h-16 md:w-20 md:h-20 bg-amber-50 text-amber-500 rounded-[24px] flex items-center justify-center mx-auto mb-4 md:mb-6">
-                                     <i data-lucide="users" class="w-8 h-8 md:w-10 md:h-10"></i>
+                            <div class="p-3.5 sm:p-6 md:p-8 bg-white rounded-2xl sm:rounded-[32px] border border-slate-100 shadow-sm text-center">
+                                <div class="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-amber-50 text-amber-500 rounded-xl sm:rounded-[24px] flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6">
+                                     <i data-lucide="users" class="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10"></i>
                                 </div>
-                                <h4 class="font-bold text-base md:text-lg text-slate-900 mb-1">Aksi Relawan</h4>
-                                <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-3 leading-none">Support by Action</p>
-                                <span class="text-warning font-black text-xl md:text-2xl tracking-tighter block">
-                                    {{ $activeMissionsCount > 0 ? $activeMissionsCount . ' Misi Aktif' : ($totalAksi > 0 ? $totalAksi . ' Personel' : '1 Siap Aksi') }}
+                                <h4 class="font-bold text-sm sm:text-base md:text-lg text-slate-900 mb-1">Aksi Relawan</h4>
+                                <p class="text-[8px] sm:text-[9px] text-slate-400 font-black uppercase tracking-widest mb-2 sm:mb-3 leading-none">Support by Action</p>
+                                <span class="text-warning font-black text-sm sm:text-xl md:text-2xl tracking-tighter block">
+                                    {{ $activeMissionsCount > 0 ? $activeMissionsCount . ' Misi' : ($totalAksi > 0 ? $totalAksi . ' Personel' : '1 Siap Aksi') }}
                                 </span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Diskusi Publik -->
-                    <div class="bg-white rounded-[40px] p-8 md:p-12 shadow-sm border border-slate-100" id="diskusi-publik-section">
+                    <div class="bg-white rounded-3xl md:rounded-[40px] p-4 sm:p-8 md:p-12 shadow-sm border border-slate-100 w-full min-w-0 max-w-full overflow-hidden" id="diskusi-publik-section">
                         <h3 class="text-2xl font-outfit font-extrabold text-slate-900 mb-8 flex items-center justify-between">
                             <span>Diskusi Publik</span>
                             <span id="commentCountBadge" class="text-xs font-black uppercase tracking-wider px-3 py-1 bg-accent/10 text-accent rounded-full">
@@ -864,9 +881,9 @@
                 </div>
 
                 <!-- Info Sidebar (Right) -->
-                <div class="lg:col-span-4 space-y-8">
+                <div class="w-full min-w-0 max-w-full lg:col-span-4 space-y-6 sm:space-y-8">
                     <!-- Progress Card -->
-                    <div class="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100">
+                    <div class="bg-white rounded-2xl sm:rounded-[32px] p-4 sm:p-8 shadow-sm border border-slate-100 w-full min-w-0 max-w-full">
                         @php
                             $total = $suara->supporter_count + $suara->opponent_count;
                             $proPct = $total > 0 ? round(($suara->supporter_count / $total) * 100) : 0;
@@ -893,7 +910,7 @@
                     </div>
 
                     <!-- Monitor / Bookmark Card -->
-                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-[32px] p-8 shadow-xl text-white space-y-4 relative overflow-hidden">
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl sm:rounded-[32px] p-5 sm:p-8 shadow-xl text-white space-y-4 relative overflow-hidden w-full min-w-0 max-w-full">
                         <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400 flex items-center gap-1.5">
@@ -924,7 +941,7 @@
                         $fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" . urlencode($shareUrl);
                         $tgUrl = "https://t.me/share/url?url=" . urlencode($shareUrl) . "&text=" . urlencode("Ayo kawal aspirasi: {$shareTitle}");
                     @endphp
-                    <div class="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100 space-y-6">
+                    <div class="bg-white rounded-2xl sm:rounded-[32px] p-5 sm:p-8 shadow-sm border border-slate-100 space-y-6 w-full min-w-0 max-w-full">
                         <div class="flex items-center justify-between border-b border-slate-50 pb-4">
                             <h4 class="text-lg font-outfit font-black text-slate-900 flex items-center gap-2">
                                 <i data-lucide="share-2" class="w-5 h-5 text-accent"></i>
@@ -967,7 +984,7 @@
                     </div>
 
                     <!-- Tim Pengawal -->
-                    <div class="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100 space-y-6">
+                    <div class="bg-white rounded-2xl sm:rounded-[32px] p-5 sm:p-8 shadow-sm border border-slate-100 space-y-6 w-full min-w-0 max-w-full">
                         <h4 class="text-lg font-outfit font-black text-slate-900 border-b border-slate-50 pb-4">Tim Pengawal</h4>
                         
                         <!-- Inisiator / Creator -->
@@ -1040,7 +1057,7 @@
             </div>
 
             <!-- Suara Terkait (Related Issues from Database) -->
-            <div class="mt-24">
+            <div class="mt-12 sm:mt-24 w-full min-w-0 max-w-full overflow-hidden">
                 <div class="flex items-center justify-between mb-10">
                     <div>
                         <h3 class="text-3xl font-outfit font-extrabold text-slate-900">Suara Terkait</h3>
@@ -1516,6 +1533,8 @@
                 console.error('Error toggling bookmark:', err);
                 showShareToast('Gagal memproses simpan isu.');
             }
+        }
+
         function toggleSuaraDetailMobileMenu(open) {
             const drawer = document.getElementById('suaraDetailMobileDrawer');
             if (!drawer) return;
