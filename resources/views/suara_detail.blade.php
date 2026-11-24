@@ -128,21 +128,21 @@
     </style>
 
     <header class="fixed top-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm transition-all duration-300">
-        <nav class="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-12 py-3.5 sm:py-4 flex items-center justify-between">
+        <nav class="w-full max-w-[1720px] mx-auto px-3 sm:px-6 lg:px-12 py-2.5 sm:py-4 flex items-center justify-between">
             <!-- Left: Burger & Logo -->
-            <div class="flex items-center gap-3 sm:gap-4">
+            <div class="flex items-center gap-2.5 sm:gap-4">
                 <button type="button" 
                         onclick="toggleSuaraDetailMobileMenu(true)"
-                        class="md:hidden p-2 sm:p-2.5 rounded-2xl bg-slate-100/90 hover:bg-slate-200/80 text-slate-700 hover:text-accent active:scale-95 transition-all flex items-center justify-center border border-slate-200/70 shadow-sm" 
+                        class="md:hidden p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl bg-slate-100/90 hover:bg-slate-200/80 text-slate-700 hover:text-accent active:scale-95 transition-all flex items-center justify-center border border-slate-200/70 shadow-sm" 
                         aria-label="Buka Menu Navigasi">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="3" y1="6" x2="21" y2="6"></line>
                         <line x1="3" y1="12" x2="21" y2="12"></line>
                         <line x1="3" y1="18" x2="21" y2="18"></line>
                     </svg>
                 </button>
                 <a href="/" class="flex items-center group flex-shrink-0">
-                    <img src="{{ asset('images/suara-logo-transparent.png') }}" alt="Suara Logo" class="h-7 sm:h-8 w-auto group-hover:scale-110 transition-transform drop-shadow-xl">
+                    <img src="{{ asset('images/suara-logo-transparent.png') }}" alt="Suara Logo" class="h-6 sm:h-8 w-auto group-hover:scale-110 transition-transform drop-shadow-xl">
                 </a>
             </div>
 
@@ -155,23 +155,23 @@
             </div>
 
             <!-- Auth/User Module (Kanan) -->
-            <div class="flex items-center gap-3 sm:gap-4">
+            <div class="flex items-center gap-2.5 sm:gap-4">
                 @auth
                     <!-- User Profile Module (Matching Image 2) -->
-                    <div class="flex items-center gap-3 sm:gap-4 border-l border-slate-100 pl-4 sm:pl-8 ml-2 sm:ml-4">
+                    <div class="flex items-center gap-2.5 sm:gap-4 border-l border-slate-100 pl-2.5 sm:pl-8 ml-1.5 sm:ml-4">
                         <div class="hidden md:flex flex-col items-end">
                             <span class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none mb-1">Selamat Datang,</span>
                             <span class="text-sm font-black font-outfit text-slate-900 tracking-tight">{{ auth()->user()->name ?? 'Dimi Octora' }}</span>
                         </div>
                         <a href="/dashboard" class="relative group">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200/50 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all overflow-hidden relative">
+                            <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200/50 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all overflow-hidden relative">
                                 <!-- Avatar Background Gradient Ring (Matching Image 2) -->
-                                <div class="absolute inset-0 border-2 border-transparent bg-gradient-to-br from-accent to-success [mask-image:linear-gradient(white,white)] [mask-clip:content-box] -m-[2px] rounded-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                                <div class="absolute inset-0 border-2 border-transparent bg-gradient-to-br from-accent to-success [mask-image:linear-gradient(white,white)] [mask-clip:content-box] -m-[2px] rounded-xl sm:rounded-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
                                 
                                 @if(auth()->user()->avatar_url)
                                     <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
                                 @else
-                                    <svg class="w-full h-full p-2" viewBox="0 0 100 100">
+                                    <svg class="w-full h-full p-1.5 sm:p-2" viewBox="0 0 100 100">
                                         <defs>
                                             <linearGradient id="navAvatarGradGlobal" x1="0%" y1="0%" x2="100%" y2="100%">
                                                 <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
@@ -281,10 +281,10 @@
         </div>
     </div>
 
-    <main class="w-full max-w-[1720px] mx-auto px-3 sm:px-6 lg:px-12 pt-20 md:pt-24 pb-24 min-w-0 overflow-x-hidden">
+    <main class="w-full max-w-[1720px] mx-auto px-3 sm:px-6 lg:px-12 pt-16 sm:pt-20 md:pt-24 pb-16 sm:pb-24 min-w-0 overflow-x-hidden">
         <!-- Hero Section -->
         <section class="w-full min-w-0 max-w-full">
-            <div class="relative w-full aspect-[16/10] sm:aspect-[16/8] lg:aspect-[21/8] xl:aspect-[24/8] min-h-[360px] md:min-h-[460px] rounded-[32px] md:rounded-[40px] overflow-hidden shadow-2xl mb-8 md:mb-12">
+            <div class="relative w-full aspect-[16/10] sm:aspect-[16/8] lg:aspect-[21/8] xl:aspect-[24/8] min-h-[250px] sm:min-h-[360px] md:min-h-[460px] rounded-2xl sm:rounded-[32px] md:rounded-[40px] overflow-hidden shadow-2xl mb-4 sm:mb-8 md:mb-12">
                 @php
                     if ($suara->image) {
                         if (str_starts_with($suara->image, 'http')) {
@@ -302,72 +302,93 @@
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
                 
                 <!-- Quick Actions on Hero (Bookmark & Share) -->
-                <div class="absolute top-3 right-3 sm:top-6 sm:right-6 z-20 flex items-center gap-2 sm:gap-3">
+                <div class="absolute top-2.5 right-2.5 sm:top-6 sm:right-6 z-20 flex items-center gap-1.5 sm:gap-3">
                     @php
                         $isBookmarked = auth()->check() ? $suara->isBookmarkedBy(auth()->user()) : false;
                     @endphp
-                    <button type="button" id="heroBookmarkBtn" onclick="toggleBookmarkIssue({{ $suara->id }})" class="px-2.5 sm:px-4 py-1.5 sm:py-2.5 backdrop-blur-md rounded-xl sm:rounded-2xl border shadow-xl transition-all active:scale-95 flex items-center gap-1.5 sm:gap-2 font-outfit text-[11px] sm:text-xs font-bold {{ $isBookmarked ? 'bg-amber-500 text-white border-amber-400 shadow-amber-500/30 ring-2 ring-amber-400/40' : 'bg-slate-900/60 hover:bg-slate-900/90 text-white border-white/20' }}" title="Pantau / Simpan Isu">
-                        <i data-lucide="bookmark" id="heroBookmarkIcon" class="w-3.5 h-3.5 sm:w-4 sm:h-4 {{ $isBookmarked ? 'fill-current text-white' : 'text-amber-400' }}"></i>
+                    <button type="button" id="heroBookmarkBtn" onclick="toggleBookmarkIssue({{ $suara->id }})" class="px-2 sm:px-4 py-1 sm:py-2.5 backdrop-blur-md rounded-lg sm:rounded-2xl border shadow-xl transition-all active:scale-95 flex items-center gap-1 sm:gap-2 font-outfit text-[10px] sm:text-xs font-bold {{ $isBookmarked ? 'bg-amber-500 text-white border-amber-400 shadow-amber-500/30 ring-2 ring-amber-400/40' : 'bg-slate-900/60 hover:bg-slate-900/90 text-white border-white/20' }}" title="Pantau / Simpan Isu">
+                        <i data-lucide="bookmark" id="heroBookmarkIcon" class="w-3 h-3 sm:w-4 sm:h-4 {{ $isBookmarked ? 'fill-current text-white' : 'text-amber-400' }}"></i>
                         <span id="heroBookmarkText">{{ $isBookmarked ? 'Tersimpan' : 'Pantau Isu' }}</span>
                     </button>
-                    <button type="button" onclick="shareNative('{{ addslashes($suara->title) }}', '{{ url()->current() }}')" class="px-2.5 sm:px-4 py-1.5 sm:py-2.5 bg-slate-900/60 hover:bg-slate-900/90 backdrop-blur-md text-white rounded-xl sm:rounded-2xl border border-white/20 shadow-xl transition-all active:scale-95 flex items-center gap-1.5 sm:gap-2 font-outfit text-[11px] sm:text-xs font-bold">
-                        <i data-lucide="share-2" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400"></i>
+                    <button type="button" onclick="shareNative('{{ addslashes($suara->title) }}', '{{ url()->current() }}')" class="px-2 sm:px-4 py-1 sm:py-2.5 bg-slate-900/60 hover:bg-slate-900/90 backdrop-blur-md text-white rounded-lg sm:rounded-2xl border border-white/20 shadow-xl transition-all active:scale-95 flex items-center gap-1 sm:gap-2 font-outfit text-[10px] sm:text-xs font-bold">
+                        <i data-lucide="share-2" class="w-3 h-3 sm:w-4 sm:h-4 text-emerald-400"></i>
                         <span>Bagikan</span>
                     </button>
                 </div>
 
-                <div class="absolute bottom-4 sm:bottom-10 left-4 sm:left-10 right-4 sm:right-10 text-white max-w-5xl">
-                    <div class="flex flex-wrap gap-2 sm:gap-3 mb-2.5 sm:mb-4 md:mb-6">
-                        <span class="px-3 sm:px-4 py-1 sm:py-1.5 bg-accent text-white text-[9px] sm:text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg shadow-accent/20">{{ $suara->category }}</span>
-                        <span class="px-3 sm:px-4 py-1 sm:py-1.5 bg-white/20 backdrop-blur-md text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-widest rounded-full border border-white/30 flex items-center gap-1.5 sm:gap-2">
-                            <i data-lucide="map-pin" class="w-3 h-3 text-emerald-400"></i> {{ $suara->location }}
+                <div class="absolute bottom-3 sm:bottom-10 left-3 sm:left-10 right-3 sm:right-10 text-white max-w-5xl">
+                    <div class="flex flex-wrap gap-1.5 sm:gap-3 mb-1.5 sm:mb-4 md:mb-6">
+                        <span class="px-2.5 sm:px-4 py-0.5 sm:py-1.5 bg-accent text-white text-[8px] sm:text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg shadow-accent/20">{{ $suara->category }}</span>
+                        <span class="px-2.5 sm:px-4 py-0.5 sm:py-1.5 bg-white/20 backdrop-blur-md text-white text-[8px] sm:text-[10px] font-bold uppercase tracking-widest rounded-full border border-white/30 flex items-center gap-1 sm:gap-2">
+                            <i data-lucide="map-pin" class="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-400"></i> {{ $suara->location }}
                         </span>
                     </div>
-                    <h1 class="text-xl sm:text-3xl md:text-5xl lg:text-6xl font-outfit font-extrabold mb-3 sm:mb-4 leading-tight tracking-tight uppercase break-words">{{ $suara->title }}</h1>
-                    <div class="flex items-center gap-3 text-slate-300 font-medium">
+                    <h1 class="text-base sm:text-3xl md:text-5xl lg:text-6xl font-outfit font-extrabold mb-1.5 sm:mb-4 leading-tight tracking-tight uppercase break-words">{{ $suara->title }}</h1>
+                    <div class="flex items-center gap-2 sm:gap-3 text-slate-300 font-medium">
                         @php
                             $heroSupporters = $suara->votes ? $suara->votes->where('type', 'pro')->pluck('user')->filter()->unique('id') : collect();
                             $totalHeroVoices = (int) $suara->supporter_count;
                         @endphp
-                        <div class="flex -space-x-2">
+                        <div class="flex -space-x-1.5 sm:-space-x-2">
                             @if($heroSupporters->isNotEmpty())
                                 @foreach($heroSupporters->take(3) as $hSup)
                                     @if($hSup->avatar_url)
-                                        <img class="w-8 h-8 rounded-full border-2 border-white/40 object-cover shadow-sm" src="{{ $hSup->avatar_url }}" alt="{{ $hSup->name }}" title="{{ $hSup->name }}">
+                                        <img class="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-white/40 object-cover shadow-sm" src="{{ $hSup->avatar_url }}" alt="{{ $hSup->name }}" title="{{ $hSup->name }}">
                                     @else
-                                        <div class="w-8 h-8 rounded-full border-2 border-white/40 bg-gradient-to-tr from-accent to-emerald-500 text-white font-black text-[10px] flex items-center justify-center shadow-sm uppercase" title="{{ $hSup->name }}">
+                                        <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-white/40 bg-gradient-to-tr from-accent to-emerald-500 text-white font-black text-[8px] sm:text-[10px] flex items-center justify-center shadow-sm uppercase" title="{{ $hSup->name }}">
                                             {{ substr($hSup->name ?? 'W', 0, 2) }}
                                         </div>
                                     @endif
                                 @endforeach
                             @elseif($suara->user)
                                 @if($suara->user->avatar_url)
-                                    <img class="w-8 h-8 rounded-full border-2 border-white/40 object-cover shadow-sm" src="{{ $suara->user->avatar_url }}" alt="{{ $suara->user->name }}" title="Inisiator: {{ $suara->user->name }}">
+                                    <img class="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-white/40 object-cover shadow-sm" src="{{ $suara->user->avatar_url }}" alt="{{ $suara->user->name }}" title="Inisiator: {{ $suara->user->name }}">
                                 @else
-                                    <div class="w-8 h-8 rounded-full border-2 border-white/40 bg-gradient-to-tr from-accent to-emerald-500 text-white font-black text-[10px] flex items-center justify-center shadow-sm uppercase" title="Inisiator: {{ $suara->user->name }}">
+                                    <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-white/40 bg-gradient-to-tr from-accent to-emerald-500 text-white font-black text-[8px] sm:text-[10px] flex items-center justify-center shadow-sm uppercase" title="Inisiator: {{ $suara->user->name }}">
                                         {{ substr($suara->user->name ?? 'W', 0, 2) }}
                                     </div>
                                 @endif
                             @else
-                                <div class="w-8 h-8 rounded-full border-2 border-white/40 bg-white/20 flex items-center justify-center text-white">
-                                    <i data-lucide="user" class="w-4 h-4"></i>
+                                <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-white/40 bg-white/20 flex items-center justify-center text-white">
+                                    <i data-lucide="user" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
                                 </div>
                             @endif
 
                             @if($totalHeroVoices > 3)
-                                <div class="w-8 h-8 rounded-full border-2 border-white/40 bg-accent text-white flex items-center justify-center text-[10px] font-black shadow-sm">
+                                <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-white/40 bg-accent text-white flex items-center justify-center text-[8px] sm:text-[10px] font-black shadow-sm">
                                     +{{ $totalHeroVoices - min(3, $heroSupporters->count()) }}
                                 </div>
                             @endif
                         </div>
-                        <span class="text-xs sm:text-sm">Didukung oleh <strong class="text-white">{{ number_format($totalHeroVoices, 0, ',', '.') }}+</strong> Voices</span>
+                        <span class="text-[11px] sm:text-sm">Didukung oleh <strong class="text-white">{{ number_format($totalHeroVoices, 0, ',', '.') }}+</strong> Voices</span>
                     </div>
                 </div>
             </div>
 
             <!-- Heat Index Timeline -->
-            <div class="bg-white rounded-3xl md:rounded-[40px] p-4 sm:p-8 md:p-10 shadow-sm border border-slate-100 mb-6 sm:mb-8 md:mb-12 w-full min-w-0 max-w-full overflow-hidden">
-                <div class="flex items-center justify-between mb-6 sm:mb-8 md:mb-10">
+            <div class="bg-white rounded-2xl sm:rounded-3xl md:rounded-[40px] p-3.5 sm:p-8 md:p-10 shadow-sm border border-slate-100 mb-4 sm:mb-8 md:mb-12 w-full min-w-0 max-w-full overflow-hidden">
+                <div class="flex items-center justify-between mb-4 sm:mb-8 md:mb-10">
+                    <h3 class="text-sm sm:text-xl font-outfit font-bold text-slate-800 flex items-center gap-1.5 sm:gap-3">
+                        <i data-lucide="activity" class="text-accent w-4 h-4 sm:w-6 sm:h-6"></i>
+                        Heat Index Timeline
+                    </h3>
+                    @php
+                        $stageNames = [
+                            1 => 'Issue Dibuat',
+                            2 => 'Penggalangan Aspirasi',
+                            3 => 'Pembaruan & Bukti',
+                            4 => 'Kajian & Keputusan',
+                            5 => 'Aksi Nyata Selesai'
+                        ];
+                        $curStage = (int) ($suara->current_stage ?? 3);
+                        if ($curStage < 1) $curStage = 1;
+                        if ($curStage > 5) $curStage = 5;
+                    @endphp
+                    <div class="flex items-center gap-1 sm:gap-2 px-2.5 sm:px-4 py-1 sm:py-2 bg-emerald-50 text-emerald-600 rounded-full text-[10px] sm:text-xs font-bold ring-1 ring-emerald-100">
+                        <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-500 rounded-full animate-ping"></span>
+                        Status: {{ $stageNames[$curStage] ?? 'Sedang Berlangsung' }}
+                    </div>
+                </div>
                     <h3 class="text-base sm:text-xl font-outfit font-bold text-slate-800 flex items-center gap-2 sm:gap-3">
                         <i data-lucide="activity" class="text-accent w-5 h-5 sm:w-6 sm:h-6"></i>
                         Heat Index Timeline
@@ -443,9 +464,9 @@
                 <!-- Main Content (Left) -->
                 <div class="w-full min-w-0 max-w-full lg:col-span-8 space-y-6 sm:space-y-8 md:space-y-12">
                     <!-- Issue Description -->
-                    <article class="bg-white rounded-3xl md:rounded-[40px] p-4 sm:p-8 md:p-12 shadow-sm border border-slate-100 w-full min-w-0 max-w-full overflow-hidden">
-                        <h2 class="text-2xl sm:text-3xl font-outfit font-extrabold text-slate-900 mb-6 sm:mb-8 break-words">Deskripsi Masalah</h2>
-                        <div class="text-slate-700 leading-relaxed text-sm sm:text-base md:text-lg mb-6 sm:mb-8 prose-body w-full min-w-0 max-w-full prose-p:mb-4 prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:my-1 prose-strong:font-bold prose-headings:font-bold">
+                    <article class="bg-white rounded-2xl sm:rounded-3xl md:rounded-[40px] p-3.5 sm:p-8 md:p-12 shadow-sm border border-slate-100 w-full min-w-0 max-w-full overflow-hidden">
+                        <h2 class="text-lg sm:text-3xl font-outfit font-extrabold text-slate-900 mb-3 sm:mb-8 break-words">Deskripsi Masalah</h2>
+                        <div class="text-slate-700 leading-relaxed text-xs sm:text-base md:text-lg mb-4 sm:mb-8 prose-body w-full min-w-0 max-w-full prose-p:mb-3 sm:prose-p:mb-4 prose-ul:list-disc prose-ul:pl-5 sm:prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-5 sm:prose-ol:pl-6 prose-li:my-0.5 sm:prose-li:my-1 prose-strong:font-bold prose-headings:font-bold">
                             @if(strip_tags($suara->description) !== $suara->description)
                                 {!! $suara->description !!}
                             @else
@@ -453,9 +474,9 @@
                             @endif
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 mb-6 sm:mb-10 w-full min-w-0 max-w-full">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-8 mb-4 sm:mb-10 w-full min-w-0 max-w-full">
                             <!-- Poin Kritis & Bukti Terlampir -->
-                            <div class="p-4 sm:p-6 md:p-8 bg-red-50/40 rounded-2xl sm:rounded-3xl border border-red-100/80 flex flex-col justify-between w-full min-w-0 max-w-full">
+                            <div class="p-3 sm:p-6 md:p-8 bg-red-50/40 rounded-xl sm:rounded-3xl border border-red-100/80 flex flex-col justify-between w-full min-w-0 max-w-full">
                                 <div>
                                     <div class="flex items-center justify-between mb-5">
                                         <h4 class="font-bold text-slate-900 flex items-center gap-2 font-outfit text-base">
@@ -1050,26 +1071,26 @@
                     </div>
 
                     <!-- CTA Bar Mobile -->
-                    <div class="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-xl border-t border-slate-100 md:hidden z-[60]">
-                        <button onclick="handleVote('vote')" class="w-full bg-accent text-white font-black py-4 rounded-2xl shadow-xl shadow-accent/20 hover:scale-[1.02] transition-all">Support by Voice</button>
+                    <div class="fixed bottom-0 left-0 right-0 p-2.5 sm:p-4 bg-white/90 backdrop-blur-xl border-t border-slate-200/80 md:hidden z-[60]">
+                        <button onclick="handleVote('vote')" class="w-full bg-accent text-white font-black py-2.5 sm:py-4 text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-xl shadow-accent/20 hover:scale-[1.02] active:scale-95 transition-all">Support by Voice</button>
                     </div>
                 </div>
             </div>
 
             <!-- Suara Terkait (Related Issues from Database) -->
-            <div class="mt-12 sm:mt-24 w-full min-w-0 max-w-full overflow-hidden">
-                <div class="flex items-center justify-between mb-10">
+            <div class="mt-8 sm:mt-24 w-full min-w-0 max-w-full overflow-hidden">
+                <div class="flex items-center justify-between mb-4 sm:mb-10">
                     <div>
-                        <h3 class="text-3xl font-outfit font-extrabold text-slate-900">Suara Terkait</h3>
-                        <p class="text-sm text-slate-400 font-medium mt-1">Aspirasi lain dalam kategori yang sama</p>
+                        <h3 class="text-xl sm:text-3xl font-outfit font-extrabold text-slate-900">Suara Terkait</h3>
+                        <p class="text-xs sm:text-sm text-slate-400 font-medium mt-0.5 sm:mt-1">Aspirasi lain dalam kategori yang sama</p>
                     </div>
-                    <a href="/suara" class="text-accent font-bold hover:underline text-sm uppercase tracking-wider flex items-center gap-1">
+                    <a href="/suara" class="text-accent font-bold hover:underline text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1">
                         <span>Lihat Semua</span>
-                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        <i data-lucide="arrow-right" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
                     </a>
                 </div>
                 
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-6">
                     @forelse($relatedSuaras as $relSuara)
                         @php
                             $relImg = 'https://images.unsplash.com/photo-1540553016722-983e48a2cd10?auto=format&fit=crop&q=80&w=800';
@@ -1083,25 +1104,25 @@
                                 }
                             }
                         @endphp
-                        <a href="/suara-detail/{{ $relSuara->id }}" class="bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm group hover:shadow-xl hover:border-accent/30 transition-all flex flex-col justify-between">
+                        <a href="/suara-detail/{{ $relSuara->id }}" class="bg-white rounded-2xl sm:rounded-[32px] overflow-hidden border border-slate-100 shadow-sm group hover:shadow-xl hover:border-accent/30 transition-all flex flex-col justify-between">
                             <div>
-                                <div class="h-44 relative overflow-hidden">
+                                <div class="h-32 sm:h-44 relative overflow-hidden">
                                     <img src="{{ $relImg }}" alt="{{ $relSuara->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
-                                    <span class="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-black px-3 py-1 rounded-lg border border-white/20 uppercase tracking-widest">{{ $relSuara->category ?? 'Lainnya' }}</span>
+                                    <span class="absolute top-2.5 sm:top-4 left-2.5 sm:left-4 bg-white/20 backdrop-blur-md text-white text-[8px] sm:text-[10px] font-black px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-md sm:rounded-lg border border-white/20 uppercase tracking-widest">{{ $relSuara->category ?? 'Lainnya' }}</span>
                                 </div>
-                                <div class="p-6">
-                                    <h4 class="font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-accent transition-colors font-outfit text-base">{{ $relSuara->title }}</h4>
-                                    <p class="text-xs text-slate-400 font-medium line-clamp-2">{{ strip_tags($relSuara->description) }}</p>
+                                <div class="p-3.5 sm:p-6">
+                                    <h4 class="font-bold text-slate-900 mb-1 sm:mb-2 line-clamp-2 group-hover:text-accent transition-colors font-outfit text-xs sm:text-base">{{ $relSuara->title }}</h4>
+                                    <p class="text-[11px] sm:text-xs text-slate-400 font-medium line-clamp-2">{{ strip_tags($relSuara->description) }}</p>
                                 </div>
                             </div>
-                            <div class="p-6 pt-0 flex items-center justify-between text-xs font-bold border-t border-slate-50 mt-4">
+                            <div class="p-3.5 sm:p-6 pt-0 flex items-center justify-between text-[10px] sm:text-xs font-bold border-t border-slate-50 mt-2 sm:mt-4">
                                 <span class="text-slate-400 flex items-center gap-1">
-                                    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-accent"></i>
+                                    <i data-lucide="map-pin" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-accent"></i>
                                     {{ $relSuara->location ?? 'Indonesia' }}
                                 </span>
                                 <span class="text-accent flex items-center gap-1">
-                                    <i data-lucide="megaphone" class="w-3.5 h-3.5"></i>
+                                    <i data-lucide="megaphone" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i>
                                     {{ number_format($relSuara->supporter_count, 0, ',', '.') }}
                                 </span>
                             </div>

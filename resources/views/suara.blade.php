@@ -77,21 +77,21 @@
 
     <!-- Header / Navbar (Fixed on Top) -->
     <header class="fixed top-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm transition-all duration-300">
-        <nav class="container mx-auto px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between">
+        <nav class="container mx-auto px-3 sm:px-6 py-2.5 sm:py-4 flex items-center justify-between">
             <!-- Left: Burger & Logo -->
-            <div class="flex items-center gap-3 sm:gap-4">
+            <div class="flex items-center gap-2.5 sm:gap-4">
                 <button type="button" 
                         onclick="toggleSuaraMobileMenu(true)"
-                        class="md:hidden p-2 sm:p-2.5 rounded-2xl bg-slate-100/90 hover:bg-slate-200/80 text-slate-700 hover:text-accent active:scale-95 transition-all flex items-center justify-center border border-slate-200/70 shadow-sm" 
+                        class="md:hidden p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl bg-slate-100/90 hover:bg-slate-200/80 text-slate-700 hover:text-accent active:scale-95 transition-all flex items-center justify-center border border-slate-200/70 shadow-sm" 
                         aria-label="Buka Menu Navigasi">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="3" y1="6" x2="21" y2="6"></line>
                         <line x1="3" y1="12" x2="21" y2="12"></line>
                         <line x1="3" y1="18" x2="21" y2="18"></line>
                     </svg>
                 </button>
                 <a href="/" class="flex items-center group flex-shrink-0">
-                    <img src="{{ asset('images/suara-logo-transparent.png') }}" alt="Suara Logo" class="h-7 sm:h-8 w-auto group-hover:scale-105 transition-transform drop-shadow-md">
+                    <img src="{{ asset('images/suara-logo-transparent.png') }}" alt="Suara Logo" class="h-6 sm:h-8 w-auto group-hover:scale-105 transition-transform drop-shadow-md">
                 </a>
             </div>
 
@@ -104,22 +104,22 @@
             </div>
 
             <!-- Auth/User Module (Kanan) -->
-            <div class="flex items-center gap-3 sm:gap-4">
+            <div class="flex items-center gap-2.5 sm:gap-4">
                 @auth
                     <!-- User Profile Module -->
-                    <div class="flex items-center gap-3 sm:gap-4 border-l border-slate-100 pl-4 sm:pl-8 ml-2 sm:ml-4">
+                    <div class="flex items-center gap-2.5 sm:gap-4 border-l border-slate-100 pl-2.5 sm:pl-8 ml-1.5 sm:ml-4">
                         <div class="hidden md:flex flex-col items-end">
                             <span class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none mb-1">Selamat Datang,</span>
                             <span class="text-sm font-black font-outfit text-slate-900 tracking-tight">{{ auth()->user()->name ?? 'Dimi Octora' }}</span>
                         </div>
                         <a href="/dashboard" class="relative group">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200/50 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all overflow-hidden relative">
-                                <div class="absolute inset-0 border-2 border-transparent bg-gradient-to-br from-accent to-success [mask-image:linear-gradient(white,white)] [mask-clip:content-box] -m-[2px] rounded-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                            <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200/50 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all overflow-hidden relative">
+                                <div class="absolute inset-0 border-2 border-transparent bg-gradient-to-br from-accent to-success [mask-image:linear-gradient(white,white)] [mask-clip:content-box] -m-[2px] rounded-xl sm:rounded-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
                                 
                                 @if(auth()->user()->avatar_url)
                                     <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
                                 @else
-                                    <svg class="w-full h-full p-2" viewBox="0 0 100 100">
+                                    <svg class="w-full h-full p-1.5 sm:p-2" viewBox="0 0 100 100">
                                         <defs>
                                             <linearGradient id="navAvatarGradGlobal" x1="0%" y1="0%" x2="100%" y2="100%">
                                                 <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
@@ -134,8 +134,8 @@
                     </div>
                 @else
                     <!-- Login Button (Guest) -->
-                    <button onclick="toggleAuthModal('login')" class="bg-gradient-to-r from-accent to-success text-white text-xs sm:text-sm font-black px-5 sm:px-8 py-2.5 sm:py-3 rounded-xl shadow-lg shadow-accent/30 hover:shadow-accent/50 hover:-translate-y-0.5 transition-all flex items-center gap-2">
-                        <i data-lucide="user" class="w-4 h-4"></i>
+                    <button onclick="toggleAuthModal('login')" class="bg-gradient-to-r from-accent to-success text-white text-[11px] sm:text-sm font-black px-3.5 sm:px-8 py-2 sm:py-3 rounded-lg sm:rounded-xl shadow-lg shadow-accent/30 hover:shadow-accent/50 hover:-translate-y-0.5 transition-all flex items-center gap-1.5 sm:gap-2">
+                        <i data-lucide="user" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
                         Masuk
                     </button>
                 @endauth
@@ -231,21 +231,21 @@
 
     <!-- Filter Side Panel -->
     <div id="filterOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[70] hidden opacity-0 transition-opacity duration-300" onclick="toggleFilter()"></div>
-    <aside id="filterPanel" class="fixed top-0 right-0 h-full w-full max-w-[400px] bg-white z-[80] shadow-2xl translate-x-full filter-panel p-8">
-        <div class="flex items-center justify-between mb-10">
-            <h2 class="text-2xl font-outfit font-bold text-slate-800">Filter Pencarian</h2>
-            <button onclick="toggleFilter()" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors">
-                <i data-lucide="x" class="w-5 h-5"></i>
+    <aside id="filterPanel" class="fixed top-0 right-0 h-full w-full max-w-[320px] sm:max-w-[400px] bg-white z-[80] shadow-2xl translate-x-full filter-panel p-5 sm:p-8">
+        <div class="flex items-center justify-between mb-6 sm:mb-10">
+            <h2 class="text-lg sm:text-2xl font-outfit font-bold text-slate-800">Filter Pencarian</h2>
+            <button onclick="toggleFilter()" class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors">
+                <i data-lucide="x" class="w-4 h-4 sm:w-5 sm:h-5"></i>
             </button>
         </div>
 
-        <div class="space-y-10 overflow-y-auto max-h-[calc(100vh-200px)] pr-2">
+        <div class="space-y-6 sm:space-y-10 overflow-y-auto max-h-[calc(100vh-160px)] pr-1 sm:pr-2">
             <!-- Location -->
             <div>
-                <label class="block text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Lokasi</label>
+                <label class="block text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-widest mb-2.5 sm:mb-4">Lokasi</label>
                 <div class="relative">
-                    <i data-lucide="map-pin" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-                    <select id="filterLocation" class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium appearance-none">
+                    <i data-lucide="map-pin" class="absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400"></i>
+                    <select id="filterLocation" class="w-full pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3.5 bg-slate-50 border border-slate-100 rounded-xl sm:rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-xs sm:text-base appearance-none">
                         <option value="">Seluruh Indonesia</option>
                         <option value="Jakarta">Jakarta</option>
                         <option value="Bandung">Bandung</option>
@@ -257,8 +257,8 @@
 
             <!-- Categories -->
             <div>
-                <label class="block text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">Kategori Isu</label>
-                <div class="grid grid-cols-1 gap-4">
+                <label class="block text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-widest mb-3 sm:mb-6">Kategori Isu</label>
+                <div class="grid grid-cols-1 gap-2.5 sm:gap-4">
                     @php
                         $categories = [
                             ['name' => 'Lingkungan', 'icon' => 'leaf', 'count' => 523],
@@ -273,14 +273,14 @@
                         ];
                     @endphp
                     @foreach($categories as $cat)
-                    <label class="flex items-center group cursor-pointer">
+                    <label class="flex items-center group cursor-pointer text-xs sm:text-base">
                         <input type="checkbox" name="filter_category" value="{{ $cat['name'] }}" class="hidden peer category-checkbox">
-                        <div class="w-6 h-6 border-2 border-slate-200 rounded-lg flex items-center justify-center peer-checked:bg-primary peer-checked:border-primary transition-all group-hover:border-primary">
-                            <i data-lucide="check" class="w-4 h-4 text-white opacity-0 peer-checked:opacity-100"></i>
+                        <div class="w-5 h-5 sm:w-6 sm:h-6 border-2 border-slate-200 rounded-md sm:rounded-lg flex items-center justify-center peer-checked:bg-primary peer-checked:border-primary transition-all group-hover:border-primary flex-shrink-0">
+                            <i data-lucide="check" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white opacity-0 peer-checked:opacity-100"></i>
                         </div>
-                        <div class="ml-4 flex-1 flex items-center justify-between">
+                        <div class="ml-3 sm:ml-4 flex-1 flex items-center justify-between">
                             <span class="font-semibold text-slate-600 group-hover:text-slate-900 transition-colors">{{ $cat['name'] }}</span>
-                            <span class="text-xs font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">{{ $cat['count'] }}</span>
+                            <span class="text-[10px] sm:text-xs font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">{{ $cat['count'] }}</span>
                         </div>
                     </label>
                     @endforeach
@@ -288,48 +288,48 @@
             </div>
 
             <!-- Urgent Toggle -->
-            <div class="p-6 bg-red-50 rounded-[24px] border border-red-100">
+            <div class="p-4 sm:p-6 bg-red-50 rounded-2xl sm:rounded-[24px] border border-red-100">
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-red-500 text-white rounded-xl flex items-center justify-center">
-                            <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                    <div class="flex items-center gap-2.5 sm:gap-3">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-red-500 text-white rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="alert-triangle" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
                         <div>
-                            <span class="block font-bold text-red-900 text-sm">Butuh Segera</span>
-                            <span class="text-xs text-red-700/70 font-medium">Tampilkan isu kritis</span>
+                            <span class="block font-bold text-red-900 text-xs sm:text-sm">Butuh Segera</span>
+                            <span class="text-[10px] sm:text-xs text-red-700/70 font-medium">Tampilkan isu kritis</span>
                         </div>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="urgentToggle" class="sr-only peer">
-                        <div class="w-11 h-6 bg-red-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                        <div class="w-9 h-5 sm:w-11 sm:h-6 bg-red-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 sm:after:h-5 after:w-4 sm:after:w-5 after:transition-all peer-checked:bg-red-600"></div>
                     </label>
                 </div>
             </div>
         </div>
 
-        <div class="absolute bottom-0 left-0 right-0 p-8 border-t border-slate-100 bg-white grid grid-cols-2 gap-4">
-            <button onclick="resetFilters()" class="py-4 border border-slate-200 text-slate-600 font-bold rounded-2xl hover:bg-slate-50 transition-colors">Reset</button>
-            <button onclick="applyFilters()" class="py-4 bg-primary text-white font-bold rounded-2xl hover:shadow-lg shadow-primary/20 transition-all">Terapkan</button>
+        <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-8 border-t border-slate-100 bg-white grid grid-cols-2 gap-3 sm:gap-4">
+            <button onclick="resetFilters()" class="py-2.5 sm:py-4 border border-slate-200 text-slate-600 font-bold text-xs sm:text-base rounded-xl sm:rounded-2xl hover:bg-slate-50 transition-colors">Reset</button>
+            <button onclick="applyFilters()" class="py-2.5 sm:py-4 bg-primary text-white font-bold text-xs sm:text-base rounded-xl sm:rounded-2xl hover:shadow-lg shadow-primary/20 transition-all">Terapkan</button>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="pt-24 sm:pt-28 md:pt-32 pb-24 sm:pb-32 md:pb-40">
-        <div class="container mx-auto px-4 sm:px-6">
+    <main class="pt-16 sm:pt-24 md:pt-32 pb-16 sm:pb-32 md:pb-40">
+        <div class="container mx-auto px-3 sm:px-6">
             <!-- Hero Header -->
-            <div class="mb-10 sm:mb-14">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 sm:gap-8">
+            <div class="mb-5 sm:mb-10 md:mb-14">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-8">
                     <div>
-                        <h1 class="text-2xl sm:text-4xl md:text-5xl font-outfit font-extrabold text-slate-900 mb-2 break-words">Halaman Suara</h1>
-                        <p class="text-sm sm:text-base text-slate-500 font-medium break-words">Temukan dan kawal suara sosial di seluruh Indonesia</p>
+                        <h1 class="text-xl sm:text-4xl md:text-5xl font-outfit font-extrabold text-slate-900 mb-0.5 sm:mb-2 break-words">Halaman Suara</h1>
+                        <p class="text-xs sm:text-base text-slate-500 font-medium break-words">Temukan dan kawal suara sosial di seluruh Indonesia</p>
                     </div>
-                    <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full md:w-auto">
+                    <div class="flex items-center gap-2 sm:gap-4 w-full md:w-auto mt-1 sm:mt-0">
                         <div class="relative flex-1 w-full md:w-96 group">
-                            <i data-lucide="search" class="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400 group-focus-within:text-primary transition-colors"></i>
-                            <input id="searchInput" type="text" placeholder="Cari isu, lokasi, atau tag..." class="w-full pl-11 sm:pl-14 pr-4 sm:pr-6 py-3 sm:py-4 bg-white border border-slate-100 rounded-2xl sm:rounded-3xl shadow-sm focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-medium text-sm sm:text-base">
+                            <i data-lucide="search" class="absolute left-3.5 sm:left-5 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400 group-focus-within:text-primary transition-colors"></i>
+                            <input id="searchInput" type="text" placeholder="Cari isu, lokasi, atau tag..." class="w-full pl-9 sm:pl-14 pr-3 sm:pr-6 py-2.5 sm:py-4 bg-white border border-slate-200/80 sm:border-slate-100 rounded-xl sm:rounded-3xl shadow-sm focus:ring-2 sm:focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-medium text-xs sm:text-base">
                         </div>
-                        <button onclick="toggleFilter()" class="w-full sm:w-auto flex items-center justify-center gap-2.5 sm:gap-3 px-5 sm:px-6 py-3 sm:py-4 bg-white border border-slate-100 rounded-2xl sm:rounded-3xl shadow-sm hover:bg-slate-50 transition-all group active:scale-95">
-                            <i data-lucide="sliders-horizontal" class="w-4 h-4 sm:w-5 sm:h-5 text-slate-500 group-hover:text-primary"></i>
+                        <button onclick="toggleFilter()" class="flex-shrink-0 flex items-center justify-center gap-1.5 sm:gap-3 px-3.5 sm:px-6 py-2.5 sm:py-4 bg-white border border-slate-200/80 sm:border-slate-100 rounded-xl sm:rounded-3xl shadow-sm hover:bg-slate-50 transition-all group active:scale-95">
+                            <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 sm:w-5 sm:h-5 text-slate-500 group-hover:text-primary"></i>
                             <span class="font-bold text-xs sm:text-sm text-slate-700">Filter</span>
                         </button>
                     </div>
@@ -337,42 +337,42 @@
             </div>
 
             <!-- List Grid -->
-            <div id="suaraContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 mb-16">
+            <div id="suaraContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-8 md:gap-10 mb-10 sm:mb-16">
                 @forelse($suaras as $m)
                     @include('partials.suara_card', ['m' => $m])
                 @empty
-                    <div id="initialEmptyState" class="col-span-full py-20 flex flex-col items-center justify-center text-center">
-                        <i data-lucide="inbox" class="w-20 h-20 text-slate-200 mb-6"></i>
-                        <h4 class="text-2xl font-black text-slate-400 uppercase">Belum ada Suara aktif</h4>
-                        <p class="text-slate-400 mt-2">Jadilah yang pertama menyuarakan perubahan!</p>
-                        <a href="/create-suara" class="mt-8 px-10 py-4 bg-primary text-white rounded-3xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">Publikasikan Isu</a>
+                    <div id="initialEmptyState" class="col-span-full py-16 sm:py-20 flex flex-col items-center justify-center text-center">
+                        <i data-lucide="inbox" class="w-14 h-14 sm:w-20 sm:h-20 text-slate-200 mb-4 sm:mb-6"></i>
+                        <h4 class="text-lg sm:text-2xl font-black text-slate-400 uppercase">Belum ada Suara aktif</h4>
+                        <p class="text-xs sm:text-base text-slate-400 mt-1 sm:mt-2">Jadilah yang pertama menyuarakan perubahan!</p>
+                        <a href="/create-suara" class="mt-6 sm:mt-8 px-6 sm:px-10 py-3 sm:py-4 bg-primary text-white rounded-2xl sm:rounded-3xl font-black text-[9px] sm:text-[10px] uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all">Publikasikan Isu</a>
                     </div>
                 @endforelse
             </div>
 
             <!-- Empty State Illustration -->
-            <div id="emptyState" class="hidden py-32 flex-col items-center justify-center text-center max-w-lg mx-auto">
-                <div class="relative mb-12">
+            <div id="emptyState" class="hidden py-16 sm:py-32 flex-col items-center justify-center text-center max-w-lg mx-auto">
+                <div class="relative mb-6 sm:mb-12">
                     <div class="absolute inset-0 bg-primary/5 rounded-full blur-3xl scale-150"></div>
-                    <div class="w-48 h-48 relative flex items-center justify-center">
-                        <i data-lucide="search-x" class="w-32 h-32 text-slate-200"></i>
+                    <div class="w-32 h-32 sm:w-48 sm:h-48 relative flex items-center justify-center">
+                        <i data-lucide="search-x" class="w-20 h-20 sm:w-32 sm:h-32 text-slate-200"></i>
                     </div>
                 </div>
-                <h3 class="text-3xl font-outfit font-black text-slate-800 mb-4">Suara Belum Ditemukan</h3>
-                <p class="text-slate-500 font-medium leading-relaxed">Maaf, kami tidak menemukan suara yang cocok dengan pencarian Anda. Coba hilangkan beberapa filter atau cari dengan kata kunci lain.</p>
-                <button onclick="resetFilters()" class="mt-10 px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-all">Muat Ulang Semua Suara</button>
+                <h3 class="text-xl sm:text-3xl font-outfit font-black text-slate-800 mb-2 sm:mb-4">Suara Belum Ditemukan</h3>
+                <p class="text-xs sm:text-base text-slate-500 font-medium leading-relaxed">Maaf, kami tidak menemukan suara yang cocok dengan pencarian Anda. Coba hilangkan beberapa filter atau cari dengan kata kunci lain.</p>
+                <button onclick="resetFilters()" class="mt-6 sm:mt-10 px-6 sm:px-8 py-3 sm:py-4 bg-slate-900 text-white font-bold text-xs sm:text-base rounded-xl sm:rounded-2xl hover:bg-slate-800 transition-all">Muat Ulang Semua Suara</button>
             </div>
 
             <!-- Loader / Scroll Trigger -->
-            <div id="scrollTrigger" class="flex flex-col items-center justify-center py-8">
-                <button id="loadMoreBtn" onclick="loadMoreSuaras()" class="{{ $suaras->hasMorePages() ? 'flex' : 'hidden' }} items-center gap-3 px-8 py-4 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl hover:bg-slate-50 hover:border-slate-300 shadow-sm transition-all group active:scale-95">
-                    <span id="loadMoreSpinner" class="w-5 h-5 border-2 border-slate-300 border-t-accent rounded-full animate-spin hidden"></span>
+            <div id="scrollTrigger" class="flex flex-col items-center justify-center py-6 sm:py-8">
+                <button id="loadMoreBtn" onclick="loadMoreSuaras()" class="{{ $suaras->hasMorePages() ? 'flex' : 'hidden' }} items-center gap-2 sm:gap-3 px-5 sm:px-8 py-2.5 sm:py-4 bg-white border border-slate-200 text-slate-700 font-bold text-xs sm:text-base rounded-xl sm:rounded-2xl hover:bg-slate-50 hover:border-slate-300 shadow-sm transition-all group active:scale-95">
+                    <span id="loadMoreSpinner" class="w-4 h-4 sm:w-5 sm:h-5 border-2 border-slate-300 border-t-accent rounded-full animate-spin hidden"></span>
                     <span id="loadMoreText">Muat Lebih Banyak Suara</span>
-                    <i id="loadMoreIcon" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-transform group-hover:translate-y-0.5"></i>
+                    <i id="loadMoreIcon" data-lucide="chevron-down" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-slate-600 transition-transform group-hover:translate-y-0.5"></i>
                 </button>
 
-                <div id="endOfSuaras" class="{{ !$suaras->hasMorePages() && $suaras->count() > 0 ? 'flex' : 'hidden' }} items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest bg-slate-100/80 px-6 py-3 rounded-full">
-                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i>
+                <div id="endOfSuaras" class="{{ !$suaras->hasMorePages() && $suaras->count() > 0 ? 'flex' : 'hidden' }} items-center gap-2 text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest bg-slate-100/80 px-4 sm:px-6 py-2 sm:py-3 rounded-full">
+                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500"></i>
                     <span>Semua Suara telah ditampilkan</span>
                 </div>
             </div>
@@ -380,8 +380,8 @@
     </main>
 
     <!-- Floating Action Button -->
-    <a href="/create-suara" title="Buat Suara Baru" class="fixed bottom-5 right-5 sm:bottom-8 sm:right-8 md:bottom-10 md:right-10 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 p-3 sm:p-4 bg-gradient-to-br from-accent to-success text-white rounded-2xl sm:rounded-3xl flex items-center justify-center shadow-xl shadow-accent/30 hover:scale-105 active:scale-90 transition-all z-[90] group">
-        <i data-lucide="plus" class="w-6 h-6 sm:w-8 sm:h-8 group-hover:rotate-90 transition-transform duration-500 font-black"></i>
+    <a href="/create-suara" title="Buat Suara Baru" class="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 md:bottom-10 md:right-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 p-2.5 sm:p-4 bg-gradient-to-br from-accent to-success text-white rounded-xl sm:rounded-3xl flex items-center justify-center shadow-xl shadow-accent/30 hover:scale-105 active:scale-90 transition-all z-[90] group">
+        <i data-lucide="plus" class="w-5 h-5 sm:w-8 sm:h-8 group-hover:rotate-90 transition-transform duration-500 font-black"></i>
         <div class="hidden sm:block absolute right-full mr-4 bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-xl opacity-0 translate-x-2 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 transition-all whitespace-nowrap shadow-xl">
             Ayo buat perubahan baru!
         </div>
