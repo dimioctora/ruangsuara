@@ -407,7 +407,7 @@
                     </div>
 
                     <!-- Balloon Simulation Area -->
-                    <div class="absolute inset-0">
+                    <div class="absolute inset-0 pointer-events-none">
                         @foreach($recentIssues as $index => $suara)
                         @php
                             $colors = ['bg-red-500', 'bg-orange-500', 'bg-emerald-500', 'bg-blue-500', 'bg-purple-500', 'bg-yellow-500', 'bg-pink-500', 'bg-indigo-500', 'bg-cyan-500', 'bg-teal-500'];
@@ -415,22 +415,22 @@
                             $delay = ($index * 2) . 's';
                             $left = (10 + ($index * 12) % 80);
                             $duration = (18 + ($index * 3) % 15) . 's';
-                            $scale = $suara->supporter_count > 5000 ? 'scale-125' : ($suara->supporter_count > 1000 ? 'scale-110' : 'scale-90');
+                            $scale = $suara->supporter_count > 5000 ? 'scale-[0.75] sm:scale-125' : ($suara->supporter_count > 1000 ? 'scale-[0.7] sm:scale-110' : 'scale-[0.65] sm:scale-90');
                         @endphp
-                        <div class="absolute bottom-[-20%] left-[{{ $left }}%] {{ $scale }} glass rounded-2xl p-5 shadow-2xl animate-balloon opacity-0 border border-white/50" 
+                        <div class="absolute bottom-[-20%] left-[{{ $left }}%] {{ $scale }} glass rounded-xl sm:rounded-2xl p-2.5 sm:p-5 max-w-[145px] sm:max-w-xs shadow-xl sm:shadow-2xl animate-balloon opacity-0 border border-white/50 pointer-events-auto" 
                              style="animation-delay: {{ $delay }}; animation-duration: {{ $duration }};">
                             <a href="{{ url('/suara-detail/' . $suara->id) }}" class="absolute inset-0 z-10"></a>
-                            <div class="flex items-center justify-between gap-6 mb-4">
-                                <div class="w-10 h-10 rounded-xl {{ $color }} flex items-center justify-center text-white shadow-lg">
-                                    <i data-lucide="bell" class="w-5 h-5"></i>
+                            <div class="flex items-center justify-between gap-1.5 sm:gap-6 mb-1.5 sm:mb-4">
+                                <div class="w-6 h-6 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl {{ $color }} flex items-center justify-center text-white shadow-md sm:shadow-lg flex-shrink-0">
+                                    <i data-lucide="bell" class="w-3 h-3 sm:w-5 sm:h-5"></i>
                                 </div>
-                                <span class="bg-slate-100 text-slate-500 text-[10px] font-black px-3 py-1.5 rounded-lg uppercase tracking-wider">AKTIF</span>
+                                <span class="bg-slate-100/90 text-slate-500 text-[8px] sm:text-[10px] font-black px-1.5 sm:px-3 py-0.5 sm:py-1.5 rounded-md sm:rounded-lg uppercase tracking-wider">AKTIF</span>
                             </div>
-                            <h4 class="font-black text-slate-900 text-base mb-3 leading-tight tracking-tight">{{ $suara->title }}</h4>
-                            <div class="flex items-center gap-2 text-accent">
-                                <i data-lucide="trending-up" class="w-4 h-4"></i>
-                                <span class="text-sm font-black font-outfit">{{ number_format($suara->supporter_count, 0, ',', '.') }}</span>
-                                <span class="text-[10px] text-slate-400 font-bold ml-1">Penerima Aspirasi</span>
+                            <h4 class="font-bold sm:font-black text-slate-900 text-[10px] sm:text-base mb-1.5 sm:mb-3 leading-tight tracking-tight line-clamp-2">{{ $suara->title }}</h4>
+                            <div class="flex items-center gap-1 sm:gap-2 text-accent">
+                                <i data-lucide="trending-up" class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"></i>
+                                <span class="text-[10px] sm:text-sm font-black font-outfit">{{ number_format($suara->supporter_count, 0, ',', '.') }}</span>
+                                <span class="text-[8px] sm:text-[10px] text-slate-400 font-bold ml-0.5 sm:ml-1 hidden sm:inline">Penerima Aspirasi</span>
                             </div>
                         </div>
                         @endforeach
@@ -623,12 +623,12 @@
                     </div>
                     
                     <!-- Swiper Navigation Arrows -->
-                    <div class="flex items-center gap-4">
-                        <button id="prevBtn" class="w-14 h-14 rounded-2xl bg-white shadow-xl flex items-center justify-center hover:bg-accent hover:text-white transition-all active:scale-90 group">
-                            <i data-lucide="chevron-left" class="w-6 h-6 group-hover:-translate-x-1 transition-transform"></i>
+                    <div class="flex items-center justify-start md:justify-end gap-3 sm:gap-4 w-full md:w-auto">
+                        <button id="prevBtn" class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white shadow-md sm:shadow-xl flex items-center justify-center hover:bg-accent hover:text-white transition-all active:scale-90 group">
+                            <i data-lucide="chevron-left" class="w-5 h-5 sm:w-6 sm:h-6 group-hover:-translate-x-1 transition-transform"></i>
                         </button>
-                        <button id="nextBtn" class="w-14 h-14 rounded-2xl bg-white shadow-xl flex items-center justify-center hover:bg-accent hover:text-white transition-all active:scale-90 group">
-                            <i data-lucide="chevron-right" class="w-6 h-6 group-hover:translate-x-1 transition-transform"></i>
+                        <button id="nextBtn" class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white shadow-md sm:shadow-xl flex items-center justify-center hover:bg-accent hover:text-white transition-all active:scale-90 group">
+                            <i data-lucide="chevron-right" class="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1 transition-transform"></i>
                         </button>
                     </div>
                 </div>
@@ -689,65 +689,66 @@
                                         </div>
                                         @endif
                                     </div>
-                                    <div class="p-4 sm:p-10 flex flex-col flex-1">
-                                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] font-bold text-accent uppercase tracking-widest mb-2 sm:mb-4">
-                                            <i data-lucide="map-pin" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i>
-                                            {{ $suara->location }} | {{ $suara->category }}
+                                    <div class="p-2.5 sm:p-10 flex flex-col flex-1">
+                                        <div class="flex items-center gap-1 sm:gap-2 text-[8px] sm:text-[10px] font-bold text-accent uppercase tracking-widest mb-1 sm:mb-4">
+                                            <i data-lucide="map-pin" class="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5"></i>
+                                            <span class="truncate">{{ $suara->location }} | {{ $suara->category }}</span>
                                         </div>
-                                        <h3 class="text-sm sm:text-3xl font-black text-slate-900 mb-3 sm:mb-10 font-outfit leading-tight tracking-tight line-clamp-2 uppercase">{{ $suara->title }}</h3>
+                                        <h3 class="text-xs sm:text-3xl font-black text-slate-900 mb-2 sm:mb-10 font-outfit leading-tight tracking-tight line-clamp-2 uppercase">{{ $suara->title }}</h3>
                                         
-                                        <div class="space-y-2 sm:space-y-4 mb-3 sm:mb-10 mt-auto">
+                                        <div class="space-y-1.5 sm:space-y-4 mb-2 sm:mb-10 mt-auto">
                                             <div class="flex justify-between items-end">
-                                                <span class="text-[9px] sm:text-[10px] font-mono text-slate-400 font-black uppercase tracking-widest">Support Percentage</span>
-                                                <span class="text-sm sm:text-lg font-black font-outfit text-accent">{{ $proPercent }}%</span>
+                                                <span class="text-[8px] sm:text-[10px] font-mono text-slate-400 font-black uppercase tracking-widest">Support</span>
+                                                <span class="text-xs sm:text-lg font-black font-outfit text-accent">{{ $proPercent }}%</span>
                                             </div>
-                                            <div class="h-1.5 sm:h-2 w-full bg-slate-100 rounded-full overflow-hidden flex">
+                                            <div class="h-1 sm:h-2 w-full bg-slate-100 rounded-full overflow-hidden flex">
                                                 <div class="h-full bg-accent transition-all duration-1000" style="width: {{ $proPercent }}%"></div>
                                                 <div class="h-full bg-red-400 transition-all duration-1000" style="width: {{ $kontraPercent }}%"></div>
                                             </div>
                                         </div>
 
-                                        <div class="flex items-center justify-between border-t border-slate-50 pt-3 sm:pt-8">
+                                        <div class="flex items-center justify-between border-t border-slate-50 pt-2 sm:pt-8">
                                             @php
                                                 $issueSupporters = ($suara && $suara->votes) ? $suara->votes->where('type', 'pro')->pluck('user')->filter()->unique('id') : collect();
                                                 $totalIssueVoices = (int) ($suara->supporter_count ?? 0);
                                             @endphp
-                                            <div class="flex items-center gap-3">
-                                                <div class="flex -space-x-3">
+                                            <div class="flex items-center gap-1.5 sm:gap-3">
+                                                <div class="flex -space-x-2 sm:-space-x-3">
                                                     @if($issueSupporters->isNotEmpty())
                                                         @foreach($issueSupporters->take(3) as $isup)
                                                             @if($isup && $isup->avatar_url)
-                                                                <img src="{{ $isup->avatar_url }}" class="w-11 h-11 rounded-xl border-[4px] border-white bg-slate-200 object-cover shadow-sm" alt="{{ $isup->name }}" title="{{ $isup->name }}">
+                                                                <img src="{{ $isup->avatar_url }}" class="w-6 h-6 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl border-[2px] sm:border-[4px] border-white bg-slate-200 object-cover shadow-sm" alt="{{ $isup->name }}" title="{{ $isup->name }}">
                                                             @else
-                                                                <div class="w-11 h-11 rounded-xl border-[4px] border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-xs flex items-center justify-center shadow-sm uppercase" title="{{ $isup->name ?? 'Warga' }}">
+                                                                <div class="w-6 h-6 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl border-[2px] sm:border-[4px] border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-[9px] sm:text-xs flex items-center justify-center shadow-sm uppercase" title="{{ $isup->name ?? 'Warga' }}">
                                                                     {{ substr($isup->name ?? 'W', 0, 2) }}
                                                                 </div>
                                                             @endif
                                                         @endforeach
                                                     @elseif($suara->user)
                                                         @if($suara->user->avatar_url)
-                                                            <img src="{{ $suara->user->avatar_url }}" class="w-11 h-11 rounded-xl border-[4px] border-white bg-slate-200 object-cover shadow-sm" alt="{{ $suara->user->name }}" title="Inisiator: {{ $suara->user->name }}">
+                                                             <img src="{{ $suara->user->avatar_url }}" class="w-6 h-6 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl border-[2px] sm:border-[4px] border-white bg-slate-200 object-cover shadow-sm" alt="{{ $suara->user->name }}" title="Inisiator: {{ $suara->user->name }}">
                                                         @else
-                                                            <div class="w-11 h-11 rounded-xl border-[4px] border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-xs flex items-center justify-center shadow-sm uppercase" title="Inisiator: {{ $suara->user->name }}">
+                                                            <div class="w-6 h-6 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl border-[2px] sm:border-[4px] border-white bg-gradient-to-tr from-accent to-blue-700 text-white font-black text-[9px] sm:text-xs flex items-center justify-center shadow-sm uppercase" title="Inisiator: {{ $suara->user->name }}">
                                                                 {{ substr($suara->user->name ?? 'W', 0, 2) }}
                                                             </div>
                                                         @endif
                                                     @else
-                                                        <div class="w-11 h-11 rounded-xl border-[4px] border-white bg-slate-100 flex items-center justify-center text-slate-400">
-                                                            <i data-lucide="user" class="w-5 h-5"></i>
+                                                        <div class="w-6 h-6 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl border-[2px] sm:border-[4px] border-white bg-slate-100 flex items-center justify-center text-slate-400">
+                                                            <i data-lucide="user" class="w-3 h-3 sm:w-5 sm:h-5"></i>
                                                         </div>
                                                     @endif
                                                 </div>
-                                                <span class="text-[10px] font-bold text-slate-400 tracking-tight ml-2">{{ number_format($totalIssueVoices, 0, ',', '.') }} Voices</span>
+                                                <span class="text-[8px] sm:text-[10px] font-bold text-slate-400 tracking-tight ml-0.5 sm:ml-2 hidden xs:inline">{{ number_format($totalIssueVoices, 0, ',', '.') }}</span>
                                             </div>
                                             <div class="flex flex-col text-right">
-                                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Dibutuhkan</span>
-                                                <span class="text-xs font-black text-slate-900 font-outfit">{{ number_format($totalVoices, 0, ',', '.') }}</span>
+                                                <span class="text-[7px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-widest">Dibutuhkan</span>
+                                                <span class="text-[10px] sm:text-xs font-black text-slate-900 font-outfit">{{ number_format($totalVoices, 0, ',', '.') }}</span>
                                             </div>
                                             <!-- The entire card is now clickable via the stretched link above. This button is for visual only. -->
-                                            <div class="w-14 h-14 rounded-2xl bg-slate-900 text-white flex items-center justify-center hover:bg-accent hover:scale-110 transition-all active:scale-95 shadow-xl">
-                                                <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                                            <div class="w-7 h-7 sm:w-14 sm:h-14 rounded-lg sm:rounded-2xl bg-slate-900 text-white hidden sm:flex items-center justify-center hover:bg-accent hover:scale-110 transition-all active:scale-95 shadow-xl">
+                                                <i data-lucide="arrow-right" class="w-3.5 h-3.5 sm:w-6 sm:h-6"></i>
                                             </div>
+                                        </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1292,8 +1293,8 @@
         });
         window.addEventListener('focus', fetchStats);
         const recentIssuesSwiper = new Swiper('.recentIssuesSwiper', {
-            slidesPerView: 1,
-            spaceBetween: 20,
+            slidesPerView: 2,
+            spaceBetween: 10,
             loop: true,
             grabCursor: true,
             centeredSlides: false,
@@ -1308,14 +1309,18 @@
             },
             breakpoints: {
                 640: {
-                    slidesPerView: 1.2,
-                    spaceBetween: 20,
+                    slidesPerView: 2,
+                    spaceBetween: 16,
                 },
                 768: {
-                    slidesPerView: 2,
-                    spaceBetween: 24,
+                    slidesPerView: 2.2,
+                    spaceBetween: 20,
                 },
-                1150: {
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 28,
+                },
+                1280: {
                     slidesPerView: 3,
                     spaceBetween: 32,
                 },
