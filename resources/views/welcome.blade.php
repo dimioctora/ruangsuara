@@ -339,68 +339,68 @@
 
     <main>
         <!-- Hero Section -->
-        <section class="relative min-h-screen w-full flex items-center justify-center overflow-hidden py-20 sm:py-24">
+        <section class="relative min-h-0 lg:min-h-screen w-full flex items-center justify-center overflow-hidden py-10 sm:py-20 lg:py-24">
             <!-- Full Page Background Elements -->
             <div class="absolute inset-0 bg-slate-50 -z-10"></div>
             <div class="blob bg-indigo-400/30 top-[-10%] left-[-5%] w-[800px] h-[800px]"></div>
             <div class="blob bg-purple-400/20 bottom-[-10%] right-[-5%] w-[800px] h-[800px]"></div>
 
-            <div class="w-full px-4 sm:px-6 md:px-20 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center relative z-10">
+            <div class="w-full px-4 sm:px-6 md:px-20 grid lg:grid-cols-2 gap-6 sm:gap-10 lg:gap-16 items-center relative z-10">
                 <!-- Hero Content -->
                 <div class="max-w-4xl">
-                    <div class="inline-flex items-center gap-2 sm:gap-3 bg-white/60 backdrop-blur-md px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-accent border border-white/50 shadow-sm shadow-accent/5 mb-6 sm:mb-10">
+                    <div class="inline-flex items-center gap-2 sm:gap-3 bg-white/60 backdrop-blur-md px-3.5 sm:px-6 py-1.5 sm:py-2.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-accent border border-white/50 shadow-sm shadow-accent/5 mb-4 sm:mb-10">
                         <span class="flex h-2 w-2 relative">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
                             <span class="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
                         </span>
                         Platform Aspirasi Publik
                     </div>
-                    <h1 class="text-4xl sm:text-6xl md:text-7xl lg:text-[100px] font-black font-outfit leading-[1.1] text-slate-900 mb-6 sm:mb-10 tracking-tighter py-2 sm:py-4 break-words">
+                    <h1 class="text-3xl sm:text-6xl md:text-7xl lg:text-[100px] font-black font-outfit leading-[1.1] text-slate-900 mb-4 sm:mb-10 tracking-tighter py-1 sm:py-4 break-words">
                         Ubah <span class="bg-clip-text text-transparent bg-gradient-to-r from-accent via-blue-700 to-indigo-900">Suara</span><br>
-                        Jadi <span class="relative inline-block bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-slate-900 pr-2 sm:pr-10 py-1 sm:py-2">
+                        Jadi <span class="relative inline-block bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-slate-900 pr-2 sm:pr-10 py-0.5 sm:py-2">
                             Aksi Nyata
                             <svg class="absolute -bottom-2 sm:-bottom-4 left-0 w-full h-3 sm:h-4 text-red-600/10" viewBox="0 0 100 10" preserveAspectRatio="none">
                                 <path d="M0 5 Q 25 0 50 5 T 100 5" fill="none" stroke="currentColor" stroke-width="6" />
                             </svg>
                         </span>
                     </h1>
-                    <p class="text-slate-500 text-base sm:text-xl md:text-3xl leading-relaxed mb-8 sm:mb-14 max-w-2xl font-medium tracking-tight break-words">
+                    <p class="text-slate-500 text-sm sm:text-xl md:text-3xl leading-relaxed mb-6 sm:mb-14 max-w-2xl font-medium tracking-tight break-words">
                         Platform transparansi dan kolaborasi massal untuk mewujudkan setiap aspirasi masyarakat secara langsung.
                     </p>
-                    <div class="flex flex-wrap items-center gap-3 sm:gap-6 mb-12 sm:mb-20">
-                        <a href="/create-suara" class="bg-gradient-to-r from-accent to-success text-white px-6 sm:px-10 py-3.5 sm:py-5 rounded-2xl font-bold font-outfit text-sm sm:text-lg shadow-2xl shadow-primary/40 hover:scale-105 transition-all flex items-center gap-2 sm:gap-3 active:scale-95">
+                    <div class="flex flex-wrap items-center gap-3 sm:gap-6 mb-6 sm:mb-20">
+                        <a href="/create-suara" class="bg-gradient-to-r from-accent to-success text-white px-5 sm:px-10 py-3 sm:py-5 rounded-xl sm:rounded-2xl font-bold font-outfit text-xs sm:text-lg shadow-xl sm:shadow-2xl shadow-primary/40 hover:scale-105 transition-all flex items-center gap-2 sm:gap-3 active:scale-95">
                             Mulai Sekarang <i data-lucide="arrow-right" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                         </a>
-                        <a href="/suara" class="bg-white text-slate-800 px-6 sm:px-10 py-3.5 sm:py-5 rounded-2xl font-bold font-outfit text-sm sm:text-lg shadow-md border border-slate-100 hover:bg-slate-50 transition-all active:scale-95">
+                        <a href="/suara" class="bg-white text-slate-800 px-5 sm:px-10 py-3 sm:py-5 rounded-xl sm:rounded-2xl font-bold font-outfit text-xs sm:text-lg shadow-md border border-slate-100 hover:bg-slate-50 transition-all active:scale-95">
                             Kawal Suara
                         </a>
                     </div>
                     
                     <!-- Hero Stats -->
-                    <div class="flex flex-col gap-3">
+                    <div class="flex flex-col gap-2 sm:gap-3">
                         <div class="flex items-center gap-2">
-                            <span class="relative flex h-2.5 w-2.5">
+                            <span class="relative flex h-2 sm:h-2.5 w-2 sm:w-2.5">
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                                <span class="relative inline-flex rounded-full h-2 sm:h-2.5 w-2 sm:w-2.5 bg-emerald-500"></span>
                             </span>
-                            <span class="text-[11px] font-bold tracking-wider text-slate-400 uppercase">Live Monitoring</span>
+                            <span class="text-[9px] sm:text-[11px] font-bold tracking-wider text-slate-400 uppercase">Live Monitoring</span>
                         </div>
-                        <div class="flex items-center gap-10 md:gap-16">
+                        <div class="flex items-center gap-6 sm:gap-10 md:gap-16">
                             <div class="group cursor-default">
-                                <div id="heroActiveStats" class="text-4xl md:text-5xl font-extrabold text-slate-900 group-hover:text-accent transition-all duration-300 font-outfit">{{ number_format($activeReportsCount, 0, ',', '.') }}</div>
-                                <div class="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Laporan Aktif</div>
+                                <div id="heroActiveStats" class="text-2xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 group-hover:text-accent transition-all duration-300 font-outfit">{{ number_format($activeReportsCount, 0, ',', '.') }}</div>
+                                <div class="text-[10px] sm:text-xs md:text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5 sm:mt-1">Laporan Aktif</div>
                             </div>
-                            <div class="w-px h-12 md:h-14 bg-slate-200"></div>
+                            <div class="w-px h-8 sm:h-12 md:h-14 bg-slate-200"></div>
                             <div class="group cursor-default">
-                                <div id="heroVisitorStats" class="text-4xl md:text-5xl font-extrabold text-slate-900 group-hover:text-secondary transition-all duration-300 font-outfit">{{ $visitorDisplay }}</div>
-                                <div class="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Pendukung</div>
+                                <div id="heroVisitorStats" class="text-2xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 group-hover:text-secondary transition-all duration-300 font-outfit">{{ $visitorDisplay }}</div>
+                                <div class="text-[10px] sm:text-xs md:text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5 sm:mt-1">Pendukung</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Hero Visual Elements: Floating Balloon Cards -->
-                <div class="relative h-[85vh] flex items-center justify-center">
+                <div class="relative h-[280px] sm:h-[400px] lg:h-[85vh] flex items-center justify-center overflow-hidden">
                     <!-- Indonesia Dotted Map Image -->
                     <div class="absolute inset-0 flex items-center justify-center -z-10 bg-no-repeat bg-center opacity-[0.35]">
                         <img src="{{ asset('images/indonesia-map.png') }}" alt="Indonesia Map" class="w-[1400px] h-auto object-contain">
@@ -612,14 +612,14 @@
 
 
         <!-- Recently Listed Issues Section (Slider) -->
-        <section class="py-24 bg-slate-50/30 overflow-hidden reveal-on-scroll">
-            <div class="container mx-auto px-6">
-                <div class="flex flex-col md:flex-row items-end justify-between mb-24 gap-12">
-                    <div class="max-w-2xl">
-                        <div class="inline-flex px-4 py-2 rounded-full bg-accent/10 text-accent text-[10px] font-black uppercase tracking-widest mb-6">
+        <section class="py-12 sm:py-24 bg-slate-50/30 overflow-hidden reveal-on-scroll">
+            <div class="container mx-auto px-4 sm:px-6">
+                <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 sm:mb-24 gap-6 sm:gap-12">
+                    <div class="max-w-2xl text-left">
+                        <div class="inline-flex px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-accent/10 text-accent text-[9px] sm:text-[10px] font-black uppercase tracking-widest mb-3 sm:mb-6">
                             Kampanye & Petisi
                         </div>
-                        <h2 class="text-4xl md:text-5xl font-black font-outfit text-slate-900 leading-tight tracking-tight py-4">Suara <span class="text-accent">Terbaru</span></h2>
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-black font-outfit text-slate-900 leading-tight tracking-tight py-1 sm:py-4">Suara <span class="text-accent">Terbaru</span></h2>
                     </div>
                     
                     <!-- Swiper Navigation Arrows -->
@@ -748,7 +748,6 @@
                                             <div class="w-7 h-7 sm:w-14 sm:h-14 rounded-lg sm:rounded-2xl bg-slate-900 text-white hidden sm:flex items-center justify-center hover:bg-accent hover:scale-110 transition-all active:scale-95 shadow-xl">
                                                 <i data-lucide="arrow-right" class="w-3.5 h-3.5 sm:w-6 sm:h-6"></i>
                                             </div>
-                                        </div>
                                         </div>
                                     </div>
                                 </div>
