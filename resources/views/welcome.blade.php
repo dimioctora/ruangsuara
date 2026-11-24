@@ -490,115 +490,115 @@
     </style>
 
         <!-- Bagaimana Kami Bekerja Section -->
-        <section class="py-24 relative overflow-hidden reveal-on-scroll bg-white">
-            <div class="container mx-auto px-6 relative z-10">
-                <div class="text-center mb-20 max-w-4xl mx-auto">
-                    <p class="text-accent text-sm font-black mb-4 uppercase tracking-[0.2em]">Transparansi Penuh</p>
-                    <h2 class="text-4xl md:text-5xl font-black font-outfit text-slate-900 mb-6 tracking-tight leading-tight">
+        <section class="py-12 sm:py-24 relative overflow-hidden reveal-on-scroll bg-white">
+            <div class="container mx-auto px-3 sm:px-6 relative z-10">
+                <div class="text-center mb-8 sm:mb-20 max-w-4xl mx-auto">
+                    <p class="text-accent text-[10px] sm:text-sm font-black mb-2 sm:mb-4 uppercase tracking-[0.2em]">Transparansi Penuh</p>
+                    <h2 class="text-2xl sm:text-4xl md:text-5xl font-black font-outfit text-slate-900 mb-2 sm:mb-6 tracking-tight leading-tight">
                         Bagaimana <span class="text-accent">Kami Bekerja</span>
                     </h2>
-                    <p class="text-slate-500 text-lg md:text-xl font-medium max-w-2xl mx-auto">
+                    <p class="text-slate-500 text-xs sm:text-lg md:text-xl font-medium max-w-2xl mx-auto">
                         Tiga langkah sederhana untuk mengubah setiap aspirasi menjadi tindakan yang dapat diukur dan dipertanggungjawabkan.
                     </p>
                 </div>
                 
-                <div class="grid md:grid-cols-3 gap-8 relative">
+                <div class="grid grid-cols-3 gap-2 sm:gap-8 relative">
                     <!-- Subtle connector line for desktop -->
                     <div class="hidden md:block absolute top-12 left-1/6 right-1/6 h-0.5 bg-gradient-to-r from-transparent via-slate-200 to-transparent z-0"></div>
 
                     <!-- Step 1 -->
-                    <div class="relative bg-slate-50 border border-slate-100 rounded-3xl p-10 text-center hover:bg-white hover:shadow-xl transition-all duration-300 z-10 group">
-                        <div class="w-20 h-20 mx-auto rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-accent mb-8 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                            <i data-lucide="upload-cloud" class="w-8 h-8"></i>
+                    <div class="relative bg-slate-50 border border-slate-100 rounded-xl sm:rounded-3xl p-2.5 sm:p-10 text-center hover:bg-white hover:shadow-xl transition-all duration-300 z-10 group flex flex-col justify-start">
+                        <div class="w-8 h-8 sm:w-20 sm:h-20 mx-auto rounded-lg sm:rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-accent mb-2 sm:mb-8 shadow-sm group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                            <i data-lucide="upload-cloud" class="w-4 h-4 sm:w-8 sm:h-8"></i>
                         </div>
-                        <h3 class="text-2xl font-black text-slate-900 mb-4 font-outfit">Laporkan Isu</h3>
-                        <p class="text-slate-500 leading-relaxed font-medium">Dokumentasikan masalah di sekitar Anda dengan foto dan deskripsi yang jelas dan lengkap.</p>
+                        <h3 class="text-[11px] sm:text-2xl font-black text-slate-900 mb-1 sm:mb-4 font-outfit leading-tight break-words">Laporkan Isu</h3>
+                        <p class="text-slate-500 text-[8px] sm:text-base leading-tight sm:leading-relaxed font-medium break-words">Dokumentasikan masalah di sekitar Anda dengan foto dan deskripsi yang jelas dan lengkap.</p>
                     </div>
 
                     <!-- Step 2 -->
-                    <div class="relative bg-slate-50 border border-slate-100 rounded-3xl p-10 text-center hover:bg-white hover:shadow-xl transition-all duration-300 z-10 group mt-0 md:mt-8">
-                        <div class="w-20 h-20 mx-auto rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-accent mb-8 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                            <i data-lucide="users" class="w-8 h-8"></i>
+                    <div class="relative bg-slate-50 border border-slate-100 rounded-xl sm:rounded-3xl p-2.5 sm:p-10 text-center hover:bg-white hover:shadow-xl transition-all duration-300 z-10 group mt-0 md:mt-8 flex flex-col justify-start">
+                        <div class="w-8 h-8 sm:w-20 sm:h-20 mx-auto rounded-lg sm:rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-accent mb-2 sm:mb-8 shadow-sm group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                            <i data-lucide="users" class="w-4 h-4 sm:w-8 sm:h-8"></i>
                         </div>
-                        <h3 class="text-2xl font-black text-slate-900 mb-4 font-outfit">Kumpulkan Dukungan</h3>
-                        <p class="text-slate-500 leading-relaxed font-medium">Galang dukungan dari masyarakat untuk menvalidasi urgensi dari isu yang dilaporkan.</p>
+                        <h3 class="text-[11px] sm:text-2xl font-black text-slate-900 mb-1 sm:mb-4 font-outfit leading-tight break-words">Kumpulkan Dukungan</h3>
+                        <p class="text-slate-500 text-[8px] sm:text-base leading-tight sm:leading-relaxed font-medium break-words">Galang dukungan dari masyarakat untuk menvalidasi urgensi dari isu yang dilaporkan.</p>
                     </div>
 
                     <!-- Step 3 -->
-                    <div class="relative bg-slate-50 border border-slate-100 rounded-3xl p-10 text-center hover:bg-white hover:shadow-xl transition-all duration-300 z-10 group">
-                        <div class="w-20 h-20 mx-auto rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-accent mb-8 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                            <i data-lucide="check-circle-2" class="w-8 h-8"></i>
+                    <div class="relative bg-slate-50 border border-slate-100 rounded-xl sm:rounded-3xl p-2.5 sm:p-10 text-center hover:bg-white hover:shadow-xl transition-all duration-300 z-10 group flex flex-col justify-start">
+                        <div class="w-8 h-8 sm:w-20 sm:h-20 mx-auto rounded-lg sm:rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-accent mb-2 sm:mb-8 shadow-sm group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 sm:w-8 sm:h-8"></i>
                         </div>
-                        <h3 class="text-2xl font-black text-slate-900 mb-4 font-outfit">Jadi Aksi Nyata</h3>
-                        <p class="text-slate-500 leading-relaxed font-medium">Koordinasikan solusi nyata bersama komunitas setelah ambang batas dukungan tercapai.</p>
+                        <h3 class="text-[11px] sm:text-2xl font-black text-slate-900 mb-1 sm:mb-4 font-outfit leading-tight break-words">Jadi Aksi Nyata</h3>
+                        <p class="text-slate-500 text-[8px] sm:text-base leading-tight sm:leading-relaxed font-medium break-words">Koordinasikan solusi nyata bersama komunitas setelah ambang batas dukungan tercapai.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Command Center Visual Section -->
-        <section class="py-24 bg-slate-50/50 relative overflow-hidden reveal-on-scroll">
-            <div class="container mx-auto px-6">
-                <div class="grid lg:grid-cols-2 gap-20 items-center">
-                    <div class="relative">
-                        <div class="bg-white p-10 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100">
-                             <div class="flex items-center justify-between mb-10 border-b border-slate-100 pb-6">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-3 h-3 rounded-full bg-success"></div>
-                                    <span class="text-xs font-black text-slate-800 uppercase tracking-widest">Statistik Platform</span>
+        <section class="py-10 sm:py-24 bg-slate-50/50 relative overflow-hidden reveal-on-scroll">
+            <div class="container mx-auto px-3 sm:px-6 w-full max-w-full overflow-hidden">
+                <div class="grid lg:grid-cols-2 gap-6 sm:gap-12 lg:gap-20 items-center w-full max-w-full">
+                    <div class="relative w-full max-w-full">
+                        <div class="bg-white p-4 sm:p-10 rounded-2xl sm:rounded-[2.5rem] shadow-md sm:shadow-xl shadow-slate-200/50 border border-slate-100 w-full max-w-full overflow-hidden">
+                             <div class="flex items-center justify-between mb-4 sm:mb-10 border-b border-slate-100 pb-3 sm:pb-6">
+                                <div class="flex items-center gap-2 sm:gap-3">
+                                    <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-success"></div>
+                                    <span class="text-[10px] sm:text-xs font-black text-slate-800 uppercase tracking-widest">Statistik Platform</span>
                                 </div>
                              </div>
                              
-                              <div class="space-y-6">
+                              <div class="grid grid-cols-2 gap-2 sm:grid-cols-1 sm:gap-0 sm:space-y-6">
                                 <!-- Metric 1: Total Issue -->
-                                <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 flex items-center justify-between group hover:bg-white hover:shadow-md transition-all">
+                                <div class="p-3 sm:p-6 bg-slate-50 rounded-xl sm:rounded-3xl border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between group hover:bg-white hover:shadow-md transition-all overflow-hidden">
                                     <div>
-                                        <p class="text-sm font-bold text-slate-500 mb-1">Total Issue</p>
-                                        <p id="totalIssueCount" class="text-4xl font-black text-slate-900 font-outfit" data-target="{{ $stats['rawTotalIssues'] ?? 0 }}">{{ $stats['totalIssues'] ?? 0 }}</p>
+                                        <p class="text-[10px] sm:text-sm font-bold text-slate-500 mb-0.5 sm:mb-1">Total Issue</p>
+                                        <p id="totalIssueCount" class="text-xl sm:text-4xl font-black text-slate-900 font-outfit" data-target="{{ $stats['rawTotalIssues'] ?? 0 }}">{{ $stats['totalIssues'] ?? 0 }}</p>
                                     </div>
-                                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm text-accent group-hover:scale-110 transition-transform">
-                                        <i data-lucide="layers" class="w-7 h-7"></i>
+                                    <div class="w-8 h-8 sm:w-14 sm:h-14 bg-white rounded-lg sm:rounded-2xl flex items-center justify-center shadow-sm text-accent sm:mt-0 mt-2 self-end sm:self-auto group-hover:scale-110 transition-transform flex-shrink-0">
+                                        <i data-lucide="layers" class="w-4 h-4 sm:w-7 sm:h-7"></i>
                                     </div>
                                 </div>
 
                                 <!-- Metric 2: Case Closed -->
-                                <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 flex items-center justify-between group hover:bg-white hover:shadow-md transition-all">
+                                <div class="p-3 sm:p-6 bg-slate-50 rounded-xl sm:rounded-3xl border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between group hover:bg-white hover:shadow-md transition-all overflow-hidden">
                                     <div>
-                                        <p class="text-sm font-bold text-slate-500 mb-1">Case Closed</p>
-                                        <p id="caseClosedCount" class="text-4xl font-black text-slate-900 font-outfit" data-target="{{ $stats['rawCaseClosed'] ?? 0 }}">{{ $stats['caseClosed'] ?? 0 }}</p>
+                                        <p class="text-[10px] sm:text-sm font-bold text-slate-500 mb-0.5 sm:mb-1">Case Closed</p>
+                                        <p id="caseClosedCount" class="text-xl sm:text-4xl font-black text-slate-900 font-outfit" data-target="{{ $stats['rawCaseClosed'] ?? 0 }}">{{ $stats['caseClosed'] ?? 0 }}</p>
                                     </div>
-                                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm text-success group-hover:scale-110 transition-transform">
-                                        <i data-lucide="check-circle-2" class="w-7 h-7"></i>
+                                    <div class="w-8 h-8 sm:w-14 sm:h-14 bg-white rounded-lg sm:rounded-2xl flex items-center justify-center shadow-sm text-success sm:mt-0 mt-2 self-end sm:self-auto group-hover:scale-110 transition-transform flex-shrink-0">
+                                        <i data-lucide="check-circle-2" class="w-4 h-4 sm:w-7 sm:h-7"></i>
                                     </div>
                                 </div>
                              </div>
                         </div>
                     </div>
 
-                    <div class="lg:pl-6 flex flex-col justify-center">
-                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent/10 text-accent text-[10px] font-black uppercase tracking-widest mb-3 w-fit">
+                    <div class="lg:pl-6 flex flex-col justify-center w-full min-w-0 max-w-full overflow-hidden">
+                        <div class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-accent/10 text-accent text-[9px] sm:text-[10px] font-black uppercase tracking-widest mb-2 sm:mb-3 w-fit">
                             <span class="w-1.5 h-1.5 rounded-full bg-accent animate-ping"></span>
                             Transparansi Data
                         </div>
-                        <h2 class="text-3xl md:text-4xl font-black font-outfit text-slate-900 mb-2 tracking-tight leading-tight">Aktivitas <span class="text-accent">Terkini</span></h2>
-                        <p class="text-slate-500 text-sm md:text-base leading-relaxed mb-6 font-medium">Log aktivitas sistem yang memantau pergerakan secara transparan dan seketika.</p>
+                        <h2 class="text-xl sm:text-3xl md:text-4xl font-black font-outfit text-slate-900 mb-1 sm:mb-2 tracking-tight leading-tight">Aktivitas <span class="text-accent">Terkini</span></h2>
+                        <p class="text-slate-500 text-xs sm:text-sm md:text-base leading-relaxed mb-3 sm:mb-6 font-medium">Log aktivitas sistem yang memantau pergerakan secara transparan dan seketika.</p>
                         
-                        <div id="liveActivitiesContainer" class="space-y-3">
+                        <div id="liveActivitiesContainer" class="space-y-2 sm:space-y-3 w-full min-w-0 max-w-full">
                             @forelse($stats['activities'] ?? [] as $act)
-                            <div class="bg-white border border-slate-100 rounded-2xl p-3.5 px-4 flex items-center gap-3.5 shadow-sm hover:shadow-md transition-all group">
-                                <div class="w-2.5 h-2.5 rounded-full {{ $act['dot_color'] ?? 'bg-accent' }} shrink-0 group-hover:scale-125 transition-transform"></div>
+                            <div class="bg-white border border-slate-100 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 px-3 sm:px-4 flex items-center gap-2.5 sm:gap-3.5 shadow-sm hover:shadow-md transition-all group w-full min-w-0 max-w-full">
+                                <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full {{ $act['dot_color'] ?? 'bg-accent' }} shrink-0 group-hover:scale-125 transition-transform"></div>
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-slate-800 font-bold font-outfit text-sm truncate leading-snug">{{ $act['title'] }}</p>
-                                    <p class="text-slate-400 text-[11px] font-semibold mt-0.5">{{ $act['time'] }}</p>
+                                    <p class="text-slate-800 font-bold font-outfit text-xs sm:text-sm truncate leading-snug">{{ $act['title'] }}</p>
+                                    <p class="text-slate-400 text-[10px] sm:text-[11px] font-semibold mt-0.5">{{ $act['time'] }}</p>
                                 </div>
                             </div>
                             @empty
-                            <div class="bg-white/80 border border-dashed border-slate-200 rounded-2xl p-8 text-center">
-                                <div class="w-10 h-10 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2">
-                                    <i data-lucide="inbox" class="w-5 h-5"></i>
+                            <div class="bg-white/80 border border-dashed border-slate-200 rounded-xl sm:rounded-2xl p-4 sm:p-8 text-center">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2">
+                                    <i data-lucide="inbox" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                                 </div>
-                                <p class="text-slate-500 text-sm font-semibold">Belum ada aktivitas tercatat.</p>
-                                <a href="/create-suara" class="inline-flex items-center gap-1.5 text-accent text-xs font-bold mt-2 hover:underline">
+                                <p class="text-slate-500 text-xs sm:text-sm font-semibold">Belum ada aktivitas tercatat.</p>
+                                <a href="/create-suara" class="inline-flex items-center gap-1.5 text-accent text-xs font-bold mt-1 sm:mt-2 hover:underline">
                                     Mulai inisiatif pertama <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
                                 </a>
                             </div>
@@ -760,7 +760,7 @@
         </section>
 
         <!-- Premium CTA Section -->
-        <section class="relative pt-32 pb-24 overflow-hidden reveal-on-scroll bg-[#020617]">
+        <section class="relative pt-16 sm:pt-32 pb-12 sm:pb-24 overflow-hidden reveal-on-scroll bg-[#020617]">
             <!-- Animated Mesh Glows -->
             <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-red-500/20 to-transparent blur-[120px] rounded-full animate-pulse pointer-events-none"></div>
             <div class="absolute bottom-0 right-[-10%] w-[500px] h-[500px] bg-accent/10 blur-[100px] rounded-full pointer-events-none"></div>
@@ -768,58 +768,58 @@
             <!-- Clean Grid Overlay -->
             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/graphy-dark.png')] opacity-[0.05] mix-blend-overlay pointer-events-none"></div>
 
-            <div class="container mx-auto px-6 relative z-10 text-center">
-                <div class="inline-flex items-center gap-2.5 bg-slate-900/50 border border-slate-700/50 px-5 py-2 rounded-full shadow-xl shadow-red-900/20 mb-12 animate-bounce cursor-default backdrop-blur-sm">
-                    <div class="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]"></div>
-                    <span class="text-[10px] font-black uppercase tracking-[0.3em] text-white">Aksi Nyata untuk Indonesia</span>
+            <div class="container mx-auto px-4 sm:px-6 relative z-10 text-center">
+                <div class="inline-flex items-center gap-2 sm:gap-2.5 bg-slate-900/50 border border-slate-700/50 px-3.5 sm:px-5 py-1 sm:py-2 rounded-full shadow-xl shadow-red-900/20 mb-6 sm:mb-12 animate-bounce cursor-default backdrop-blur-sm">
+                    <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]"></div>
+                    <span class="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white">Aksi Nyata untuk Indonesia</span>
                 </div>
                 
-                <h2 class="text-7xl md:text-[100px] font-outfit font-black text-white mb-10 leading-tight tracking-tighter drop-shadow-xl">
+                <h2 class="text-3xl sm:text-6xl md:text-[90px] font-outfit font-black text-white mb-4 sm:mb-10 leading-tight tracking-tight drop-shadow-xl">
                     Mulai Perubahan <br> 
                     <span class="bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-rose-400 to-orange-400">Hari Ini</span>
                 </h2>
                 
-                <p class="text-slate-300 text-xl md:text-2xl mb-16 max-w-2xl mx-auto leading-relaxed font-medium">
+                <p class="text-slate-300 text-xs sm:text-lg md:text-2xl mb-8 sm:mb-16 max-w-2xl mx-auto leading-relaxed font-medium">
                     Bergabung dengan ribuan pembuat perubahan yang telah bergerak hari ini. Tidak perlu izin khusus, <span class="text-white font-bold">hanya niat tulus.</span>
                 </p>
                 
-                <div class="flex flex-col items-center gap-12">
+                <div class="flex flex-col items-center gap-6 sm:gap-12">
                     <div class="relative group">
-                        <div class="absolute -inset-1 bg-gradient-to-r from-accent via-success to-accent rounded-[2rem] blur opacity-40 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 animate-gradient-x"></div>
-                        <button onclick="toggleAuthModal('signup')" class="relative flex items-center gap-4 bg-slate-900 text-white font-black px-14 py-6 rounded-[2rem] shadow-2xl transition-all hover:scale-[1.05] hover:shadow-accent/40 active:scale-95 text-xl group border border-slate-700">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-accent via-success to-accent rounded-2xl sm:rounded-[2rem] blur opacity-40 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 animate-gradient-x"></div>
+                        <button onclick="toggleAuthModal('signup')" class="relative flex items-center gap-2.5 sm:gap-4 bg-slate-900 text-white font-black px-6 sm:px-14 py-3 sm:py-6 rounded-xl sm:rounded-[2rem] shadow-2xl transition-all hover:scale-[1.05] hover:shadow-accent/40 active:scale-95 text-xs sm:text-xl group border border-slate-700">
                             <span>Gabung Sekarang</span>
-                            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                                <i data-lucide="arrow-right" class="w-3.5 h-3.5 sm:w-5 sm:h-5"></i>
                             </div>
                         </button>
                     </div>
                     
-                    <div class="flex flex-wrap justify-center gap-12 border-t border-slate-800 pt-12 w-full max-w-4xl text-slate-300">
-                        <div class="flex items-center gap-4 group">
-                            <div class="w-12 h-12 bg-slate-800/50 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform text-emerald-400 border border-slate-700">
-                                <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    <div class="flex flex-wrap justify-center gap-4 sm:gap-12 border-t border-slate-800 pt-6 sm:pt-12 w-full max-w-4xl text-slate-300">
+                        <div class="flex items-center gap-2.5 sm:gap-4 group">
+                            <div class="w-9 h-9 sm:w-12 sm:h-12 bg-slate-800/50 backdrop-blur-sm rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform text-emerald-400 border border-slate-700">
+                                <i data-lucide="shield-check" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                             </div>
                             <div class="text-left">
-                                <p class="text-xs font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Privasi Aman</p>
-                                <p class="text-sm font-bold text-white">Enkripsi End-to-End</p>
+                                <p class="text-[9px] sm:text-xs font-black uppercase tracking-widest text-slate-400 leading-none mb-0.5 sm:mb-1">Privasi Aman</p>
+                                <p class="text-xs sm:text-sm font-bold text-white">Enkripsi End-to-End</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4 group">
-                            <div class="w-12 h-12 bg-slate-800/50 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform text-blue-400 border border-slate-700">
-                                <i data-lucide="zap" class="w-6 h-6"></i>
+                        <div class="flex items-center gap-2.5 sm:gap-4 group">
+                            <div class="w-9 h-9 sm:w-12 sm:h-12 bg-slate-800/50 backdrop-blur-sm rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform text-blue-400 border border-slate-700">
+                                <i data-lucide="zap" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                             </div>
                             <div class="text-left">
-                                <p class="text-xs font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Instan</p>
-                                <p class="text-sm font-bold text-white">Proses < 2 Menit</p>
+                                <p class="text-[9px] sm:text-xs font-black uppercase tracking-widest text-slate-400 leading-none mb-0.5 sm:mb-1">Instan</p>
+                                <p class="text-xs sm:text-sm font-bold text-white">Proses < 2 Menit</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4 group">
-                            <div class="w-12 h-12 bg-slate-800/50 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform text-orange-400 border border-slate-700">
-                                <i data-lucide="globe" class="w-6 h-6"></i>
+                        <div class="flex items-center gap-2.5 sm:gap-4 group">
+                            <div class="w-9 h-9 sm:w-12 sm:h-12 bg-slate-800/50 backdrop-blur-sm rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform text-orange-400 border border-slate-700">
+                                <i data-lucide="globe" class="w-4 h-4 sm:w-6 sm:h-6"></i>
                             </div>
                             <div class="text-left">
-                                <p class="text-xs font-black uppercase tracking-widest text-slate-400 leading-none mb-1">Akses Luas</p>
-                                <p class="text-sm font-bold text-white">514 Kabupaten/Kota</p>
+                                <p class="text-[9px] sm:text-xs font-black uppercase tracking-widest text-slate-400 leading-none mb-0.5 sm:mb-1">Akses Luas</p>
+                                <p class="text-xs sm:text-sm font-bold text-white">514 Kabupaten/Kota</p>
                             </div>
                         </div>
                     </div>
@@ -1251,18 +1251,18 @@
                 if (activitiesContainer) {
                     if (Array.isArray(data.activities) && data.activities.length > 0) {
                         activitiesContainer.innerHTML = data.activities.map(act => `
-                            <div class="bg-white border border-slate-100 rounded-2xl p-3.5 px-4 flex items-center gap-3.5 shadow-sm hover:shadow-md transition-all group">
-                                <div class="w-2.5 h-2.5 rounded-full ${act.dot_color || 'bg-accent'} shrink-0 group-hover:scale-125 transition-transform"></div>
+                            <div class="bg-white border border-slate-100 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 px-3 sm:px-4 flex items-center gap-2.5 sm:gap-3.5 shadow-sm hover:shadow-md transition-all group w-full min-w-0 max-w-full">
+                                <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${act.dot_color || 'bg-accent'} shrink-0 group-hover:scale-125 transition-transform"></div>
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-slate-800 font-bold font-outfit text-sm truncate leading-snug">${escapeHtml(act.title)}</p>
-                                    <p class="text-slate-400 text-[11px] font-semibold mt-0.5">${escapeHtml(act.time)}</p>
+                                    <p class="text-slate-800 font-bold font-outfit text-xs sm:text-sm truncate leading-snug">${escapeHtml(act.title)}</p>
+                                    <p class="text-slate-400 text-[10px] sm:text-[11px] font-semibold mt-0.5">${escapeHtml(act.time)}</p>
                                 </div>
                             </div>
                         `).join('');
                     } else {
                         activitiesContainer.innerHTML = `
-                            <div class="bg-white/80 border border-dashed border-slate-200 rounded-2xl p-8 text-center">
-                                <div class="w-10 h-10 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2">
+                            <div class="bg-white/80 border border-dashed border-slate-200 rounded-xl sm:rounded-2xl p-4 sm:p-8 text-center">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2">
                                     <i data-lucide="inbox" class="w-5 h-5"></i>
                                 </div>
                                 <p class="text-slate-500 text-sm font-semibold">Belum ada aktivitas tercatat.</p>
